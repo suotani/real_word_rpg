@@ -24,8 +24,10 @@
     <hr>
     <div class="experiences">
       <% @charactor.experiences.each do |ex| %>
-        <div data-toggle="modal" data-target="#logModal" data-id="<%= ex.id %>" class="logCreate card p-2 mb-2 mt-2">
-          <p class="name mb-2"><%= ex.name %> LV. <%= ex.level %></p>
+        <div data-toggle="modal" data-target="#logModal" data-id="<%= ex.id %>" data-unit="1<%= ex.unit %>で<%= ex.unit_exp %>獲得" class="logCreate card p-2 mb-2 mt-2">
+          <p class="name mb-2">
+            [<%= ex.category.name %>]<%= ex.name %> LV. <%= ex.level %>
+          </p>
           <p class="">次のレベルまであと <%= 100 - ex.exp %></p>
           <div class="progress mb-2">
             <div class="progress-bar" role="progressbar"  style="width: <%= ex.exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -74,6 +76,7 @@
         <%= form_with model: ExperienceLog.new, local: true do |f| %>
           <%= hidden_field_tag :experience_id, 1 %>
           <label>経験単位</label><br />
+          <p class="unit_notice"></p>
           <div class="input-group mb-2">
             <%= f.number_field :unit, class: "form-control" %>
             <div class="input-group-append">
@@ -103,15 +106,21 @@ $(".skill").on("click", function(){
 
 $(".logCreate").on("click", function(){
   let experience_id = $(this).data("id");
+  let unit = $(this).data("unit");
   let name = $(this).find(".name").text();
   $("#experience_id").val(experience_id);
   $(".modal_log_title").text(name);
+  $(".unit_notice").text(unit);
 })
 </script>
 
 <style>
 .title{
   border-bottom: solid 1px #777;
+}
+
+.skills{
+  margin-top: 5px;
 }
 
 

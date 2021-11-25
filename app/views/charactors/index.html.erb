@@ -3,15 +3,21 @@
     <button data-toggle="modal" data-target="#logModal" class="btn btn-info mb-2">キャラクター作成</button>
 
     <% @charactors.each do |chara| %>
-    <%= link_to charactor_path(chara), class:"card" do %>
-      <p class="name"><%= chara.name %> LV. <%= chara.level %></p>
-      <img src="/img/sep.png" width="100%">
-      <div class="skills">
-        <% chara.charactor_skills.each do |cs| %>
-          <span>[<%= cs.skill.name %> LV. <%= cs.level %>]<span>
-        <% end %>
-      </div>
-    <% end %>
+      <%= link_to charactor_path(chara), class:"card" do %>
+        <p class="name"><%= chara.name %> LV. <%= chara.level %></p>
+          <ul class="row">
+            <li class="col-6">運動力: LV. <%= chara.motion_level %></li>
+            <li class="col-6">知識力: LV. <%= chara.knowledge_level %></li>
+            <li class="col-6">健康力: LV. <%= chara.health_level %></li>
+            <li class="col-6">発信力: LV. <%= chara.communication_level %></li>
+          </ul>
+        <img src="/img/sep.png" width="100%">
+        <div class="skills">
+          <% chara.charactor_skills.each do |cs| %>
+            <span>[<%= cs.skill.name %> LV. <%= cs.level %>]<span>
+          <% end %>
+        </div>
+      <% end %>
     <% end %>
   </div>
 </div>
@@ -59,9 +65,14 @@
   display: flex;
   flex-wrap: wrap;
   padding: 10px;
+  color: black;
 }
 
-.btn{
-  
+li{
+  color: black;
+}
+
+a.card{
+  text-decoration: none;
 }
 </style>
