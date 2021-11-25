@@ -6,8 +6,8 @@
         <%= render "devise/shared/error_messages", resource: resource %>
 
         <div class="field form-group">
-          <%= f.label :email, value: "メールアドレス" %><br />
-          <%= f.email_field :email, autofocus: true, class: "form-control" %>
+          <%= f.label :name, value: "アカウント名(小文字英数字)" %><br />
+          <%= f.text_field :name, autofocus: true, class: "form-control" %>
         </div>
 
         <div class="field form-group">
