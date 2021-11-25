@@ -1,0 +1,122 @@
+<div class="fixed-background background-1">
+  <div class="inner">
+    <span class="inner-box" id="inner1"></span>
+    <span class="inner-box" id="inner2"></span>
+    <span class="inner-box" id="inner3"></span>
+    <span class="inner-box" id="inner4"></span>
+
+    <h1 class="name"><%= @charactor.name %> LV. <%= @charactor.level %></h1>
+    <ul class="row">
+      <li class="col-6">運動力: LV. <%= @charactor.motion_level %></li>
+      <li class="col-6">知識力: LV. <%= @charactor.knowledge_level %></li>
+      <li class="col-6">健康力: LV. <%= @charactor.health_level %></li>
+      <li class="col-6">発信力: LV. <%= @charactor.communication_level %></li>
+    </ul>
+    <span class="title">所持スキル</span>
+    <div class="skills">
+      <% @charactor.charactor_skills.each do |cs| %>
+        <span class="skill" data-toggle="modal" data-target="#exampleModal">
+          [<span class="skill_name"><%= cs.skill.name %></span> LV. <%= cs.level %>]
+          <span class="skill_explanation"><%= cs.skill.explanation %></span>
+        </span>
+      <% end %>
+    </div>
+    <hr>
+    <div class="experiences">
+      <% @charactor.experiences.each do |ex| %>
+        <div data-toggle="modal" data-target="#logModal" data-id="<%= ex.id %>" class="logCreate card p-2 mb-2 mt-2">
+          <p class="name mb-2"><%= ex.name %> LV. <%= ex.level %></p>
+          <p class="">次のレベルまであと <%= 100 - ex.exp %></p>
+          <div class="progress mb-2">
+            <div class="progress-bar" role="progressbar"  style="width: <%= ex.exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <p class="mb-2"><%= ex.explanation %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <%= link_to "新しく経験を追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-primary"  %>
+    <hr>
+
+  </div>
+</div>
+
+<!-- Skill Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modal_skill_name" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal_skill_body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Log Modal -->
+<div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modal_log_title" id="">aaa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= form_with model: ExperienceLog.new, local: true do |f| %>
+          <%= hidden_field_tag :experience_id, 1 %>
+          <label>経験単位</label><br />
+          <div class="input-group mb-2">
+            <%= f.number_field :unit, class: "form-control" %>
+            <div class="input-group-append">
+              <span class="input-group-text">回</span>
+            </div>
+          </div>
+
+          <div class="field form-group">
+            <input type="submit" value="登録" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(".skill").on("click", function(){
+  let name = $(this).find(".skill_name").text();
+  let explanation  = $(this).find(".skill_explanation").text();
+
+  $(".modal_skill_name").text(name)
+  $(".modal_skill_body").text(explanation)
+})
+
+
+$(".logCreate").on("click", function(){
+  let experience_id = $(this).data("id");
+  let name = $(this).find(".name").text();
+  $("#experience_id").val(experience_id);
+  $(".modal_log_title").text(name);
+})
+</script>
+
+<style>
+.title{
+  border-bottom: solid 1px #777;
+}
+
+
+.skill_explanation{
+  display: none;
+}
+
+</style>

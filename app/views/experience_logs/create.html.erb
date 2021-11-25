@@ -1,0 +1,29 @@
+<div class="container">
+   <% if @result.present? %>
+    <div class="card" style="max-width: 700px; margin: 50px auto">
+      <div class="card-header">
+        <%= @result %>
+      </div>
+      <div class="card-body">
+        <p style="text-align: center">
+          [<%= @skill.name %> LV. <%= @charactor_skill.level %>]
+        </p>
+        <img src="/img/sep.png" width="100%" class="m-2">
+        <p><%= @skill.explanation %></p>
+      </div>
+    </div>
+  <% end %>
+  <div class="card" style="max-width: 700px; margin: 50px auto">
+    <div class="card-header">
+      経験：<%= @experience.name %>
+    </div>
+    <div class="card-body">
+      <p>経験値<%= @get_exp %>を取得しました</p>
+      <p class="">次のレベルまであと <%= 100 - @experience.exp %></p>
+      <div class="progress m-2">
+        <div class="progress-bar" role="progressbar"  style="width: <%= @experience.exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>
+  <%= link_to "戻る", charactor_path(@charactor), class: "btn btn-secondary" %>
+</div>

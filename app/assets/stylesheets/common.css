@@ -1,0 +1,144 @@
+header{
+  border-bottom: solid 1px #cdcdcd;
+}
+main{
+  margin-top: 60px;
+}
+ul{
+  list-style: none;
+  padding: none;
+}
+
+li{
+  padding: none;
+}
+
+p{
+  padding: 0px;
+  margin: 0px;
+  color: black;
+}
+
+.btn{
+  border-radius: 30px;
+  padding: 5px 30px;
+}
+
+.navbar{
+  border-bottom: solid 1px #cdcdcd;
+}
+
+.navbar .nav-item{
+  width: 120px;
+  text-align: center;
+}
+
+.navbar .nav-item.active{
+  border-bottom: solid 1px red;
+}
+
+.navbar .nav-item.active .nav-link{
+  color: red;
+}
+
+.ta-center{
+  text-align: center;
+}
+
+.ta-right{
+  text-align: right;
+}
+
+ul.list{
+  list-style: none;
+}
+
+
+ul.list li p{
+  padding-left: 50px;
+}
+
+ul.list li a .icon{
+  margin-right: 14px;
+  color: rgb(80, 124, 245);
+  font-size: 20px;
+}
+
+ul.list li a{
+  color: black;
+}
+
+.form-row{
+  justify-content: center;
+}
+@media screen and (max-width: 599px){
+  .navbar .nav-item{
+    text-align: left;
+  }
+  .container-fluid, .container-lg, .container-md, .container-sm, .container-xl{
+    padding: 0px;
+  }
+  ul.list li p {
+    padding: 0px;
+  }
+}
+main .top{
+  background-color: #faf0f0;
+  padding: 20px 0px;
+}
+
+.inner-top{
+  width: 1000px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-form form{
+  background-color: white;
+  padding: 20px;
+  width: 400px;
+}
+
+.inner-title{
+  position: relative;
+}
+
+.inner-title img{
+  width: 100px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+.content{
+  margin-top: 50px;
+}
+
+.recent-reviews{
+  display: flex;
+  flex-wrap:wrap;
+  justify-content: space-between;
+}
+
+.recent-reviews .card{
+  margin-bottom: 10px;
+}
+
+@media screen and (max-width: 599px){
+
+  /*top page*/
+  .inner-top{
+    width: 90%;
+    margin: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .login-form form{
+    width: 100%;
+  }
+  .top-message{
+    text-align: center;
+  }
+}

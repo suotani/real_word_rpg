@@ -1,0 +1,22 @@
+    <header>
+      <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-white">
+        <a class="navbar-brand" href="/">TOP</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <span class="navbar-text">
+            <% if user_signed_in? %>
+              <%= link_to "ログアウト", destroy_user_session_path, method: "DELETE" %>
+            <% else %>
+              <%= link_to "ログイン", new_user_session_path, class: "btn btn-primary" %>
+            <% end %>
+          </span>
+          <span class="navbar-text">
+            <% unless user_signed_in? %>
+              <%= link_to "ユーザー登録", new_user_registration_path, class: "nav-link"%>
+            <% end %>
+          </span>
+        </div>
+      </nav>
+    </header>

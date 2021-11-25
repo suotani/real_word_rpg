@@ -1,0 +1,22 @@
+.fixed-background {
+  min-height: 100vh;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+ 
+.background-1 {
+  background-image: url(/img/back.jpeg);
+}
+
+ 
+.background-2 {
+  background-image: url(/img/guild.jpeg);
+}
+
+.inner{
+  background-color: rgb(115 88 7 / 53%);
+  min-height: 100vh;
+  padding: 10px;
+  color: white;
+}

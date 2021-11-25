@@ -1,0 +1,67 @@
+<div class="fixed-background background-2">
+  <div class="inner">
+    <button data-toggle="modal" data-target="#logModal" class="btn btn-info mb-2">キャラクター作成</button>
+
+    <% @charactors.each do |chara| %>
+    <%= link_to charactor_path(chara), class:"card" do %>
+      <p class="name"><%= chara.name %> LV. <%= chara.level %></p>
+      <img src="/img/sep.png" width="100%">
+      <div class="skills">
+        <% chara.charactor_skills.each do |cs| %>
+          <span>[<%= cs.skill.name %> LV. <%= cs.level %>]<span>
+        <% end %>
+      </div>
+    <% end %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Log Modal -->
+<div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modal_log_title" id="">キャラクター作成</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= form_with model: Charactor.new, local: true do |f| %>
+          <label>名前</label><br />
+          <div class="input-group mb-2">
+            <%= f.text_field :name, class: "form-control" %>
+          </div>
+
+          <div class="field form-group">
+            <input type="submit" value="作成" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<style>
+.card{
+  width: 95%;
+  margin: 10px auto;
+  padding: 20px;
+}
+
+.name{
+  padding-left: 10px;
+}
+
+.skills{
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.btn{
+  
+}
+</style>
