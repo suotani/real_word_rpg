@@ -2,42 +2,10 @@ class ExperienceLogsController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    @experience = Experience.find(params[:experience_id])
-    @charactor = @experience.charactor
-    @log = @experience.experience_logs.new(log_params)
-    exp = @experience.unit_exp * @log.unit
-    @get_exp = exp
-    @result = ""
+    @charactor = Charactor.find(params[:id])
     ActiveRecord::Base.transaction do
-      # レベルアップしたかどうか
-      if @experience.exp + exp >= 100
-        @experience.level += (@experience.exp + exp) / 100
-        # レベルの更新
-        @charactor.level_up!(@experience.category, (@experience.exp + @get_exp) / 100)
-        exp = (@experience.exp + exp) % 100
-
-        # カテゴリーからスキルをランダムで取得
-        @skill = @experience.category.skills.shuffle.first
-        # スキル習得
-        if @charactor.skills.include?(@skill)
-          @result = "レベルアップ！スキルレベルが上がりました"
-          # 既存スキルの場合
-          @charactor_skill = @charactor.charactor_skills.find_by(skill_id: @skill.id)
-          # 既存スキルのレベルアップ
-          @charactor_skill.update!(level: @charactor_skill.level+1)
-        else
-          @result = "レベルアップ！スキルを獲得しました"
-          # 新規スキルの場合
-          @charactor_skill = @charactor.charactor_skills.create(skill_id: @skill.id)
-        end
-
-      else
-        exp = @experience.exp + exp
-      end
-      @experience.update!(exp: exp)
-      @log.save!
+      @messages = get_exp!
     end
-
   rescue => e
     p e
     flash[:alert] = "失敗しました"
@@ -48,5 +16,49 @@ class ExperienceLogsController < ApplicationController
 
   def log_params
     params.require(:experience_log).permit(:unit, :comment)
+  end
+
+  def get_exp!
+    # params: {data: [{id: 3, exp_point: 40, category_id: 3}, {id: 1, exp_point: 10, category_id: 4}]}
+    # categories: {"1": 200, "3": 40}
+    categories = {}
+    # データからカテゴリ毎の経験値を計算、まとめる
+    params[:data].each do |exp|
+      id = exp[:category_id].to_s
+      categories[id] = categories[id].present? ? categories[id] + exp[:exp_point].to_i : exp[:exp_point].to_i
+    end
+
+    # カテゴリ毎にレベルアップ処理
+    messages = []
+    skills = []
+    categories.each do |id, exp_point|
+      category = Category.find(id)
+      if @charactor.level_up?(category, exp_point)
+        # レベルアップ処理
+        skills << @charactor.level_up!(category, exp_point)
+        messages << MessageService.init("level").message(exp_point, @charactor, category)
+      else
+        # 経験値獲得処理
+        @charactor.get_exp!(category, exp_point)
+        messages << MessageService.init("exp").message(exp_point, @charactor, category)
+      end
+    end
+
+    # スキル獲得処理
+    charactor_skills = @charactor.charactor_skills
+    have_skill_ids = charactor_skills.map(&:skill_id)
+    skills.flatten.each do |skill|
+      cs = ""
+      if have_skill_ids.include?(skill.id)
+        # すでに持っているスキル
+        cs = charactor_skills.find_by(skill_id: skill.id)
+        cs.update!(level: cs.level + 1)
+      else
+        # 新規スキル
+        cs = charactor_skills.create!(skill_id: skill.id)
+      end
+      messages << MessageService.init("skill").message(cs)
+    end
+    messages
   end
 end

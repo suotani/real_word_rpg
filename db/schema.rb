@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_25_055825) do
+ActiveRecord::Schema.define(version: 2021_11_29_042713) do
 
   create_table "charactor_skills", force: :cascade do |t|
     t.integer "skill_id"
@@ -30,6 +30,10 @@ ActiveRecord::Schema.define(version: 2021_11_25_055825) do
     t.integer "communication_level", default: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "motion_exp", default: 0
+    t.integer "knowledge_exp", default: 0
+    t.integer "health_exp", default: 0
+    t.integer "communication_exp", default: 0
   end
 
   create_table "experience_logs", force: :cascade do |t|

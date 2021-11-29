@@ -1,0 +1,12 @@
+  <div class="card" style="max-width: 700px; margin: 50px auto">
+    <div class="card-header">
+      <%= message.name %>の経験値を獲得しました
+    </div>
+    <div class="card-body">
+      <p>経験値<%= message.exp %>を取得しました</p>
+      <p class="">次のレベルまであと <%= 100 - message.next_exp %></p>
+      <div class="progress m-2">
+        <div class="progress-bar" role="progressbar"  style="width: <%= message.next_exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>

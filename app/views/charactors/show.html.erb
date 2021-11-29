@@ -1,9 +1,5 @@
 <div class="fixed-background background-1">
   <div class="inner">
-    <span class="inner-box" id="inner1"></span>
-    <span class="inner-box" id="inner2"></span>
-    <span class="inner-box" id="inner3"></span>
-    <span class="inner-box" id="inner4"></span>
 
     <h1 class="name"><%= @charactor.name %> LV. <%= @charactor.level %></h1>
     <ul class="row">
@@ -23,22 +19,21 @@
     </div>
     <hr>
     <div class="experiences">
+      <%= link_to "+新しくクエストを追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-info mb-2"  %>
       <% @charactor.experiences.each do |ex| %>
-        <div data-toggle="modal" data-target="#logModal" data-id="<%= ex.id %>" data-unit="1<%= ex.unit %>で<%= ex.unit_exp %>獲得" class="logCreate card p-2 mb-2 mt-2">
+        <div data-id="<%= ex.id %>" data-category_id="<%= ex.category_id %>" data-exp="<%= ex.unit_exp %>" class="experience card p-2 mb-2 mt-2">
           <p class="name mb-2">
-            [<%= ex.category.name %>]<%= ex.name %> LV. <%= ex.level %>
+            [<%= ex.category.name %>]<%= ex.name %>
           </p>
-          <p class="">次のレベルまであと <%= 100 - ex.exp %></p>
-          <div class="progress mb-2">
-            <div class="progress-bar" role="progressbar"  style="width: <%= ex.exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
           <p class="mb-2"><%= ex.explanation %></p>
         </div>
       <% end %>
     </div>
+    <p class="submit_btn">
+      <button class="submit btn btn-primary btn-lg btn-block">決定</button>
+      <hr>
+    </p>
 
-    <%= link_to "新しく経験を追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-primary"  %>
-    <hr>
 
   </div>
 </div>
@@ -61,38 +56,9 @@
     </div>
   </div>
 </div>
+<%= form_with url: "/experience_logs", local: true  do%>
+<% end %>
 
-<!-- Log Modal -->
-<div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title modal_log_title" id="">aaa</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <%= form_with model: ExperienceLog.new, local: true do |f| %>
-          <%= hidden_field_tag :experience_id, 1 %>
-          <label>経験単位</label><br />
-          <p class="unit_notice"></p>
-          <div class="input-group mb-2">
-            <%= f.number_field :unit, class: "form-control" %>
-            <div class="input-group-append">
-              <span class="input-group-text">回</span>
-            </div>
-          </div>
-
-          <div class="field form-group">
-            <input type="submit" value="登録" class="btn btn-primary">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 $(".skill").on("click", function(){
@@ -103,15 +69,43 @@ $(".skill").on("click", function(){
   $(".modal_skill_body").text(explanation)
 })
 
+//params: {data: [{id: 3, exp_point: 40, category_id: 3}, {id: 1, exp_point: 10, category_id: 4}]}
 
-$(".logCreate").on("click", function(){
-  let experience_id = $(this).data("id");
-  let unit = $(this).data("unit");
-  let name = $(this).find(".name").text();
-  $("#experience_id").val(experience_id);
-  $(".modal_log_title").text(name);
-  $(".unit_notice").text(unit);
-})
+let data = [];
+$(".experience").on("click", function(){
+  id = $(this).data("id");
+  if(data.find(e => e["id"] == id)){
+    $(this).removeClass("active")
+    data = data.filter(e => e["id"] != id)
+  }else{
+    $(this).addClass("active")
+    data.push({"id": id, "exp_point": $(this).data("exp"), "category_id": $(this).data("category_id")})
+  }
+  if(data.length >= 1){
+    $(".submit_btn").show()
+  }else{
+    $(".submit_btn").hide()
+  }
+});
+
+$(".submit_btn").on("click", function(){
+  input_user = $("<input>", {name: "id", value: <%= @charactor.id %>})
+  $("form").append(input_user)
+  // data分くりかえし
+  data.forEach(function(d){
+    input_id = $("<input>", {name: "data[][id]", value: d["id"]})
+    input_exp = $("<input>", {name: "data[][exp_point]", value: d["exp_point"]})
+    input_cat = $("<input>", {name: "data[][category_id]", value: d["category_id"]})
+    
+    $("form").append(input_id)
+    $("form").append(input_exp)
+    $("form").append(input_cat)
+  })
+
+  $("form").submit();
+});
+
+
 </script>
 
 <style>
@@ -125,6 +119,14 @@ $(".logCreate").on("click", function(){
 
 
 .skill_explanation{
+  display: none;
+}
+
+.active{
+  background-color: #fbc964;
+}
+
+.submit_btn{
   display: none;
 }
 

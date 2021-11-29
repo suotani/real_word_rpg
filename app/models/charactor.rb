@@ -8,28 +8,28 @@ class Charactor < ApplicationRecord
   validates :name, presence: true
 
   def level
-    (motion_level + knowledge_level + health_level + communication_level) / 2
+    (motion_level + knowledge_level + health_level + communication_level) - 3
   end
 
-  # self.data = [
-  #   {id: 1, name: "運動力"},
-  #   {id: 2, name: "知識力"},
-  #   {id: 3, name: "健康力"},
-  #   {id: 4, name: "発信力"},
-  # ]
-
-  def level_up!(category, l)
-    p l
-    case category.id
-    when 1 then
-      self.motion_level += l
-    when 2 then
-      self.knowledge_level += l
-    when 3 then
-      self.health_level += l
-    when 4 then
-      self.communication_level += l
-    end
+  def get_exp!(category, exp_point)
+    exp = self.send("#{category.column_name}_exp") + exp_point
+    self.send("#{category.column_name}_exp=", exp)
     save!
+  end
+
+  def level_up!(category, exp_point)
+    exp = self.send("#{category.column_name}_exp") + exp_point
+    get_level = exp / 100
+    level = get_level + self.send("#{category.column_name}_level")
+    exp = exp % 100
+    p level
+    self.send("#{category.column_name}_exp=", exp)
+    self.send("#{category.column_name}_level=", level)
+    save!
+    category.skills.shuffle[0..(get_level-1)]
+  end
+
+  def level_up?(category, exp_point)
+    self.send("#{category.column_name}_exp") + exp_point >= 100
   end
 end
