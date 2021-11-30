@@ -1,6 +1,71 @@
-<div class="container">
+<%= link_to "戻る", charactor_path(@charactor), class: "btn btn-secondary" %>
+<div class="container pt-1">
   <% @messages.each do |message| %>
     <%= render message.type, message: message %>
   <% end %>
-  <%= link_to "戻る", charactor_path(@charactor), class: "btn btn-secondary" %>
 </div>
+
+<style>
+.box18{
+  display: none;
+}
+.box18{
+    margin:2em 0;
+    position: relative;
+    padding: 0.25em 1em;
+    border: solid 2px #ffcb8a;
+    border-radius: 3px 0 3px 0;
+}
+.box18:before,.box18:after
+{
+    content: '';
+    position: absolute;
+    width:14px;
+    height: 14px;
+    border: solid 2px #ffcb8a;
+    border-radius: 50%;
+}
+.box18:after {
+    top:-12px;
+    left:-12px;
+}
+.box18:before {
+    bottom: -13px;
+    right: -13px;
+}
+.box18 p {
+    margin: 0; 
+    padding: 0;
+}
+
+.animated {
+  animation: slideIn 1s cubic-bezier(0.25, 1, 0.5, 1) 1 forwards;
+}
+ 
+@keyframes slideIn {
+  0% {
+    transform: translateX(180px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+  }
+  40%,100% {
+    opacity: 1;
+  }
+}
+ 
+</style>
+
+<script>
+$(document).ready(function(){
+  
+  let i = 0;
+  if($(".box18").length > 0){
+    setInterval(() => {
+      $($(".box18")[i]).show().addClass("animated")
+      i += 1;
+    }, 500);
+  }
+});
+</script>

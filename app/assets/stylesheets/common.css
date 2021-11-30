@@ -6,11 +6,11 @@ main{
 }
 ul{
   list-style: none;
-  padding: none;
+  padding: 0px;
 }
 
 li{
-  padding: none;
+  padding: 0px;
 }
 
 p{
