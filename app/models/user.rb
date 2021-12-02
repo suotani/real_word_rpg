@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   
   has_many :charactors
+  has_many :vrs
 
   validates :name, presence: true, uniqueness: true
 

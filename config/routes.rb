@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :charactors, only: [:index, :show, :create]
   resources :experience_logs, only: [:create]
   resources :experiences, only: [:new, :create]
+  resources :vrs
 
   namespace :admin do
     resources :skills

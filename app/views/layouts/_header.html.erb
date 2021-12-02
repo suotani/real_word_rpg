@@ -17,6 +17,11 @@
               <%= link_to "ユーザー登録", new_user_registration_path, class: "nav-link"%>
             <% end %>
           </span>
+          <span class="navbar-text">
+            <% if user_signed_in? %>
+              <%= link_to "vr", vrs_path, class: "nav-link"%>
+            <% end %>
+          </span>
         </div>
       </nav>
     </header>
