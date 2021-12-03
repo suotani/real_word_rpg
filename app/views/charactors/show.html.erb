@@ -28,15 +28,18 @@
         </div>
       </li>
     </ul>
+
     <span class="title">所持スキル</span>
     <div class="skills">
-      <% @charactor.charactor_skills.each do |cs| %>
+      <% @charactor.charactor_skills.eager_load(:skill).each do |cs| %>
         <span class="skill" data-toggle="modal" data-target="#exampleModal">
           [<span class="skill_name"><%= cs.skill.name %></span> LV. <%= cs.level %>]
           <span class="skill_explanation"><%= cs.skill.explanation %></span>
         </span>
       <% end %>
     </div>
+    <hr>
+    <%= link_to "保有チケットを確認", charactor_charactor_tickets_path(@charactor), class: "btn btn-info" %>
     <hr>
     <div class="experiences">
       <%= link_to "+新しくクエストを追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-info mb-2"  %>

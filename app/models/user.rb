@@ -6,6 +6,7 @@ class User < ApplicationRecord
   
   has_many :charactors
   has_many :vrs
+  has_many :tickets
 
   validates :name, presence: true, uniqueness: true
 

@@ -8,6 +8,8 @@ class MessageService
       ExpMessageService.new
     when "skill" then
       SkillMessageService.new
+    when "ticket" then
+      TicketMessageService.new
     end
   end
 end
@@ -45,6 +47,16 @@ class ExpMessageService
     @exp = exp
     @next_exp = charactor.send("#{category.column_name}_exp")
     @name = category.name
+    self
+  end
+end
+
+class TicketMessageService
+  attr_reader :type, :title, :color, :name
+  def message(ticket)
+    @type = "ticket"
+    @title = ticket.title
+    @color = ticket.color
     self
   end
 end

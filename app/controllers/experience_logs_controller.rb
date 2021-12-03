@@ -31,17 +31,29 @@ class ExperienceLogsController < ApplicationController
     # カテゴリ毎にレベルアップ処理
     messages = []
     skills = []
+    total = 0
     categories.each do |id, exp_point|
       category = Category.find(id)
+      total += exp_point
       if @charactor.level_up?(category, exp_point)
         # レベルアップ処理
-        skills << @charactor.level_up!(category, exp_point)
+        skills << @charactor.set_level(category, exp_point)
         messages << MessageService.init("level").message(exp_point, @charactor, category)
       else
         # 経験値獲得処理
-        @charactor.get_exp!(category, exp_point)
+        @charactor.set_exp(category, exp_point)
         messages << MessageService.init("exp").message(exp_point, @charactor, category)
       end
+    end
+    total += @charactor.total_exp
+    @charactor.total_exp = total % 100
+    @charactor.save!
+
+    # チケット獲得
+    (total / 100).times do
+      ticket = current_user.tickets.shuffle.first
+      CharactorTicket.create(ticket_id: ticket.id, charactor_id: @charactor.id)
+      messages << MessageService.init("ticket").message(ticket)
     end
 
     # スキル獲得処理

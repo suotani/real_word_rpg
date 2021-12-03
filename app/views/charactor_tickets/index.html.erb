@@ -1,0 +1,51 @@
+<div class="container">
+  <% @charactor_tickets.each do |ct| %>
+    <% t = ct.ticket %>
+    <div class="card mb-2 modal_open"
+      style="background-color: <%= t.color %>; color: white"
+      data-toggle="modal"
+      data-target="#logModal"
+      data-title="<%= t.title %>"
+      data-color="<%= t.color %>"
+      data-url="<%= charactor_charactor_ticket_path(charactor_id: @charactor.id, id: ct.id) %>"
+      >
+      <div class="card-body row">
+        <div id="">
+          <%= t.title %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <% if @charactor_tickets.blank? %>
+   まだチケットを持っていません
+  <% end %>
+</div>
+
+<div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="card mb-2" id="ticket_color" style="color: white">
+          <div class="card-body">
+            <div id="ticket_title"></div>
+          </div>
+        </div>
+        <%= form_with url: "#", local: true, id: "ticket_use", method: "patch" do |f| %>
+          <div class="field form-group">
+            <input type="submit" value="使う" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(".modal_open").on("click", function(){
+  $("#ticket_title").text($(this).data("title"))
+  $("#ticket_color").css("background-color", $(this).data("color"))
+  $("#ticket_use").attr("action", $(this).data("url"))
+})
+
+</script>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_02_015452) do
+ActiveRecord::Schema.define(version: 2021_12_03_025054) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -41,6 +41,14 @@ ActiveRecord::Schema.define(version: 2021_12_02_015452) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "charactor_tickets", force: :cascade do |t|
+    t.integer "ticket_id"
+    t.integer "charactor_id"
+    t.boolean "used", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "charactors", force: :cascade do |t|
     t.string "name"
     t.integer "user_id"
@@ -55,6 +63,7 @@ ActiveRecord::Schema.define(version: 2021_12_02_015452) do
     t.integer "knowledge_exp", default: 0
     t.integer "health_exp", default: 0
     t.integer "communication_exp", default: 0
+    t.integer "total_exp", default: 0
   end
 
   create_table "experience_logs", force: :cascade do |t|
@@ -82,6 +91,14 @@ ActiveRecord::Schema.define(version: 2021_12_02_015452) do
     t.string "name"
     t.text "explanation"
     t.integer "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tickets", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "title"
+    t.string "color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
