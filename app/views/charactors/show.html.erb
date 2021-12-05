@@ -40,6 +40,10 @@
     </div>
     <hr>
     <%= link_to "保有チケットを確認", charactor_charactor_tickets_path(@charactor), class: "btn btn-info" %>
+    <div class="progress mt-2">
+      <div class="progress-bar" role="progressbar"  style="width: <%= @charactor.total_exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    あと<%= 100 - @charactor.total_exp %>経験値でチケット獲得
     <hr>
     <div class="experiences">
       <%= link_to "+新しくクエストを追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-info mb-2"  %>

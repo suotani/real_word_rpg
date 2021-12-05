@@ -15,6 +15,13 @@
           <%= f.password_field :password, class: "form-control" %>
         </div>
 
+        <% if devise_mapping.rememberable? %>
+          <div class="field form-group form-check">
+            <%= f.check_box :remember_me , class: "form-check-input"%>
+            <%= f.label "ログイン状態を記憶" , class: "form-check-label"%>
+          </div>
+        <% end %>
+
         <div class="actions mt-2">
           <%= f.submit "ログイン", class: "btn btn-primary" %>
         </div>
