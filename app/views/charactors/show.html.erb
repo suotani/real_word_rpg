@@ -56,6 +56,7 @@
           <p class="mb-2">
             報酬： 1<%= ex.unit %>で<%= ex.unit_exp %>経験値を獲得
           </p>
+          <span class="count">1</span>
         </div>
       <% end %>
     </div>
@@ -99,18 +100,27 @@ $(".skill").on("click", function(){
   $(".modal_skill_body").text(explanation)
 })
 
-//params: {data: [{id: 3, exp_point: 40, category_id: 3}, {id: 1, exp_point: 10, category_id: 4}]}
+//params: {data: [{id: 3, exp_point: 40, count: 1, category_id: 3}, {id: 1, exp_point: 10, count: 2,category_id: 4}]}
 
 let data = [];
 $(".experience").on("click", function(){
   id = $(this).data("id");
+
   if(data.find(e => e["id"] == id)){
-    $(this).removeClass("active")
-    data = data.filter(e => e["id"] != id)
+    d = data.find(e => e["id"] == id)
+    if(d.count >= 4){
+      $(this).removeClass("active")
+      data = data.filter(e => e["id"] != id)
+    }else{
+      d.count += 1
+      $(this).find(".count").text(d.count)
+    }
   }else{
     $(this).addClass("active")
-    data.push({"id": id, "exp_point": $(this).data("exp"), "category_id": $(this).data("category_id")})
+    $(this).find(".count").text(1)
+    data.push({"id": id, "exp_point": $(this).data("exp"), count: 1, "category_id": $(this).data("category_id")})
   }
+
   if(data.length >= 1){
     $(".submit_btn").show()
   }else{
@@ -124,7 +134,7 @@ $(".submit_btn").on("click", function(){
   // data分くりかえし
   data.forEach(function(d){
     input_id = $("<input>", {name: "data[][id]", value: d["id"]})
-    input_exp = $("<input>", {name: "data[][exp_point]", value: d["exp_point"]})
+    input_exp = $("<input>", {name: "data[][exp_point]", value: d["exp_point"] * d["count"]})
     input_cat = $("<input>", {name: "data[][category_id]", value: d["category_id"]})
     
     $("form").append(input_id)
@@ -154,10 +164,31 @@ $(".submit_btn").on("click", function(){
 
 .active{
   background-color: #fbc964;
+  position: relative;
 }
 
 .submit_btn{
   display: none;
+}
+
+.count{
+  display: none;
+}
+
+.active .count{
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #12b0bb;
+    padding: 10px;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    text-align: center;
+    line-height: 60px;
+    border-radius: 50%;
+    font-size: 25px;
 }
 
 </style>
