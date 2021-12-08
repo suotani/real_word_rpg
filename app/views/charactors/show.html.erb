@@ -1,3 +1,9 @@
+<head>
+<link rel="preload" as="image" href="/img/leaf1.png">
+<link rel="preload" as="image" href="/img/leaf2.png">
+<link rel="preload" as="image" href="/img/leaf3.png">
+<link rel="preload" as="image" href="/img/leaf4.png">
+</head>
 <div class="fixed-background background-1">
   <div class="inner">
 
@@ -110,14 +116,18 @@ $(".experience").on("click", function(){
     d = data.find(e => e["id"] == id)
     if(d.count >= 4){
       $(this).removeClass("active")
+      $(this).removeClass("leaf-4")
       data = data.filter(e => e["id"] != id)
     }else{
+      $(this).removeClass("leaf-"+d.count)
       d.count += 1
+      $(this).addClass("leaf-"+d.count)
       $(this).find(".count").text(d.count)
     }
   }else{
     $(this).addClass("active")
     $(this).find(".count").text(1)
+    $(this).addClass("leaf-1")
     data.push({"id": id, "exp_point": $(this).data("exp"), count: 1, "category_id": $(this).data("category_id")})
   }
 
@@ -163,8 +173,12 @@ $(".submit_btn").on("click", function(){
 }
 
 .active{
-  background-color: #fbc964;
+  background-color: #8fb779;
   position: relative;
+}
+
+.active p{
+  color: white;
 }
 
 .submit_btn{
@@ -180,7 +194,6 @@ $(".submit_btn").on("click", function(){
     position: absolute;
     right: 0;
     top: 0;
-    background-color: #12b0bb;
     padding: 10px;
     width: 60px;
     height: 60px;
@@ -189,6 +202,30 @@ $(".submit_btn").on("click", function(){
     line-height: 60px;
     border-radius: 50%;
     font-size: 25px;
+}
+
+.active.leaf-1 .count{
+    background: url(/img/leaf1.png);
+    background-position: center;
+    background-size: cover;
+}
+
+.active.leaf-2 .count{
+    background: url(/img/leaf2.png);
+    background-position: center;
+    background-size: cover;
+}
+
+.active.leaf-3 .count{
+    background: url(/img/leaf3.png);
+    background-position: center;
+    background-size: cover;
+}
+
+.active.leaf-4 .count{
+    background: url(/img/leaf4.png);
+    background-position: center;
+    background-size: cover;
 }
 
 </style>
