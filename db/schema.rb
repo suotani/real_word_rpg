@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_03_025054) do
+ActiveRecord::Schema.define(version: 2022_09_06_112823) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -66,6 +66,13 @@ ActiveRecord::Schema.define(version: 2021_12_03_025054) do
     t.integer "total_exp", default: 0
   end
 
+  create_table "css_imports", force: :cascade do |t|
+    t.integer "managed_html_id"
+    t.integer "managed_css_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "experience_logs", force: :cascade do |t|
     t.integer "experience_id"
     t.integer "unit"
@@ -87,12 +94,66 @@ ActiveRecord::Schema.define(version: 2021_12_03_025054) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "js_imports", force: :cascade do |t|
+    t.integer "managed_html_id"
+    t.integer "managed_js_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "managed_csses", force: :cascade do |t|
+    t.integer "managed_html_id", null: false
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "managed_htmls", force: :cascade do |t|
+    t.string "title"
+    t.integer "user_id"
+    t.boolean "public", null: false
+    t.text "body"
+    t.string "note"
+    t.text "yaml"
+    t.boolean "use_yaml", default: true
+    t.integer "level"
+    t.string "js_note"
+    t.string "css_note"
+    t.boolean "sample"
+    t.boolean "readme"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "managed_js", force: :cascade do |t|
+    t.integer "managed_html_id", null: false
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "skills", force: :cascade do |t|
     t.string "name"
     t.text "explanation"
     t.integer "category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "taggings", force: :cascade do |t|
+    t.integer "tag_id"
+    t.integer "taggable_id"
+    t.string "taggable_type"
+    t.integer "tagger_id"
+    t.string "tagger_type"
+    t.string "context", limit: 128
+    t.datetime "created_at"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.integer "taggings_count", default: 0
   end
 
   create_table "tickets", force: :cascade do |t|

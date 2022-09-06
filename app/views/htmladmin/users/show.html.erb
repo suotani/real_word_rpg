@@ -1,0 +1,92 @@
+<% provide(:title, "マイページ") %>
+<div class="col-md-3">
+  <div class="well">
+    <%= form_tag htmladmin_user_path(@user), method: :get, class: "form-horizontal", id: "search_form" do %>
+    
+      <%= hidden_field_tag 'research', true %>
+
+      <div class="form-group">
+        <label for="location1" class="control-label">重要度</label>
+        <% levels = ::ManagedHtml::LEVEL.map.with_index {|l, i| [l, i] } %>
+        <% levels.unshift(['すべて', '']) %>
+        <%= select_tag 'level', options_for_select(levels, selected: (@filter[:level] || '')), class: "form-control", id: "level" %>
+      </div>
+
+      <div class="form-group">
+        <label for="pricefrom" class="control-label">タイトル</label>
+        <div class="input-group">
+          <%= text_field_tag 'title', @filter[:title] || '', class: "form-control", id: "pricefrom" %>
+        </div>
+      </div>
+  
+      <%= button_tag '検索', type: 'button', class: "btn btn-default btn-s-md", onclick: "$('#search_form').submit();" %>
+    <% end %>
+  </div>
+
+  <div class="well">
+    <div class="bs-component">
+      <div class="row">
+      <div class="col-xs-6 select_sort_key">
+        <div class="btn-group btn-group-vertical">
+          <%= link_to '重要度順', htmladmin_user_path(@user, @filter.merge(sort: :level, research: true)), class: "btn #{sort_class(@filter, :level)}" %>
+          <%= link_to '作成順', htmladmin_user_path(@user, @filter.merge(sort: :created_at, research: true)), class: "btn #{sort_class_default(@filter, :created_at)}" %>
+          <%= link_to '更新順', htmladmin_user_path(@user, @filter.merge(sort: :updated_at, research: true)), class: "btn #{sort_class(@filter, :updated_at)}" %>
+          <%= link_to 'タイトル順', htmladmin_user_path(@user, @filter.merge(sort: :title, research: true)), class: "btn #{sort_class(@filter, :title)}" %>
+        </div>
+      </div>
+      <div class="col-xs-6 select_sort_key">
+        <div class="btn-group btn-group-vertical">
+          <%= link_to '逆順', htmladmin_user_path(@user, @filter.merge(order: :desc, research: true)), class: "btn #{order_class(@filter)}" %>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-7 col-xs-11">
+  <div class="bs-component">
+    <% @managed_htmls.each do |managed_html| %>
+      <% page_url = managed_html.address.present? ? "#{root_url}page/#{managed_html.address}" : htmladmin_managed_html_url(managed_html.id) %>
+      <div class="panel panel-<%= level_class(managed_html.level) %>">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <span data-container="body" class="wrench-color glyphicon glyphicon-paperclip" title="このページのリンクタグ" data-toggle="popover" data-placement="top" data-viewport='{ "padding": 2 }' data-content='<%= link_to managed_html.title, page_url %>'></span>
+            <%= "<span class='badge'>公開中</span>".html_safe if managed_html.public %>
+            <%= link_to managed_html.title, page_url, target: "_blank" %>
+            <span class="index-icon">
+              <%= link_to edit_source_htmladmin_managed_html_path(managed_html.id) do %>
+                <span class="wrench-color glyphicon glyphicon-wrench" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="" data-original-title="ソースコードを編集します"></span>
+              <% end %>
+              <%= link_to edit_htmladmin_managed_html_path(managed_html.id) do %>
+                <span class="cog-color glyphicon glyphicon-cog" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="" data-original-title="ページ情報を編集します"></span>
+              <% end %>
+              <%= link_to [:htmladmin, managed_html], method: :delete, data: { confirm: 'Are you sure?' } do %>
+                <span class="trash-color glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="" data-original-title="削除します"></span>
+              <% end %>
+            </span>
+          </h3>
+        </div>
+        <div class="panel-body">
+          <%= managed_html.note %>
+        </div>
+      </div>
+    <% end %>
+    <%= paginate @managed_htmls %>
+  </div>
+  
+</div>
+<div class="col-md-2 col-xs-1">
+  <span class="fix_bottom">
+  <%= link_to new_htmladmin_managed_html_path do %>
+    <button class="btn btn-success btn-lg btn-circle" aria-label="Left Align" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="新しくページを作成します">
+			<span class="plus-color glyphicon glyphicon-plus" aria-hidden="true"></span>
+		</button>
+  <% end %>
+  </span>
+</div>
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>

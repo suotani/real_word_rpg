@@ -18,4 +18,21 @@ Rails.application.routes.draw do
     resources :skills
   end
 
+  namespace :htmladmin do
+    root to: "users#index"
+    resources :managed_htmls do
+      member do
+        get :edit_source
+        post :update_source
+      end
+      collection do
+        get :editor_trial
+        post :create_for_yaml
+      end
+    end
+
+    resources :users
+
+  end
+
 end
