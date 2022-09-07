@@ -1,29 +1,29 @@
-<%= form_tag(update_source_htmladmin_managed_html_path(@managed_html.id)) do %>
+<%= form_with model: @managed_html, url: htmladmin_source_path(@managed_html.id), method: :patch, local: true do |f| %>
   <div class="container-fluid editor_back">
     <div class="row">
       <div class="col-md-6" id="input_area">
-        <ul class="editor_tab nav nav-tabs">
-          <li class="active"><a href="#sampleContentA" data-toggle="tab">HTML</a></li>
-          <li><a href="#sampleContentB" data-toggle="tab">JavaScript</a></li>
-          <li><a href="#sampleContentC" data-toggle="tab">CSS</a></li>
-          <li><a href="#sampleContentD" data-toggle="tab">YAML </a></li>
-          <li><a href="#sampleContentE" data-toggle="tab">importJs </a></li>
-          <li><a href="#sampleContentF" data-toggle="tab">importCss </a></li>
+        <ul class=" nav nav-tabs">
+          <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#sampleContentA">HTML</a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#sampleContentB">JavaScript</a></li>
+          <li class="nav-item"><a class="nav-link"  data-toggle="tab" href="#sampleContentC">CSS</a></li>
+          <li class="nav-item"><a class="nav-link"  data-toggle="tab" href="#sampleContentD">YAML </a></li>
+          <li class="nav-item"><a class="nav-link"  data-toggle="tab" href="#sampleContentE">importJs </a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab"  href="#sampleContentF">importCss </a></li>
         </ul>
-          <%= hidden_field_tag 'html', @managed_html.body %>
-          <%= hidden_field_tag 'js', @js.body %>
-          <%= hidden_field_tag 'css', @css.body %>
-          <%= hidden_field_tag 'yaml', @managed_html.yaml %>
-          <%= hidden_field_tag 'use_yaml', @managed_html.use_yaml %>
+          <%= f.hidden_field :body %>
+          <%= f.hidden_field :js_body %>
+          <%= f.hidden_field :css_body %>
+          <%= f.hidden_field :yaml %>
+          <%= f.hidden_field :use_yaml %>
         <div class="tab-content">
-          <div class="tab-pane" id="sampleContentA">
+          <div class="tab-pane active" id="sampleContentA">
             <div id="editor0" class="input_area"><%= @managed_html.body %></div>
           </div>
           <div class="tab-pane" id="sampleContentB">
-            <div id="editor1" class="input_area"><%= @js.body %></div>
+            <div id="editor1" class="input_area"><%= @managed_html.js_body %></div>
           </div>
           <div class="tab-pane" id="sampleContentC">
-            <div id="editor2" class="input_area"><%= @css.body %></div>
+            <div id="editor2" class="input_area"><%= @managed_html.css_body %></div>
           </div>
           <div class="tab-pane" id="sampleContentD">
             <div id="editor3" class="input_area"><%= @managed_html.yaml %></div>
@@ -53,36 +53,29 @@
     </div>
   </div>
   <footer>
-    <nav class="navbar navbar-default navbar-fixed-bottom" style="min-height: 42px;">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="collapse navbar-collapse" id="navbar-mail">
-          <ul class="nav navbar-nav navbar_bottom">
-            <li>
-              <%= link_to edit_htmladmin_managed_html_path(@managed_html.id) do %>
-                <%= button_tag 'ページ設定へ戻る', class: "btn btn-default", type: "button" %>
-              <% end %>
-            </li>
-            <li><%= button_tag 'JSを反映', class: "btn btn-success", id: "submit_js", type: "button" %></li>
-          </ul>          
-          <ul class="nav navbar-nav navbar-right navbar_bottom">
-            <li>
-              <%= link_to [:htmladmin, @managed_html], target: "_blank" do %>
-                <%= button_tag 'ページを表示', class: "btn btn-success", type: "button" %>
-              <% end %>
-            </li>
-            <li>
-              <%= submit_tag 'YAMLから生成する', class: "btn btn-warning", id: "form_submit", onclick: "$('#use_yaml').val('true');", data: { confirm: 'htmlが上書きされますがよろしいですか？' } %>
-              <span class="sr-only"></span>
-            </li>
-            <li>
-              <%= submit_tag '保存(Ctrl+s)', class: "btn btn-primary", id: "save", onclick: "$('#use_yaml').val('false');" %>
-              <span class="sr-only"></span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <ul class="nav justify-content-end fixed-bottom"  style="min-height: 42px;">
+      <li class="nav-item">
+        <%= link_to edit_htmladmin_managed_html_path(@managed_html.id) do %>
+          <%= button_tag 'ページ設定へ戻る', class: "btn btn-primary", type: "button" %>
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= button_tag 'JSを反映', class: "btn btn-success", id: "submit_js", type: "button" %>
+      </li>
+      <li>
+        <%= link_to [:htmladmin, @managed_html], target: "_blank" do %>
+          <%= button_tag 'ページを表示', class: "btn btn-success", type: "button" %>
+        <% end %>
+      </li>
+      <li>
+        <%= submit_tag 'YAMLから生成する', class: "btn btn-warning", id: "form_submit", onclick: "$('#managed_html_use_yaml').val('true');", data: { confirm: 'htmlが上書きされますがよろしいですか？' } %>
+        <span class="sr-only"></span>
+      </li>
+      <li>
+        <%= submit_tag '保存', class: "btn btn-primary", id: "save", onclick: "$('#managed_html_use_yaml').val('false');" %>
+        <span class="sr-only"></span>
+      </li>
+    </ul>
   </footer>
 <% end %>
 <script>
@@ -92,7 +85,7 @@
   /*入力内容を出力領域と送信用hiddenへセットする*/
   var update_output_html_area = function(){
     var text = editor0.getValue();
-    $("#html").val(text);
+    $("#managed_html_body").val(text);
     $('#output_area').html(text);
   };
 
@@ -107,7 +100,7 @@
   /*htmlここまで*/
 
   /*js*/
-  var js_input_to_hidden = function(){ $("#js").val(editor1.getValue()) };
+  var js_input_to_hidden = function(){ $("#managed_html_js_body").val(editor1.getValue()) };
 
   var update_output_js_area = function(){ $('#output_area_js').html('<' + 'script>' + editor1.getValue() + '<' + '/script>') };
 
@@ -126,7 +119,7 @@
   /*css*/
   var update_output_css_area = function(){  
     var text = editor2.getValue();
-    $("#css").val(text);
+    $("#managed_html_css_body").val(text);
     $('#output_area_css').html("<style>\n" + text + "</style>");
   };
 
@@ -141,7 +134,7 @@
   /*cssここまで*/
 
   /*yaml*/
-  var update_output_yaml_area = function(){ $("#yaml").val(editor3.getValue()) };
+  var update_output_yaml_area = function(){ $("#managed_html_yaml").val(editor3.getValue()) };
 
   /* reflect when keyup */
   $(document).on('keyup', '#editor3 .ace_text-input',function(){ update_output_yaml_area() });
@@ -153,7 +146,7 @@
   };
   /*yamlここまで*/
 
-  hsize = $(window).height() - 175;
+  hsize = $(window).height() - 130;
   $("div .input_area").css("height", hsize + "px" );
   $("div .output_area").css("height", hsize + "px" );
 

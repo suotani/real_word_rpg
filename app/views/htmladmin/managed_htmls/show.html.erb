@@ -3,10 +3,10 @@
 
 <script>
 <%= @managed_html.import_js_body %>
-<%= @js.body.html_safe if @js.body %>
+<%= @managed_html.js_body.html_safe if @managed_html.js_body %>
 </script>
 
 <style>
 <%= @managed_html.import_css_body %>
-<%= @css.body.html_safe if @css.body %>
+<%= @managed_html.css_body.html_safe if @managed_html.css_body %>
 </style>

@@ -16,6 +16,11 @@ module ApplicationHelper
     return "primary" if level.nil?
     ["danger", "warning", "primary", "success", "default"][level]
   end
+
+  def level_label(level)
+    return ManagedHtml::LEVEL[2] if level.nil?
+    ManagedHtml::LEVEL[level]
+  end
   
   def search_params(p)
     { level: p[:level], title: p[:title], tag: p[:tag], sort: p[:sort] }

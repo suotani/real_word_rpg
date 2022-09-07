@@ -84,13 +84,14 @@
             </div>
           </div>
           <div class="col-lg-10 managed_html_select_import">
-            <% js_ids = @managed_html.import_js.ids %>
+            <% js_ids = @managed_html.import_htmls.js.map(&:import_html_id) %>
             <% @import_js.each_with_index do |js, i| %>
               <div class="checkbox">
                 <label>
-                  <%= check_box_tag "import_js[#{i}][use]", true, js_ids.include?(js.id) %>
-                  <%= js.managed_html.js_note %>
-                  <%= hidden_field_tag "import_js[#{i}][id]", js.id %>
+                  <%= check_box_tag "js[#{i}][use]", true, js_ids.include?(js.id) %>
+                  <%= js.js_note %>
+                  <%= hidden_field_tag "js[#{i}][id]", js.id %>
+                  <%= hidden_field_tag "js[#{i}][asset_type]", "js" %>
                 </label>
               </div>
             <% end %>
@@ -107,49 +108,24 @@
             </div>
           </div>
           <div class="col-lg-10 managed_html_select_import">
-            <% css_ids = @managed_html.import_css.ids %>
+            <% css_ids = @managed_html.import_htmls.css.map(&:import_html_id) %>
             <% @import_css.each_with_index do |css, i| %>
               <div class="checkbox">
                 <label>
-                  <%= check_box_tag "import_css[#{i}][use]", true, css_ids.include?(css.id) %>
-                  <%= css.managed_html.css_note %>
-                  <%= hidden_field_tag "import_css[#{i}][id]", css.id %>
+                  <%= check_box_tag "css[#{i}][use]", true, css_ids.include?(css.id) %>
+                  <%= css.css_note %>
+                  <%= hidden_field_tag "css[#{i}][id]", css.id %>
+                  <%= hidden_field_tag "css[#{i}][asset_type]", "css" %>
                 </label>
               </div>
             <% end %>
           </div>
         </div>
-
-        <% if current_user.admin? %>
-          <div class="form-group">
-            <%= f.label :sample, class: "col-lg-2 control-label" %>
-            <div class="col-lg-10">
-              <div class="checkbox">
-                <label>
-                  <%= f.check_box :sample, {}, true, false %>
-                </label>
-              </div>
-              <div class="edit_note">試用版のエディタにデフォルトで表示されます。</div>
-            </div>
-          </div>
-  
-          <div class="form-group">
-            <%= f.label :readme, class: "col-lg-2 control-label" %>
-            <div class="col-lg-10">
-              <div class="checkbox">
-                <label>
-                  <%= f.check_box :readme, {}, true, false %>
-                </label>
-              </div>
-              <div class="edit_note">ユーザのページ一覧にREADMEとして表示されます。</div>
-            </div>
-          </div>
-        <% end %>
   
         <div class="form-group form-inline">
           <div class="col-lg-10 col-lg-offset-2">
             <%= button_tag "#{@managed_html.new_record? ? '登録' : '更新'}", class: "btn btn-primary", onclick: "$('form').submit();", type: "button" %>
-            <%= link_to 'ソースを編集', edit_source_htmladmin_managed_html_path(@managed_html.id), class: "btn btn-success" if @managed_html.id %>
+            <%= link_to 'ソースを編集', edit_htmladmin_source_path(@managed_html.id), class: "btn btn-success" if @managed_html.id %>
           </div>
         </div>
       </fieldset>

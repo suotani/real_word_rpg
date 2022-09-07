@@ -1,21 +1,11 @@
 class ManagedHtml < ApplicationRecord
 
-  #acts_as_taggable
-
-  has_one :managed_js
-  has_one :managed_css
   belongs_to :user
 
-  has_many :js_imports
-  has_many :import_js, through: :js_imports, source: :managed_js
-  accepts_nested_attributes_for :import_js, allow_destroy: true
-
-  has_many :css_imports
-  has_many :import_css, through: :css_imports, source: :managed_css
-  accepts_nested_attributes_for :import_css, allow_destroy: true
-  
-  has_many :images
-  accepts_nested_attributes_for :images, allow_destroy: true, reject_if: proc { |attributes| attributes['image'].blank? }
+  has_many :import_htmls
+  has_many :htmls, through: :import_htmls, source: :managed_html
+  accepts_nested_attributes_for :htmls
+  attr_accessor :use_yaml
   
   LEVEL = ["最重要", "重要", "普通", "メモ程度", "らくがき"]
   
@@ -30,7 +20,7 @@ class ManagedHtml < ApplicationRecord
   
   validate :invalid_address
   
-  def save!
+  def save
     if self.yaml.present? && self.use_yaml
       self.body = YamlToHtml.new(self.yaml, self.title).to_html
     end
@@ -38,19 +28,11 @@ class ManagedHtml < ApplicationRecord
   end
   
   def import_js_body
-    body = ""
-    self.import_js.each do |js|
-      body += js.body + "\n" if js.body
-    end
-    body
+    (import_htmls.js.to_a).map{|v| v.import_html.js_body }.join("\n")
   end
   
   def import_css_body
-    body = ""
-    self.import_css.each do |css|
-      body += css.body + "\n" if css.body
-    end
-    body
+    (import_htmls.css.to_a).map{|v| v.import_html.css_body }.join("\n")
   end
   
   def invalid_address
