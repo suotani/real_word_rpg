@@ -1,0 +1,84 @@
+<% provide(:title, "マイページ") %>
+<div class="row m-3">
+  <div class="col-md-3 card">
+    <div class="">
+      <%= form_tag htmladmin_managed_htmls_path, method: :get, class: "form-horizontal", id: "search_form" do %>
+      
+        <%= hidden_field_tag 'research', true %>
+
+        <div class="form-group">
+          <label for="location1" class="control-label">重要度</label>
+          <% levels = ::ManagedHtml::LEVEL.map.with_index {|l, i| [l, i] } %>
+          <% levels.unshift(['すべて', '']) %>
+          <%= select_tag 'level', options_for_select(levels, selected: (@filter[:level] || '')), class: "form-control", id: "level" %>
+        </div>
+
+        <div class="form-group">
+          <label for="pricefrom" class="control-label">タイトル</label>
+          <div class="input-group">
+            <%= text_field_tag 'title', @filter[:title] || '', class: "form-control", id: "pricefrom" %>
+          </div>
+        </div>
+    
+        <%= button_tag '検索', type: 'button', class: "btn btn-primary btn-s-md", onclick: "$('#search_form').submit();" %>
+      <% end %>
+    </div>
+    <hr>
+    <div class="">
+      <div class="row">
+        <div class="col-xs-6 select_sort_key">
+          <div class="btn-group btn-group-vertical">
+            <%= link_to '重要度順', htmladmin_managed_htmls_path(@filter.merge(sort: :level, research: true)), class: "btn #{sort_class(@filter, :level)}" %>
+            <%= link_to '作成順', htmladmin_managed_htmls_path(@filter.merge(sort: :created_at, research: true)), class: "btn #{sort_class_default(@filter, :created_at)}" %>
+            <%= link_to '更新順', htmladmin_managed_htmls_path(@filter.merge(sort: :updated_at, research: true)), class: "btn #{sort_class(@filter, :updated_at)}" %>
+            <%= link_to 'タイトル順', htmladmin_managed_htmls_path(@filter.merge(sort: :title, research: true)), class: "btn #{sort_class(@filter, :title)}" %>
+          </div>
+        </div>
+        <div class="col-xs-6 select_sort_key">
+          <div class="btn-group btn-group-vertical">
+            <%= link_to '逆順', htmladmin_managed_htmls_path(@filter.merge(order: :desc, research: true)), class: "btn #{order_class(@filter)}" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9 col-xs-11">
+
+    <div class="card mb-2">
+      <%= link_to new_htmladmin_managed_html_path do %>
+      <div class="card-body text-center border border-success">
+        <i class="bi bi-plus"></i>NEW
+      </div>
+      <% end %>
+    </div>
+
+    <% @managed_htmls.each do |managed_html| %>
+      <% page_url = managed_html.address.present? ? "#{root_url}page/#{managed_html.address}" : htmladmin_managed_html_url(managed_html.id) %>
+      <div class="card mb-2">
+        <div class="card-header alert-<%= level_class(managed_html.level) %>">
+          <span class="btn btn-<%= level_class(managed_html.level) %>"><%= level_label(managed_html.level) %></span> <%= managed_html.title %>
+        </div>
+        <div class="card-body">
+          <p class="card-text"><%= managed_html.note %></p>
+          <%= link_to 'ソースを編集', edit_htmladmin_source_path(managed_html.id), class: "btn btn-info" %>
+          <%= link_to 'ページ情報を編集', edit_htmladmin_managed_html_path(managed_html.id), class: "btn btn-primary" %>
+          <%= link_to htmladmin_managed_html_path(managed_html.id), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" do %>
+            <i class="bi bi-trash"></i>
+          <% end %>
+          <%= link_to page_url, target: "_blank", class: "btn btn-primary" do %>
+            <i class="bi bi-eye"></i>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <%= paginate @managed_htmls %>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>

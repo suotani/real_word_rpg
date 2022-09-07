@@ -1,0 +1,199 @@
+<%= form_with model: @managed_html, url: htmladmin_source_path(@managed_html.id), method: :patch, local: true do |f| %>
+  <div class="container-fluid editor_back">
+    <div class="row">
+      <div class="col-md-6" id="input_area">
+        <ul class=" nav nav-tabs">
+          <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#sampleContentA">HTML</a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#sampleContentB">JavaScript</a></li>
+          <li class="nav-item"><a class="nav-link"  data-toggle="tab" href="#sampleContentC">CSS</a></li>
+          <li class="nav-item"><a class="nav-link"  data-toggle="tab" href="#sampleContentD">YAML </a></li>
+          <li class="nav-item"><a class="nav-link"  data-toggle="tab" href="#sampleContentE">importJs </a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab"  href="#sampleContentF">importCss </a></li>
+        </ul>
+          <%= f.hidden_field :body %>
+          <%= f.hidden_field :js_body %>
+          <%= f.hidden_field :css_body %>
+          <%= f.hidden_field :yaml %>
+          <%= f.hidden_field :use_yaml %>
+        <div class="tab-content">
+          <div class="tab-pane active" id="sampleContentA">
+            <div id="editor0" class="input_area"><%= @managed_html.body %></div>
+          </div>
+          <div class="tab-pane" id="sampleContentB">
+            <div id="editor1" class="input_area"><%= @managed_html.js_body %></div>
+          </div>
+          <div class="tab-pane" id="sampleContentC">
+            <div id="editor2" class="input_area"><%= @managed_html.css_body %></div>
+          </div>
+          <div class="tab-pane" id="sampleContentD">
+            <div id="editor3" class="input_area"><%= @managed_html.yaml %></div>
+          </div>
+          <div class="tab-pane" id="sampleContentE">
+            <div id="editor4" class="input_area"><%= @managed_html.import_js_body %></div>
+          </div>
+          <div class="tab-pane" id="sampleContentF">
+            <div id="editor5" class="input_area"><%= @managed_html.import_css_body %></div>
+          </div>
+        </div>
+      </div>
+      <p class="col-md-6 output_area" id="output_area"></p>
+      <div id="image_tags_output"></div>
+      <div id="import_js">
+        <script>
+          <%= @managed_html.import_js_body.html_safe %>
+        </script>
+      </div>
+      <div id="import_css">
+        <style>
+          <%= @managed_html.import_css_body.html_safe %>
+        </style>
+      </div>
+      <p id="output_area_js"></p>
+      <p id="output_area_css"></p>
+    </div>
+  </div>
+  <footer>
+    <ul class="nav justify-content-end fixed-bottom"  style="min-height: 42px;">
+      <li class="nav-item">
+        <%= link_to edit_htmladmin_managed_html_path(@managed_html.id) do %>
+          <%= button_tag 'ページ設定へ戻る', class: "btn btn-primary", type: "button" %>
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= button_tag 'JSを反映', class: "btn btn-success", id: "submit_js", type: "button" %>
+      </li>
+      <li>
+        <%= link_to [:htmladmin, @managed_html], target: "_blank" do %>
+          <%= button_tag 'ページを表示', class: "btn btn-success", type: "button" %>
+        <% end %>
+      </li>
+      <li>
+        <%= submit_tag 'YAMLから生成する', class: "btn btn-warning", id: "form_submit", onclick: "$('#managed_html_use_yaml').val('true');", data: { confirm: 'htmlが上書きされますがよろしいですか？' } %>
+        <span class="sr-only"></span>
+      </li>
+      <li>
+        <%= submit_tag '保存', class: "btn btn-primary", id: "save", onclick: "$('#managed_html_use_yaml').val('false');" %>
+        <span class="sr-only"></span>
+      </li>
+    </ul>
+  </footer>
+<% end %>
+<script>
+(function($){
+  /*html*/
+
+  /*入力内容を出力領域と送信用hiddenへセットする*/
+  var update_output_html_area = function(){
+    var text = editor0.getValue();
+    $("#managed_html_body").val(text);
+    $('#output_area').html(text);
+  };
+
+  /* 入力エリア内でキーを押すと、値をセットする */
+  $(document).on('keyup', '#editor0 .ace_text-input',function(){ update_output_html_area() });
+
+  var set_html = function(editor){
+    window.editor0 = editor;
+    $('#output_area').html(editor0.getValue());
+    editor0.$blockScrolling = Infinity;
+  };
+  /*htmlここまで*/
+
+  /*js*/
+  var js_input_to_hidden = function(){ $("#managed_html_js_body").val(editor1.getValue()) };
+
+  var update_output_js_area = function(){ $('#output_area_js').html('<' + 'script>' + editor1.getValue() + '<' + '/script>') };
+
+  /* reflect when keyup */
+  $(document).on("keyup", "#editor1 .ace_text-input", function(){ js_input_to_hidden() });
+
+  $(document).on("click", "#submit_js", function(){ update_output_js_area() });
+
+  var set_js = function(editor){
+    window.editor1 = editor;
+    update_output_js_area();
+    editor1.$blockScrolling = Infinity;
+  };
+  /*jsここまで*/
+
+  /*css*/
+  var update_output_css_area = function(){  
+    var text = editor2.getValue();
+    $("#managed_html_css_body").val(text);
+    $('#output_area_css').html("<style>\n" + text + "</style>");
+  };
+
+  /* reflect when keyup */
+  $(document).on('keyup', '#editor2 .ace_text-input',function(){ update_output_css_area() });
+
+  var set_css = function(editor){
+    window.editor2 = editor;
+    update_output_css_area();
+    editor2.$blockScrolling = Infinity;
+  };
+  /*cssここまで*/
+
+  /*yaml*/
+  var update_output_yaml_area = function(){ $("#managed_html_yaml").val(editor3.getValue()) };
+
+  /* reflect when keyup */
+  $(document).on('keyup', '#editor3 .ace_text-input',function(){ update_output_yaml_area() });
+
+  var set_yaml = function(editor){
+    window.editor3 = editor;
+    update_output_yaml_area();
+    editor3.$blockScrolling = Infinity;
+  };
+  /*yamlここまで*/
+
+  hsize = $(window).height() - 130;
+  $("div .input_area").css("height", hsize + "px" );
+  $("div .output_area").css("height", hsize + "px" );
+
+  <% 6.times do |i| %>
+    var editor<%= i %> = ace.edit("editor<%= i %>");
+    editor<%= i %>.setTheme("ace/theme/monokai");
+    editor<%= i %>.getSession().setUseWrapMode(true);
+    editor<%= i %>.getSession().setTabSize(2);
+  <% end %>
+
+  $("#sampleContentF").addClass("active");
+  editor5.resize(true);
+  editor5.getSession().setMode('ace/mode/css');
+  editor5.setOptions({ readOnly: true });
+  $("#sampleContentF").removeClass("active");
+
+  $("#sampleContentE").addClass("active");
+  editor4.resize(true);
+  editor4.getSession().setMode('ace/mode/javascript');
+  editor4.setOptions({ readOnly: true });
+  $("#sampleContentE").removeClass("active");
+
+  $("#sampleContentD").addClass("active");
+  editor3.resize(true);
+  editor3.getSession().setMode('ace/mode/yaml');
+  $("#sampleContentD").removeClass("active");  
+
+  $("#sampleContentC").addClass("active");
+  editor2.resize(true);
+  editor2.getSession().setMode('ace/mode/css');
+  $("#sampleContentC").removeClass("active");
+
+  $("#sampleContentB").addClass("active");
+  editor1.resize(true);
+  editor1.getSession().setMode('ace/mode/javascript');
+  $("#sampleContentB").removeClass("active");
+
+  $("#sampleContentA").addClass("active");
+  editor0.resize(true);
+  editor0.getSession().setMode('ace/mode/html');
+
+  set_html(editor0);
+  set_js(editor1);
+  set_css(editor2);
+  set_yaml(editor3);
+
+}(jQuery));
+
+
+</script>

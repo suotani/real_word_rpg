@@ -1,0 +1,12 @@
+<% provide(:title, @managed_html.title) %>
+<%= @managed_html.body.html_safe if @managed_html.body %>
+
+<script>
+<%= @managed_html.import_js_body %>
+<%= @managed_html.js_body.html_safe if @managed_html.js_body %>
+</script>
+
+<style>
+<%= @managed_html.import_css_body %>
+<%= @managed_html.css_body.html_safe if @managed_html.css_body %>
+</style>

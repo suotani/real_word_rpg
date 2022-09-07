@@ -1,0 +1,36 @@
+.managed_html_select_import {
+  max-height: 100px;
+  overflow: auto;
+}
+
+.radio-inline {
+  margin-right: 20px;
+}
+
+.edit_note{
+  font-size: small;
+  line-height: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-family: "ＭＳ ゴシック",sans-serif;
+}
+
+.edit_note_label{
+  font-size: small;
+  line-height: 17px;
+}
+
+input.dummy{
+  width: 100%;
+}
+.input-group-btn.remove{
+  width: 30%;
+}
+
+.file_select{
+  width: 100%;
+}
+
+.bootstrap-tagsinput input{
+  width: 100%;
+}

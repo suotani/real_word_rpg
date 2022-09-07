@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_03_025054) do
+ActiveRecord::Schema.define(version: 2022_09_06_112639) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -83,6 +83,32 @@ ActiveRecord::Schema.define(version: 2021_12_03_025054) do
     t.string "explanation"
     t.integer "charactor_id"
     t.integer "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "import_htmls", force: :cascade do |t|
+    t.integer "managed_html_id"
+    t.integer "import_html_id"
+    t.integer "asset_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "managed_htmls", force: :cascade do |t|
+    t.string "title"
+    t.integer "user_id"
+    t.boolean "public", default: false, null: false
+    t.text "body"
+    t.text "js_body"
+    t.text "css_body"
+    t.string "note"
+    t.text "yaml"
+    t.boolean "use_yaml", default: true
+    t.integer "level"
+    t.string "js_note"
+    t.string "css_note"
+    t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

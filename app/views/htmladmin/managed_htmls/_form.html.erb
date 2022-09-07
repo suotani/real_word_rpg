@@ -1,0 +1,136 @@
+<div class="row">
+  <div class="well bs-component">
+    <%= form_for [:htmladmin, @managed_html], html: { class: "form-horizontal" } do |f| %>
+      <fieldset>
+       <legend><%= @managed_html.new_record? ? "新規webページ作成" : "ページ情報編集" %></legend>
+        <% if @managed_html.errors.any? %>
+          <div id="error_explanation">
+            <% @managed_html.errors.full_messages.each do |message| %>
+              <p class="text-danger"><%= message %></p>
+            <% end %>
+          </div>
+        <% end %>
+    
+        <div class="form-group">
+          <%= f.label :title, class: "col-lg-2 control-label" %>
+          <div class="col-lg-10">
+            <%= f.text_field :title, class: "form-control", placeholder: "マイページ１" %>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <%= f.label :note, class: "col-lg-2 control-label" %>
+          <div class="col-lg-10">
+            <%= f.text_field :note, class: "form-control", placeholder: "仕事中にメモしておきたいことをまとめる" %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :address, class: "col-lg-2 control-label" %>
+          <div class="col-lg-10">
+            <%= f.text_field :address, class: "form-control", placeholder: "my_home1" %>
+            <div class="edit_note">※例えば、my_homeに設定すると、<%= "#{root_url}page/my_home" %> というURLでアクセスできるようになります</div>
+            <div class="edit_note">※半角英数字と _ (半角アンダーバー)が使用可能な文字です</div>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <%= f.label :js_note, class: "col-lg-2 control-label" %>
+          <div class="col-lg-10">
+            <%= f.text_field :js_note, class: "form-control", placeholder: "マウスホバー時の挙動を定義したJavaScript" %>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <%= f.label :css_note, class: "col-lg-2 control-label" %>
+          <div class="col-lg-10">
+            <%= f.text_field :css_note, class: "form-control", placeholder: "ボタンの色を定義したcss" %>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <%= f.label :public, class: "col-lg-2 control-label" %>
+          <div class="col-lg-10">
+            <div class="checkbox">
+              <label>
+                <%= f.check_box :public, {}, true, false %>
+              </label>
+            </div>
+            <div class="edit_note">チェックを入れるとページの閲覧のみログイン不要となります。</div>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <%= f.label :level, class: "col-lg-2 control-label" %>
+          <div class="col-lg-10 form-inline">
+            <% ManagedHtml::LEVEL.each_with_index do |v, i| %>
+              <div class="radio">
+                <label class="radio-inline">
+                  <%= f.radio_button :level, i %>
+                  <%= v %>
+                </label>
+              </div>
+            <% end %>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <div class="col-lg-2">
+            <div style="float: right;">
+              <%= f.label :import_js, class: "control-label" %>
+            </div>
+            <div class="edit_note_label" style="float: right; text-align: right;">
+              「jsの説明」が記入されているもののみ選択可能です
+            </div>
+          </div>
+          <div class="col-lg-10 managed_html_select_import">
+            <% js_ids = @managed_html.import_htmls.js.map(&:import_html_id) %>
+            <% @import_js.each_with_index do |js, i| %>
+              <div class="checkbox">
+                <label>
+                  <%= check_box_tag "js[#{i}][use]", true, js_ids.include?(js.id) %>
+                  <%= js.js_note %>
+                  <%= hidden_field_tag "js[#{i}][id]", js.id %>
+                  <%= hidden_field_tag "js[#{i}][asset_type]", "js" %>
+                </label>
+              </div>
+            <% end %>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <div class="col-lg-2">
+            <div style="float: right;">
+              <%= f.label :import_css, class: "control-label" %>
+            </div>
+            <div class="edit_note_label" style="float: right; text-align: right;">
+              「cssの説明」が記入されているもののみ選択可能です
+            </div>
+          </div>
+          <div class="col-lg-10 managed_html_select_import">
+            <% css_ids = @managed_html.import_htmls.css.map(&:import_html_id) %>
+            <% @import_css.each_with_index do |css, i| %>
+              <div class="checkbox">
+                <label>
+                  <%= check_box_tag "css[#{i}][use]", true, css_ids.include?(css.id) %>
+                  <%= css.css_note %>
+                  <%= hidden_field_tag "css[#{i}][id]", css.id %>
+                  <%= hidden_field_tag "css[#{i}][asset_type]", "css" %>
+                </label>
+              </div>
+            <% end %>
+          </div>
+        </div>
+  
+        <div class="form-group form-inline">
+          <div class="col-lg-10 col-lg-offset-2">
+            <%= button_tag "#{@managed_html.new_record? ? '登録' : '更新'}", class: "btn btn-primary", onclick: "$('form').submit();", type: "button" %>
+            <%= link_to 'ソースを編集', edit_htmladmin_source_path(@managed_html.id), class: "btn btn-success" if @managed_html.id %>
+          </div>
+        </div>
+      </fieldset>
+    <% end %>
+  </div>
+</div>
+<script>
+</script>

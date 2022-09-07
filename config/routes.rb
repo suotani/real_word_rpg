@@ -18,4 +18,10 @@ Rails.application.routes.draw do
     resources :skills
   end
 
+  namespace :htmladmin do
+    root to: "managed_htmls#index"
+    resources :sources, only: [:edit, :update]
+    resources :managed_htmls
+  end
+
 end

@@ -143,3 +143,52 @@ main .top{
     text-align: center;
   }
 }
+
+body {
+  padding-top: 85px;
+  padding-bottom: 40px;
+}
+
+p .error {
+  color: #ff0000;
+}
+
+.btn-circle {
+  border-radius: 60px;
+  width: 50px;
+  padding-left: 15px;
+}
+
+.fix_bottom {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  text-align: center;
+}
+
+.remove-color{
+  color: #ff3333;
+}
+
+.popover {
+  word-break: break-all;
+}
+
+.popover div {
+  font-size: 80%;
+}
+
+body{
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック  Medium', meiryo, sans-serif;
+}
+
+.btn-default.disabled {
+  pointer-events: none;
+  border-color: #e5e5e5 !important;
+  color: #e5e5e5 !important;
+}
+
+.view_image{
+  margin-bottom: 10px;
+}
