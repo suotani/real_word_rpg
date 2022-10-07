@@ -12,7 +12,7 @@ class User < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
   before_create do
-    self.email = "email.#{User.pluck(:id).max + 1}@example.com"
+    self.email = "email.#{(User.pluck(:id).max||0) + 1}@example.com"
   end
 
   def admin?
