@@ -1,24 +1,19 @@
 <div class="fixed-background background-2">
   <div class="inner">
-    <button data-toggle="modal" data-target="#logModal" class="btn btn-info mb-2">キャラクター作成</button>
-
     <% @charactors.each do |chara| %>
       <%= link_to charactor_path(chara), class:"card" do %>
-        <p class="name"><%= chara.name %> LV. <%= chara.level %></p>
+        <h2 class="name"><%= chara.name %> LV. <%= chara.level %></h2>
           <ul class="row">
-            <li class="col-6">運動力: LV. <%= chara.motion_level %></li>
-            <li class="col-6">知識力: LV. <%= chara.knowledge_level %></li>
-            <li class="col-6">健康力: LV. <%= chara.health_level %></li>
-            <li class="col-6">発信力: LV. <%= chara.communication_level %></li>
+            <li class="col-6">うんどう: レベル. <%= chara.motion_level %></li>
+            <li class="col-6">かしこさ: レベル. <%= chara.knowledge_level %></li>
+            <li class="col-6">けんこう: レベル. <%= chara.health_level %></li>
+            <li class="col-6">にんき: レベル. <%= chara.communication_level %></li>
           </ul>
-        <img src="/img/sep.png" width="100%">
-        <div class="skills">
-          <% chara.charactor_skills.eager_load(:skill).each do |cs| %>
-            <span>[<%= cs.skill.name %> LV. <%= cs.level %>]<span>
-          <% end %>
-        </div>
       <% end %>
     <% end %>
+    <p class="card">
+      <button data-toggle="modal" data-target="#logModal" class="btn btn-info mb-2">キャラクターをつくる</button>
+    </p>
   </div>
 </div>
 

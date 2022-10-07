@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     resources :charactor_tickets
   end
   resources :experience_logs, only: [:create]
-  resources :experiences, only: [:new, :create]
+  resources :experiences
   resources :vrs
   resources :tickets
 

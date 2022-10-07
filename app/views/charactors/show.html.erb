@@ -9,50 +9,16 @@
 
     <h1 class="name"><%= @charactor.name %> LV. <%= @charactor.level %></h1>
     <ul class="row">
-      <li class="col-12">運動力: LV. <%= @charactor.motion_level %> (<%= @charactor.motion_exp %>/100)</li>
-      <li class="col-12">
-        <div class="progress">
-          <div class="progress-bar" role="progressbar"  style="width: <%= @charactor.motion_exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-      </li>
-      <li class="col-12 mt-2">知識力: LV. <%= @charactor.knowledge_level %> (<%= @charactor.knowledge_exp %>/100)</li>
-      <li class="col-12">
-        <div class="progress">
-          <div class="progress-bar" role="progressbar"  style="width: <%= @charactor.knowledge_exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-      </li>
-      <li class="col-12 mt-2">健康力: LV. <%= @charactor.health_level %> (<%= @charactor.health_exp %>/100)</li>
-      <li class="col-12">
-        <div class="progress">
-          <div class="progress-bar" role="progressbar"  style="width: <%= @charactor.health_exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-      </li>
-      <li class="col-12 mt-2">発信力: LV. <%= @charactor.communication_level %> (<%= @charactor.communication_exp %>/100)</li>
-      <li class="col-12">
-        <div class="progress">
-          <div class="progress-bar" role="progressbar"  style="width: <%= @charactor.communication_exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-      </li>
+      <li class="col-12">うんどう: レベル. <%= @charactor.motion_level %></li>
+      <li class="col-12 mt-2">かしこさ: レベル. <%= @charactor.knowledge_level %></li>
+      <li class="col-12 mt-2">けんこう: レベル. <%= @charactor.health_level %></li>
+      <li class="col-12 mt-2">にんき: レベル. <%= @charactor.communication_level %></li>
     </ul>
-
-    <span class="title">所持スキル</span>
-    <div class="skills">
-      <% @charactor.charactor_skills.eager_load(:skill).each do |cs| %>
-        <span class="skill" data-toggle="modal" data-target="#exampleModal">
-          [<span class="skill_name"><%= cs.skill.name %></span> LV. <%= cs.level %>]
-          <span class="skill_explanation"><%= cs.skill.explanation %></span>
-        </span>
-      <% end %>
-    </div>
     <hr>
-    <%= link_to "保有チケットを確認", charactor_charactor_tickets_path(@charactor), class: "btn btn-info" %>
-    <div class="progress mt-2">
-      <div class="progress-bar" role="progressbar"  style="width: <%= @charactor.total_exp %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-    あと<%= 100 - @charactor.total_exp %>経験値でチケット獲得
+    <%= link_to "もってるチケット", charactor_charactor_tickets_path(@charactor), class: "btn btn-info" %>
+    あと<%= 100 - @charactor.total_exp %>でチケットがもらえる!
     <hr>
     <div class="experiences">
-      <%= link_to "+新しくクエストを追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-info mb-2"  %>
       <% @charactor.experiences.each do |ex| %>
         <div data-id="<%= ex.id %>" data-category_id="<%= ex.category_id %>" data-exp="<%= ex.unit_exp %>" class="experience card p-2 mb-2 mt-2">
           <p class="name mb-2">
@@ -60,14 +26,17 @@
           </p>
           <p class="mb-2"><%= ex.explanation %></p>
           <p class="mb-2">
-            報酬： 1<%= ex.unit %>で<%= ex.unit_exp %>経験値を獲得
+            もらえるもの： 1<%= ex.unit %>で<%= ex.unit_exp %>けいけんちゲット!
           </p>
           <span class="count">1</span>
         </div>
       <% end %>
+      <div class="experience card p-2 mb-2 mt-2 p-3">
+        <%= link_to "+新しくクエストを追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-info"  %>
+      </div>
     </div>
     <p class="submit_btn">
-      <button class="submit btn btn-primary btn-lg btn-block">決定</button>
+      <button class="submit btn btn-primary btn-lg btn-block">けってい</button>
       <hr>
     </p>
 

@@ -1,0 +1,21 @@
+<div class="container">
+  <% @charactors.each do |chara| %>
+    <h2><%= chara.name %></h2>
+    <div class="experiences">
+      <% chara.experiences.each do |ex| %>
+        <%= link_to edit_experience_path(ex), style: 'text-decoration: none;' do %>
+          <div data-id="<%= ex.id %>" class="experience card p-2 mb-2 mt-2">
+            <p class="name mb-2">
+              [<%= ex.category.name %>]<%= ex.name %>
+            </p>
+            <p class="mb-2"><%= ex.explanation %></p>
+            <p class="mb-2">
+              もらえるもの： 1<%= ex.unit %>で<%= ex.unit_exp %>けいけんちゲット!
+            </p>
+            <span class="count">1</span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

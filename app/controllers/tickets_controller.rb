@@ -11,6 +11,9 @@ class TicketsController < ApplicationController
     redirect_to tickets_path
   end
 
+  def update
+  end
+
   def destroy
     t = current_user.tickets.find(params[:id])
     t.destroy if t.charactors.blank?

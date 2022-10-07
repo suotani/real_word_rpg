@@ -1,10 +1,14 @@
 class ExperiencesController < ApplicationController
   before_action :authenticate_user!
+
+  def index
+    @charactors = current_user.charactors
+  end
+
   def new
     @charactor = Charactor.find(params[:charactor_id])
     @experience = @charactor.experiences.new
   end
-
 
   def create
     @charactor = Charactor.find(params[:charactor_id])
@@ -16,6 +20,25 @@ class ExperiencesController < ApplicationController
       flash.now[:notice] = "登録に失敗しました"
       render :new
     end
+  end
+
+
+  def edit
+    @experience = Experience.find(params[:id])
+  end
+
+  def update
+    @experience = Experience.find(params[:id])
+    if @experience.update(experience_params)
+      flash[:notice] = "登録しました"
+      redirect_to experiences_path
+    else
+      flash.now[:notice] = "登録に失敗しました"
+      render :edit
+    end
+  end
+
+  def destroy
   end
 
   private
