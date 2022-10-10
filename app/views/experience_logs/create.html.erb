@@ -1,4 +1,5 @@
 <%= link_to "戻る", charactor_path(@charactor), class: "btn btn-secondary" %>
+<audio src="/sound/level_up.mp3" id="level-up"></audio>
 <div class="container pt-1">
   <% @messages.each do |message| %>
     <%= render message.type, message: message %>
@@ -67,5 +68,9 @@ $(document).ready(function(){
       i += 1;
     }, 500);
   }
+
+  <% if @messages.any? { |m| m.type == "level" }  %>
+    $("#level-up").get(0).play();
+  <% end %>
 });
 </script>

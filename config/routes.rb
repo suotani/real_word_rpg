@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :experiences
   resources :vrs
   resources :tickets
+  resources :shops, only: [:index, :create]
 
   namespace :admin do
     resources :skills
