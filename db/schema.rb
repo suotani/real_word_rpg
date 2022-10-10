@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_06_112639) do
+ActiveRecord::Schema.define(version: 2022_10_10_111611) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_112639) do
     t.integer "health_exp", default: 0
     t.integer "communication_exp", default: 0
     t.integer "total_exp", default: 0
+    t.integer "shop_point", default: 0
   end
 
   create_table "experience_logs", force: :cascade do |t|
@@ -127,6 +128,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_112639) do
     t.string "color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "point", default: 100
   end
 
   create_table "users", force: :cascade do |t|

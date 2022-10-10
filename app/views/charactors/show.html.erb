@@ -3,6 +3,9 @@
 <link rel="preload" as="image" href="/img/leaf2.png">
 <link rel="preload" as="image" href="/img/leaf3.png">
 <link rel="preload" as="image" href="/img/leaf4.png">
+<audio src="/sound/button.mp3" id="play-button0"></audio>
+<audio src="/sound/button.mp3" id="play-button1"></audio>
+<audio src="/sound/button.mp3" id="play-button2"></audio>
 </head>
 <div class="fixed-background background-1">
   <div class="inner">
@@ -16,7 +19,7 @@
     </ul>
     <hr>
     <%= link_to "もってるチケット", charactor_charactor_tickets_path(@charactor), class: "btn btn-info" %>
-    あと<%= 100 - @charactor.total_exp %>でチケットがもらえる!
+    <%= link_to "ショップへ", shops_path(charactor_id: @charactor.id), class: "btn btn-success" %>
     <hr>
     <div class="experiences">
       <% @charactor.experiences.each do |ex| %>
@@ -78,8 +81,11 @@ $(".skill").on("click", function(){
 //params: {data: [{id: 3, exp_point: 40, count: 1, category_id: 3}, {id: 1, exp_point: 10, count: 2,category_id: 4}]}
 
 let data = [];
+let i = 0;
 $(".experience").on("click", function(){
   id = $(this).data("id");
+  $("#play-button"+(i%3)).get(0).play();
+  i++;
 
   if(data.find(e => e["id"] == id)){
     d = data.find(e => e["id"] == id)

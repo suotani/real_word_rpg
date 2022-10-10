@@ -47,30 +47,8 @@ class ExperienceLogsController < ApplicationController
     end
     total += @charactor.total_exp
     @charactor.total_exp = total % 100
+    @charactor.shop_point += total
     @charactor.save!
-
-    # チケット獲得
-    (total / 100).times do
-      ticket = current_user.tickets.shuffle.first
-      CharactorTicket.create(ticket_id: ticket.id, charactor_id: @charactor.id)
-      messages << MessageService.init("ticket").message(ticket)
-    end
-
-    # スキル獲得処理
-    charactor_skills = @charactor.charactor_skills
-    have_skill_ids = charactor_skills.map(&:skill_id)
-    skills.flatten.each do |skill|
-      cs = ""
-      if have_skill_ids.include?(skill.id)
-        # すでに持っているスキル
-        cs = charactor_skills.find_by(skill_id: skill.id)
-        cs.update!(level: cs.level + 1)
-      else
-        # 新規スキル
-        cs = charactor_skills.create!(skill_id: skill.id)
-      end
-      messages << MessageService.init("skill").message(cs)
-    end
     messages
   end
 end

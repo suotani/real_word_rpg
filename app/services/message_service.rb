@@ -6,26 +6,8 @@ class MessageService
       LevelMessageService.new
     when "exp" then
       ExpMessageService.new
-    when "skill" then
-      SkillMessageService.new
-    when "ticket" then
-      TicketMessageService.new
     end
   end
-end
-
-class SkillMessageService
-
-  attr_reader :type, :name, :level, :explanation
-
-  def message(cs)
-    @type = "skill"
-    @name = cs.skill.name
-    @level = cs.level
-    @explanation = cs.skill.explanation
-    self
-  end
-
 end
 
 class LevelMessageService
@@ -47,16 +29,6 @@ class ExpMessageService
     @exp = exp
     @next_exp = charactor.send("#{category.column_name}_exp")
     @name = category.name
-    self
-  end
-end
-
-class TicketMessageService
-  attr_reader :type, :title, :color, :name
-  def message(ticket)
-    @type = "ticket"
-    @title = ticket.title
-    @color = ticket.color
     self
   end
 end

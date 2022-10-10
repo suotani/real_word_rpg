@@ -1,0 +1,57 @@
+<div class="card m-3 p-3">
+  <p><%= @charactor.name%>さんでログイン中</p>
+  <p>もってるポイント：<%= @charactor.shop_point %></p>
+</div>
+<div class="container">
+  <% @tickets.each do |ticket| %>
+    <div class="card mb-2 <%= 'modal_open' if @charactor.shop_point >= ticket.point %>"
+      style="background-color: <%= ticket.color %>; color: white"
+      data-toggle="<%= 'modal' if @charactor.shop_point >= ticket.point %>"
+      data-target="#logModal"
+      data-title="<%= ticket.title %>"
+      data-color="<%= ticket.color %>"
+      data-price="ねだん：<%= @charactor.shop_point >= ticket.point ? ticket.point : "あと#{ticket.point - @charactor.shop_point}ポイント" %>"
+      data-url="<%= shops_path(charactor_id: @charactor.id, ticket_id: ticket.id) %>"
+      >
+      <div class="card-body row pr-5" style="justify-content: space-between;">
+        <h3 id="">
+          <%= ticket.title %>
+        </h3>
+        <div id="">
+          <%= @charactor.shop_point >= ticket.point ? "ねだん：#{ticket.point}" : "あと#{ticket.point - @charactor.shop_point}ポイント" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="card mb-2" id="ticket_color" style="color: white">
+          <div class="card-body row pr-5" style="justify-content: space-between;">
+            <h3 id="ticket_title"></h3>
+            <div id="ticket_price"></div>
+          </div>
+        </div>
+        <%= form_with url: "#", local: true, id: "ticket_buy", method: "post" do |f| %>
+          <div class="field form-group">
+            <input type="submit" value="かう" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">とじる</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(".modal_open").on("click", function(){
+  $("#ticket_title").text($(this).data("title"))
+  $("#ticket_price").text($(this).data("price"))
+  $("#ticket_color").css("background-color", $(this).data("color"))
+  $("#ticket_buy").attr("action", $(this).data("url"))
+})
+
+</script>
