@@ -6,7 +6,7 @@
 #
 default: &default
   adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV["RAILS_MAX_THREADS"] { 5 } %>
   timeout: 5000
 
 development:
@@ -20,13 +20,12 @@ test:
   <<: *default
   database: db/test.sqlite3
 
-
 production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: <%= ENV.fetch("MYSQL_DATABASE") %>
+  database: <%= ENV["MYSQL_DATABASE"] %>
   pool: 5
-  username: <%= ENV.fetch("MYSQL_USERNAME") %>
-  password: <%= ENV.fetch("MYSQL_PASSWORD") %>
-  host: <%= ENV.fetch("MYSQL_HOST") %>
+  username: <%= ENV["MYSQL_USERNAME"] %>
+  password: <%= ENV["MYSQL_PASSWORD"] %>
+  host: <%= ENV["MYSQL_HOST"] %>

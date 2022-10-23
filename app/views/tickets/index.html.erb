@@ -3,10 +3,10 @@
   <div class="card mb-2" style="background-color: <%= t.color %>; color: white">
     <div class="card-body row">
       <div class="col-8">
-        <%= t.title %>
+        <%= t.title %>[<%= t.point %>]
       </div>
       <div class="col-4">
-        <%= link_to "削除", ticket_path(t), method: "delete", class: "btn btn-danger" %>
+        <%= link_to "編集", edit_ticket_path(t), class: "btn btn-info" %>
       </div>
     </div>
   </div>
@@ -31,14 +31,18 @@
           <div class="input-group mb-2">
             <%= f.text_field :title, class: "form-control" %>
           </div>
+          <label>購入に必要なポイント</label><br />
           <div class="input-group mb-2">
-            <label>カラー</label><br />
+            <%= f.text_field :point, class: "form-control" %>
+          </div>
+          <label>カラー</label><br />
+          <div class="input-group mb-2">
             <%= f.color_field :color, class: "" %>
           </div>
 
           <div class="field form-group">
             <input type="submit" value="作成" class="btn btn-primary">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">止める</button>
           </div>
         <% end %>
       </div>
