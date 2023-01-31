@@ -11,17 +11,16 @@ class ExperiencesController < ApplicationController
   end
 
   def create
-    @charactor = Charactor.find(params[:charactor_id])
-    @experience = @charactor.experiences.new(experience_params)
+    @experience = Experience.new(experience_params)
     if @experience.save
       flash[:notice] = "登録しました"
-      redirect_to charactor_path(@charactor)
+      redirect_to experiences_path
     else
+      @charactor = Charactor.find(params[:experience][:charactor_id])
       flash.now[:notice] = "登録に失敗しました"
       render :new
     end
   end
-
 
   def edit
     @experience = Experience.find(params[:id])
@@ -47,6 +46,6 @@ class ExperiencesController < ApplicationController
   private
 
   def experience_params
-    params.require(:experience).permit(:name, :unit, :unit_exp, :category_id, :explanation)
+    params.require(:experience).permit(:name, :unit, :unit_exp, :category_id, :explanation, :charactor_id)
   end
 end

@@ -19,7 +19,7 @@
     </ul>
     <hr>
     <%= link_to "もってるチケット", charactor_charactor_tickets_path(@charactor), class: "btn btn-info" %>
-    <%= link_to "ショップへ", shops_path(charactor_id: @charactor.id), class: "btn btn-success" %>
+    <%= link_to "チケットショップ", shops_path(charactor_id: @charactor.id), class: "btn btn-success" %>
     <hr>
     <div class="experiences">
       <% @charactor.experiences.each do |ex| %>
@@ -29,14 +29,11 @@
           </p>
           <p class="mb-2"><%= ex.explanation %></p>
           <p class="mb-2">
-            もらえるもの： 1<%= ex.unit %>で<%= ex.unit_exp %>けいけんちゲット!
+            1<%= ex.unit %>で<%= ex.unit_exp %>けいけんちゲット!
           </p>
           <span class="count">1</span>
         </div>
       <% end %>
-      <div class="experience card p-2 mb-2 mt-2 p-3">
-        <%= link_to "+新しくクエストを追加", new_experience_path(charactor_id: @charactor.id), class: "btn btn-info"  %>
-      </div>
     </div>
     <p class="submit_btn">
       <button class="submit btn btn-primary btn-lg btn-block">けってい</button>

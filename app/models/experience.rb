@@ -8,4 +8,7 @@ class Experience < ApplicationRecord
     "", "ページ", "回", "個", "つ", "冊", "日","時間",
     "分"
   ]
+
+  validates :name, presence: true
+  validates :unit_exp, presence: true
 end

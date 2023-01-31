@@ -1,6 +1,9 @@
 <div class="container">
   <% @charactors.each do |chara| %>
     <h2><%= chara.name %></h2>
+    <div class="experience card p-2 mb-2 mt-2 p-3">
+      <%= link_to "+新しくクエストを追加", new_experience_path(charactor_id: chara.id), class: "btn btn-info"  %>
+    </div>
     <div class="experiences">
       <% chara.experiences.each do |ex| %>
         <%= link_to edit_experience_path(ex), style: 'text-decoration: none;' do %>
