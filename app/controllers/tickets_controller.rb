@@ -1,40 +1,45 @@
 class TicketsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_charactor
 
   def index
-    @tickets = current_user.tickets
+    @tickets = @charactor.items
   end
 
   def create
-    @ticket = current_user.tickets.new(ticket_params)
-    @ticket.save ? flash[:notice] = "登録しました" : flash[:alert] = "失敗しました"
-    redirect_to tickets_path
+    @ticket = @charactor.items.new(ticket_params)
+    @ticket.save ? flash[:notice] = "とうろくしました" : flash[:alert] = @ticket.errors.full_messages.join(",")
+    redirect_to charactor_tickets_path(charactor_id: @charactor.id)
   end
 
   def edit
-    @ticket = current_user.tickets.find(params[:id])
+    @ticket = @charactor.items.find(params[:id])
   end
 
   def update
-    @ticket = current_user.tickets.find(params[:id])
+    @ticket = @charactor.items.find(params[:id])
     if @ticket.update(ticket_params)
-      flash[:notice] = "更新しました"
-      redirect_to tickets_path
+      flash[:notice] = "こうしんしました"
+      redirect_to charactor_tickets_path(charactor_id: @charactor.id)
     else
-      flash.now[:alert] = "失敗しました"
+      flash.now[:alert] = "しっぱいしました"
       render :edit
     end
   end
 
   def destroy
-    t = current_user.tickets.find(params[:id])
-    t.destroy if t.charactors.blank?
-    redirect_to tickets_path
+    t = @charactor.items.find(params[:id])
+    t.destroy
+    redirect_to charactor_tickets_path(charactor_id: @charactor.id)
   end
 
   private
 
   def ticket_params
     params.require(:ticket).permit(:title, :color, :point)
+  end
+
+  def set_charactor
+    @charactor = current_user.charactors.find(params[:charactor_id])
   end
 end

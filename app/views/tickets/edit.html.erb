@@ -4,7 +4,7 @@
       経験
     </div>
     <div class="card-body">
-      <%= form_with model: @ticket, local: true do |f| %>
+      <%= form_with model: @ticket, url: charactor_ticket_path(charactor_id: @charactor.id, id: @ticket.id), local: true do |f| %>
         <div class="field form-group">
           <label>タイトル</label><br />
           <%= f.text_field :title, class: "form-control" %>
@@ -20,7 +20,7 @@
 
         <div class="field form-group">
           <input type="submit" value="編集" class="btn btn-primary">
-          <%= link_to "削除", ticket_path(@ticket.id), method: "delete", data: {confirm: "削除しますか？"}, class: "btn btn-danger" %>
+          <%= link_to "削除", charactor_ticket_path(charactor_id: @charactor.id, id: @ticket.id), method: "delete", data: {confirm: "削除しますか？"}, class: "btn btn-danger" %>
         </div>
       <% end %>
     </div>

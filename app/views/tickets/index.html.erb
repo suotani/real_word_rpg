@@ -6,7 +6,7 @@
         <%= t.title %>[<%= t.point %>]
       </div>
       <div class="col-4">
-        <%= link_to "編集", edit_ticket_path(t), class: "btn btn-info" %>
+        <%= link_to "編集", edit_charactor_ticket_path(charactor_id: @charactor.id, id: t.id), class: "btn btn-info" %>
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <%= form_with model: Ticket.new, local: true do |f| %>
+        <%= form_with model: Ticket.new, url: charactor_tickets_path(charactor_id: @charactor.id), local: true do |f| %>
           <label>タイトル</label><br />
           <div class="input-group mb-2">
             <%= f.text_field :title, class: "form-control" %>

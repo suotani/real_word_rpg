@@ -19,11 +19,6 @@
           </span>
           <span class="navbar-text">
             <% if user_signed_in? %>
-              <%= link_to "チケット管理", tickets_path, class: "nav-link"%>
-            <% end %>
-          </span>
-          <span class="navbar-text">
-            <% if user_signed_in? %>
               <%= link_to "クエスト管理", experiences_path, class: "nav-link"%>
             <% end %>
           </span>

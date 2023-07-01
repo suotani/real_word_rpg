@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_10_111611) do
+ActiveRecord::Schema.define(version: 2023_06_30_231944) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -123,12 +123,12 @@ ActiveRecord::Schema.define(version: 2022_10_10_111611) do
   end
 
   create_table "tickets", force: :cascade do |t|
-    t.integer "user_id"
     t.string "title"
     t.string "color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "point", default: 100
+    t.integer "charactor_id", default: 1
   end
 
   create_table "users", force: :cascade do |t|

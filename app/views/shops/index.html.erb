@@ -3,25 +3,29 @@
   <p>もってるポイント：<%= @charactor.shop_point %></p>
 </div>
 <div class="container">
-  <% @tickets.each do |ticket| %>
-    <div class="card mb-2 <%= 'modal_open' if @charactor.shop_point >= ticket.point %>"
-      style="background-color: <%= ticket.color %>; color: white"
-      data-toggle="<%= 'modal' if @charactor.shop_point >= ticket.point %>"
-      data-target="#logModal"
-      data-title="<%= ticket.title %>"
-      data-color="<%= ticket.color %>"
-      data-price="ねだん：<%= @charactor.shop_point >= ticket.point ? ticket.point : "あと#{ticket.point - @charactor.shop_point}ポイント" %>"
-      data-url="<%= shops_path(charactor_id: @charactor.id, ticket_id: ticket.id) %>"
-      >
-      <div class="card-body row pr-5" style="justify-content: space-between;">
-        <h3 id="">
-          <%= ticket.title %>
-        </h3>
-        <div id="">
-          <%= @charactor.shop_point >= ticket.point ? "ねだん：#{ticket.point}" : "あと#{ticket.point - @charactor.shop_point}ポイント" %>
+  <% @charactors.each do |chara| %>
+    <% next if chara.id == @charactor.id %>
+    <h2><%= chara.name %>さんの商品</h2>
+    <% chara.items.each do |ticket| %>
+      <div class="card mb-2 <%= 'modal_open' if @charactor.shop_point >= ticket.point %>"
+        style="background-color: <%= ticket.color %>; color: white"
+        data-toggle="<%= 'modal' if @charactor.shop_point >= ticket.point %>"
+        data-target="#logModal"
+        data-title="<%= ticket.title %>"
+        data-color="<%= ticket.color %>"
+        data-price="ねだん：<%= @charactor.shop_point >= ticket.point ? ticket.point : "あと#{ticket.point - @charactor.shop_point}ポイント" %>"
+        data-url="<%= shops_path(charactor_id: @charactor.id, ticket_id: ticket.id) %>"
+        >
+        <div class="card-body row pr-5" style="justify-content: space-between;">
+          <h3 id="">
+            <%= ticket.title %>
+          </h3>
+          <div id="">
+            <%= @charactor.shop_point >= ticket.point ? "ねだん：#{ticket.point}" : "あと#{ticket.point - @charactor.shop_point}ポイント" %>
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 </div>
 

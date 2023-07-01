@@ -8,16 +8,12 @@ Rails.application.routes.draw do
 
   resources :charactors, only: [:index, :show, :create] do
     resources :charactor_tickets
+    resources :tickets
   end
   resources :experience_logs, only: [:create]
   resources :experiences
   resources :vrs
-  resources :tickets
   resources :shops, only: [:index, :create]
-
-  namespace :admin do
-    resources :skills
-  end
 
   namespace :htmladmin do
     root to: "managed_htmls#index"

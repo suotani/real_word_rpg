@@ -6,6 +6,5 @@ class Category < ActiveHash::Base
     {id: 4, name: "にんき", column_name: "communication"},
   ]
   include ActiveHash::Associations
-  has_many :skills
   has_many :experiences
 end

@@ -1,9 +1,8 @@
 class Charactor < ApplicationRecord
   belongs_to :user
-  has_many :charactor_skills
-  has_many :skills, through: :charactor_skills
   has_many :charactor_tickets
   has_many :tickets, through: :charactor_tickets
+  has_many :items, class_name: 'Ticket'
   has_many :experiences
 
 
@@ -25,7 +24,6 @@ class Charactor < ApplicationRecord
     exp = exp % 100
     self.send("#{category.column_name}_exp=", exp)
     self.send("#{category.column_name}_level=", level)
-    category.skills.shuffle[0..(get_level-1)]
   end
 
   def level_up?(category, exp_point)

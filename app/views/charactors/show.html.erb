@@ -16,10 +16,12 @@
       <li class="col-12 mt-2">かしこさ: レベル. <%= @charactor.knowledge_level %></li>
       <li class="col-12 mt-2">けんこう: レベル. <%= @charactor.health_level %></li>
       <li class="col-12 mt-2">にんき: レベル. <%= @charactor.communication_level %></li>
+      <li class="col-12 mt-2">ショップポイント <%= @charactor.shop_point %></li>
     </ul>
     <hr>
-    <%= link_to "もってるチケット", charactor_charactor_tickets_path(@charactor), class: "btn btn-info" %>
-    <%= link_to "チケットショップ", shops_path(charactor_id: @charactor.id), class: "btn btn-success" %>
+    <%= link_to "もってるチケット", charactor_charactor_tickets_path(@charactor), class: "btn btn-info mb-2" %>
+    <%= link_to "チケットショップ", shops_path(charactor_id: @charactor.id), class: "btn btn-success mb-2" %>
+    <%= link_to "じぶんのしょうひん", charactor_tickets_path(charactor_id: @charactor.id), class: "btn btn-warning" %>
     <hr>
     <div class="experiences">
       <% @charactor.experiences.each do |ex| %>
