@@ -128,7 +128,7 @@ ActiveRecord::Schema.define(version: 2023_06_30_231944) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "point", default: 100
-    t.integer "charactor_id", default: 1
+    t.integer "charactor_id"
   end
 
   create_table "users", force: :cascade do |t|
