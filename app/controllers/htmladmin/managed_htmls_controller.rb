@@ -96,6 +96,6 @@ class Htmladmin::ManagedHtmlsController < HtmladminController
     end
     
     def check_public
-      @managed_html.user_id == current_user.id || @managed_html.public
+      @managed_html.public || @managed_html.user_id == current_user.id
     end
 end
