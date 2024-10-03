@@ -2,7 +2,7 @@
 <%= @managed_html.body.html_safe if @managed_html.body %>
 
 <script>
-<%= @managed_html.import_js_body %>
+<%= @managed_html.import_js_body&.html_safe %>
 <%= @managed_html.js_body.html_safe if @managed_html.js_body %>
 </script>
 
