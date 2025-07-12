@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_26_145335) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_12_015925) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -30,6 +30,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_26_145335) do
     t.string "checksum", null: false
     t.datetime "created_at", precision: nil, null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "buisiness_times", force: :cascade do |t|
+    t.integer "item_category_id", null: false
+    t.integer "sales_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_category_id"], name: "index_buisiness_times_on_item_category_id"
   end
 
   create_table "charactor_tickets", force: :cascade do |t|
@@ -79,6 +87,27 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_26_145335) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "item_categories", force: :cascade do |t|
+    t.integer "store_category_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["store_category_id"], name: "index_item_categories_on_store_category_id"
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.integer "town_id", null: false
+    t.integer "user_id", null: false
+    t.string "name", null: false
+    t.string "description", null: false
+    t.integer "item_category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_category_id"], name: "index_items_on_item_category_id"
+    t.index ["town_id"], name: "index_items_on_town_id"
+    t.index ["user_id"], name: "index_items_on_user_id"
+  end
+
   create_table "managed_htmls", force: :cascade do |t|
     t.string "title"
     t.integer "user_id"
@@ -97,6 +126,47 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_26_145335) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "materials", force: :cascade do |t|
+    t.integer "item_id", null: false
+    t.integer "amount", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_materials_on_item_id"
+  end
+
+  create_table "stocks", force: :cascade do |t|
+    t.integer "item_id", null: false
+    t.integer "store_id"
+    t.integer "user_id", null: false
+    t.integer "cost", null: false
+    t.integer "price", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_stocks_on_item_id"
+    t.index ["store_id"], name: "index_stocks_on_store_id"
+    t.index ["user_id"], name: "index_stocks_on_user_id"
+  end
+
+  create_table "store_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "stores", force: :cascade do |t|
+    t.integer "town_id", null: false
+    t.string "name", null: false
+    t.string "theme_color", null: false
+    t.string "theme_sub_color", null: false
+    t.integer "user_id", null: false
+    t.integer "store_category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["store_category_id"], name: "index_stores_on_store_category_id"
+    t.index ["town_id"], name: "index_stores_on_town_id"
+    t.index ["user_id"], name: "index_stores_on_user_id"
+  end
+
   create_table "tickets", force: :cascade do |t|
     t.string "title"
     t.string "color"
@@ -104,6 +174,22 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_26_145335) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "point", default: 100
     t.integer "charactor_id"
+  end
+
+  create_table "towns", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_towns", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "town_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["town_id"], name: "index_user_towns_on_town_id"
+    t.index ["user_id"], name: "index_user_towns_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -115,8 +201,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_26_145335) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "name"
+    t.integer "town_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["town_id"], name: "index_users_on_town_id"
   end
 
   create_table "vrs", force: :cascade do |t|
@@ -127,4 +215,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_26_145335) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "buisiness_times", "item_categories"
+  add_foreign_key "item_categories", "store_categories"
+  add_foreign_key "items", "item_categories"
+  add_foreign_key "items", "towns"
+  add_foreign_key "items", "users"
+  add_foreign_key "materials", "items"
+  add_foreign_key "stocks", "items"
+  add_foreign_key "stocks", "stores"
+  add_foreign_key "stocks", "users"
+  add_foreign_key "stores", "store_categories"
+  add_foreign_key "stores", "towns"
+  add_foreign_key "stores", "users"
+  add_foreign_key "user_towns", "towns"
+  add_foreign_key "user_towns", "users"
+  add_foreign_key "users", "towns"
 end

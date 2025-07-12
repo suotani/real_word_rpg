@@ -1,0 +1,2 @@
+class BuisinessTime < ApplicationRecord
+end
