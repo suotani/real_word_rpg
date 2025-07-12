@@ -1,4 +1,4 @@
-class Htmladmin::SourcesController < HtmladminController
+class Htmladmin::SourcesController < Htmladmin::HtmladminController
   layout 'htmladmin/editor'
 
   before_action :set_managed_html

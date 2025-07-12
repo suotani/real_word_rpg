@@ -1,0 +1,257 @@
+.dashboard-container
+  .dashboard-header
+    %h1 HomeLabo ダッシュボード
+    %p ようこそ、#{@user.name}さん！
+
+  .services-grid
+    / 経験値アプリカード
+    .service-card
+      .card-icon ⚔️
+      .card-content
+        %h3 経験値アプリ
+        %p キャラクターの成長を記録し、経験値を管理します
+        .card-features
+          %span.feature-tag キャラクター管理
+          %span.feature-tag 経験値記録
+          %span.feature-tag 成長分析
+      = link_to charactors_path, class: "card-link" do
+        .card-action
+          %span アプリを開く
+          %span.arrow →
+
+    / HTML管理カード
+    .service-card
+      .card-icon 📝
+      .card-content
+        %h3 HTML管理
+        %p HTMLコンテンツの作成・編集・管理を行います
+        .card-features
+          %span.feature-tag コンテンツ管理
+          %span.feature-tag HTML編集
+          %span.feature-tag プログラミング
+      = link_to htmladmin_root_path, class: "card-link" do
+        .card-action
+          %span 管理画面を開く
+          %span.arrow →
+
+    / 店舗経営シミュレーションカード
+    .service-card
+      .card-icon
+        = image_tag '/img/icon/icon_shop_simulation.svg'
+      .card-content
+        %h3 店舗経営シミュレーション
+        %p 仮想の店舗を経営し、ビジネススキルを磨きます
+        .card-features
+          %span.feature-tag 店舗経営
+          %span.feature-tag シミュレーション
+      = link_to shops_path, class: "card-link", target: "_blank" do
+        .card-action
+          %span シミュレーションを開く
+          %span.arrow →
+
+    / 総合学習アプリカード
+    .service-card
+      .card-icon
+        = image_tag '/img/icon/icon_edit_black.svg'
+      .card-content
+        %h3 総合学習アプリ
+        %p 仮想の店舗を経営し、ビジネススキルを磨きます
+        .card-features
+          %span.feature-tag 学習
+          %span.feature-tag プログラミング
+      = link_to 'https://suotani.github.io/papaapp/', class: "card-link", target: "_blank" do
+        .card-action
+          %span アプリをを開く
+          %span.arrow →
+
+:css
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .dashboard-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dashboard-header p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .service-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+  }
+
+  .service-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .card-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .card-icon img {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-content h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .card-content p {
+    margin: 0 0 1.5rem 0;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .card-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .feature-tag {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid #e9ecef;
+  }
+
+  .card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .card-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .card-action:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .arrow {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .card-action:hover .arrow {
+    transform: translateX(5px);
+  }
+
+  /* レスポンシブデザイン */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 1rem;
+    }
+    
+    .dashboard-header h1 {
+      font-size: 2rem;
+    }
+    
+    .services-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .service-card {
+      padding: 1.5rem;
+    }
+    
+    .card-features {
+      justify-content: center;
+    }
+  }
+
+  /* アニメーション */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .service-card {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .service-card:nth-child(1) { animation-delay: 0.1s; }
+  .service-card:nth-child(2) { animation-delay: 0.2s; }
+  .service-card:nth-child(3) { animation-delay: 0.3s; }
+  .service-card:nth-child(4) { animation-delay: 0.4s; } 

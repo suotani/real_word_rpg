@@ -1,4 +1,4 @@
-class Htmladmin::ManagedHtmlsController < HtmladminController
+class Htmladmin::ManagedHtmlsController < Htmladmin::HtmladminController
   skip_before_action :authenticate_user!, only: [:show, :page]
   before_action :set_managed_html, only: [:show, :edit, :update, :destroy]
   before_action :check_public, :only => [:show]
