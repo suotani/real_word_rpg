@@ -1,0 +1,343 @@
+.join-request-container
+  .page-header
+    %h1 町への加入申請
+    %p 新しい町に参加して、店舗を開設しましょう！
+
+  .content-grid
+    .join-form-section
+      .form-card
+        %h2 町に参加する
+        - if flash[:alert]
+          .alert.alert-danger
+            %p #{flash[:alert]}
+        
+        = form_with url: join_store_towns_path, method: :post, local: true, class: "join-form" do |form|
+          .form-group
+            = form.label :name, "町の名前", class: "form-label"
+            = form.text_field :name, class: "form-control", placeholder: "例: 東京商店街", required: true
+          
+          .form-group
+            = form.label :password, "町のパスワード", class: "form-label"
+            = form.password_field :password, class: "form-control", placeholder: "町のパスワードを入力", required: true
+          
+          .form-actions
+            = form.submit "町に参加", class: "btn btn-primary btn-large"
+            = link_to "戻る", store_dashboard_path, class: "btn btn-secondary"
+
+
+
+:css
+  .join-request-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .form-card, .towns-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-card h2, .towns-card h2 {
+    margin: 0 0 1.5rem 0;
+    color: #333;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .alert {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .towns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .town-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: background 0.2s;
+  }
+
+  .town-item:hover {
+    background: #e9ecef;
+  }
+
+  .town-name {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  .town-stores-count, .town-members-count {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .status-joined {
+    background: #28a745;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .status-available {
+    background: #FF6B35;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+  }
+
+  .current-towns-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .current-towns-section h2 {
+    margin: 0 0 2rem 0;
+    color: #333;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .current-towns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .current-town-card {
+    border: 2px solid #f0f0f0;
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .current-town-card:hover {
+    border-color: #FF6B35;
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+  }
+
+  .town-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .town-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .stores-count {
+    background: #FF6B35;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .town-stats p {
+    margin: 0 0 0.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .town-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .empty-current-towns {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+  }
+
+  .empty-current-towns h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1rem;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-primary {
+    background: #FF6B35;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #e55a2b;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+  }
+
+  .btn-success {
+    background: #28a745;
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+    transform: translateY(-1px);
+  }
+
+  /* レスポンシブデザイン */
+  @media (max-width: 768px) {
+    .join-request-container {
+      padding: 1rem;
+    }
+    
+    .page-header h1 {
+      font-size: 2rem;
+    }
+    
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .current-towns-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .town-actions {
+      flex-direction: column;
+    }
+  } 

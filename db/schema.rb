@@ -179,6 +179,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_12_015925) do
   create_table "towns", force: :cascade do |t|
     t.string "name", null: false
     t.integer "user_id", null: false
+    t.string "password", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

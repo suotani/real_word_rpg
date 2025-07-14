@@ -1,0 +1,16 @@
+%nav.navbar.navbar-expand-lg.navbar-light.bg-white.navbar-fixed.ml-270.navbar-aside-left
+  .container-fluid
+    #navbarSupportedContent.collapse.navbar-collapse
+      %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+        = render 'layouts/store/navbar_notifications'
+
+:css
+  .navbar-aside-left {
+    width: calc(100% - 270px) !important;
+    height: 64px;
+  }
+  .navbar-fixed {
+    position: fixed;
+    top: 0px;
+    z-index: 10;
+  }

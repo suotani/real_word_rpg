@@ -1,0 +1,292 @@
+.store-dashboard-container
+  .towns-section
+    %h2 店舗一覧
+    - if @towns.any?
+      .towns-grid
+        - @towns.each do |town|
+          .town-card
+            .town-header
+              %h3.town-name #{town.name}
+              %span.town-stores-count #{town.stores.count}店舗
+            - if town.stores.any?
+              .stores-list
+                - town.stores.each do |store|
+                  .store-item
+                    .store-info
+                      %h4.store-name #{store.name}
+                      %p.store-category #{store.store_category&.name || '未分類'}
+                      - if store.stocks.any?
+                        %p.store-stock 在庫: #{store.stocks.count}アイテム
+                      - else
+                        %p.store-stock.empty 在庫なし
+                    .store-actions
+                      = link_to store_store_path(store), class: "btn btn-primary btn-sm" do
+                        %span 詳細
+                      = link_to edit_store_store_path(store), class: "btn btn-secondary btn-sm" do
+                        %span 編集
+            - else
+              .no-stores
+                %p この町にはまだ店舗がありません
+                = link_to new_store_store_path, class: "btn btn-success" do
+                  %span 店舗を開設
+    - else
+      .empty-state
+        %h3 まだ町に進出していません
+        %p 新しい町に進出して、店舗を開設しましょう！
+
+        .d-flex.justify-content-center
+          = link_to join_request_store_towns_path, class: "btn btn-outline-primary m-3" do
+            %h3 町に参加
+          = link_to new_store_town_path, class: "btn btn-outline-info m-3" do
+            %h3 町を作る
+
+
+:css
+  .store-dashboard-container {
+    padding: 2rem;
+    min-height: 100vh;
+  }
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .dashboard-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dashboard-header p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  .stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .stat-icon {
+    font-size: 2.5rem;
+    margin-right: 1rem;
+  }
+
+  .stat-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-number {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .towns-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .towns-section h2 {
+    margin: 0 0 2rem 0;
+    color: #333;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .towns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  .town-card {
+    border: 2px solid #f0f0f0;
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .town-card:hover {
+    border-color: #FF6B35;
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+  }
+
+  .town-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .town-name {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+  }
+
+  .town-stores-count {
+    background: #FF6B35;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .stores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .store-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: background 0.2s;
+  }
+
+  .store-item:hover {
+    background: #e9ecef;
+  }
+
+  .store-name {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  .store-category {
+    margin: 0 0 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .store-stock {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #28a745;
+  }
+
+  .store-stock.empty {
+    color: #dc3545;
+  }
+
+  .store-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .no-stores {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+  }
+
+  .action-card {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .action-card:hover {
+    background: white;
+    border-color: #FF6B35;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 107, 53, 0.2);
+  }
+
+  .action-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .action-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.2rem;
+  }
+
+  .action-card p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  /* レスポンシブデザイン */
+  @media (max-width: 768px) {
+    .store-dashboard-container {
+      padding: 1rem;
+    }
+    
+    .dashboard-header h1 {
+      font-size: 2rem;
+    }
+    
+    .towns-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .store-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .store-actions {
+      width: 100%;
+      justify-content: center;
+    }
+  } 

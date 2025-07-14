@@ -1,0 +1,42 @@
+!!!
+%html
+  %head
+    %title HomeLabo
+    = csrf_meta_tags
+    = csp_meta_tag
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1, shrink-to-fit=no"}
+
+    / Bootstrap CSS
+    %script{src: "https://kit.fontawesome.com/4dc93236cc.js", crossorigin: "anonymous"}
+    %link{rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", integrity: "sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM", crossorigin: "anonymous"}
+    = stylesheet_link_tag 'application', media: 'all'
+    %script{src: "https://code.jquery.com/jquery-3.6.0.min.js", integrity: "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=", crossorigin: "anonymous"}
+
+    = javascript_include_tag 'application'
+
+  %body
+    %nav.navbar.navbar-expand-lg.navbar-light.bg-white.navbar-fixed.ml-270.navbar-aside-left
+      .container-fluid
+        #navbarSupportedContent.collapse.navbar-collapse
+          %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+    = render 'layouts/store/aside_left'
+    .page.page-main.ml-270.mt-navbar{ data: { locale: :ja } }
+      = render 'layouts/messages'
+      .container
+        = yield
+
+    %script{src: "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js", integrity: "sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r", crossorigin: "anonymous"}
+    %script{src: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js", integrity: "sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS", crossorigin: "anonymous"} 
+
+:css
+  .container {
+      -webkit-box-flex: 1;
+      flex: 1 1 0%;
+  }
+  .page-main {
+    margin-left: 80px;
+    margin-top: 64px;
+  }
+  .ml-270 {
+    margin-left: 270px;
+  }

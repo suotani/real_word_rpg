@@ -22,15 +22,17 @@ Rails.application.routes.draw do
     resources :managed_htmls
   end
 
-  namespace :shop do
-    root to: "shops#index"
+  namespace :store do
+    root to: "dashboard#index"
+    get 'dashboard', to: 'dashboard#index'
     resources :towns, only: [:index, :new, :create] do
+      get 'join_request', on: :collection
       post 'join', on: :collection
     end
-    resources :shops, only: [:index, :new, :create, :edit, :update]
+    resources :stores, only: [:index, :new, :create, :edit, :update]
     resources :items, only: [:index, :new, :create, :edit, :update, :show]
     resources :stocks, only: [:index, :create]
-    resources :shop_actions do
+    resources :store_actions do
       post 'buy', on: :collection
       post 'sell', on: :collection
     end

@@ -1,0 +1,311 @@
+.town-create-container
+  .page-header
+    %h1 新しい町を作成
+    %p 新しい町を作成して、店舗経営を始めましょう！
+
+  .create-form-section
+    .form-card
+      %h2 町の情報を入力
+      - if flash[:alert]
+        .alert.alert-danger
+          %p #{flash[:alert]}
+      
+      = form_with model: @town, url: store_towns_path, local: true, class: "create-form" do |form|
+        .form-group
+          = form.label :name, "町の名前", class: "form-label"
+          = form.text_field :name, class: "form-control", placeholder: "例: 東京商店街、大阪市場、名古屋通り", required: true
+          .form-help
+            %p 町の名前は他のユーザーが参加する際に使用されます
+            %p 分かりやすい名前をつけてください
+        
+        .password-info
+          .info-card
+            .info-content
+              %h3 パスワードについて
+              %p 町のパスワードは8文字の英数字で自動生成されます
+              %p 作成後、パスワードが表示されるので必ずメモしてください
+              %p 他のユーザーが町に参加する際に必要になります
+        
+        .form-actions
+          = form.submit "町を作成", class: "btn btn-primary btn-large"
+          = link_to "戻る", store_dashboard_path, class: "btn btn-secondary"
+
+  .features-section
+    %h2 町の機能
+    .features-grid
+      .feature-card
+        .feature-icon 🏪
+        %h3 店舗開設
+        %p 町に参加したユーザーは店舗を開設できます
+      .feature-card
+        .feature-icon 👥
+        %h3 コミュニティ
+        %p 同じ町のユーザーと交流できます
+      .feature-card
+        .feature-icon 📊
+        %h3 競争
+        %p 他の店舗と競争して売上を競います
+      .feature-card
+        .feature-icon 🎯
+        %h3 目標達成
+        %p 町全体の目標を達成して報酬を得られます
+
+:css
+  .town-create-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  .create-form-section {
+    margin-bottom: 3rem;
+  }
+
+  .form-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-card h2 {
+    margin: 0 0 1.5rem 0;
+    color: #333;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .alert {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .form-help {
+    margin-top: 0.5rem;
+  }
+
+  .form-help p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .password-info {
+    margin: 2rem 0;
+  }
+
+  .info-card {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+  }
+
+  .info-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .info-content h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+  }
+
+  .info-content p {
+    margin: 0.25rem 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .features-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .features-section h2 {
+    margin: 0 0 2rem 0;
+    color: #333;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .feature-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .feature-card:hover {
+    background: white;
+    border-color: #FF6B35;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .feature-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.1rem;
+  }
+
+  .feature-card p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1rem;
+  }
+
+  .btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-primary {
+    background: #FF6B35;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #e55a2b;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+  }
+
+  /* レスポンシブデザイン */
+  @media (max-width: 768px) {
+    .town-create-container {
+      padding: 1rem;
+    }
+    
+    .page-header h1 {
+      font-size: 2rem;
+    }
+    
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .info-card {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .info-icon {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  } 

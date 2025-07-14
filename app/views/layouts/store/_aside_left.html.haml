@@ -1,0 +1,48 @@
+.page-aside.z-index-100
+  .d-flex.flex-column.text-left.mt-3.ms-3.h-100
+    = link_to root_path, class: 'link-no-underline text-white' do
+      ホームラボ
+    .font-0_65rem.mt-3.text-white
+      メニュー
+
+    = link_to store_dashboard_path, class: 'link-no-underline sidebar-menu mt-3' do
+      .d-flex.align-items-center.text-white
+        = image_tag '/img/icon/icon_file_white.svg'
+        .ms-2
+          ダッシュボード
+    = link_to store_stores_path, class: 'link-no-underline sidebar-menu mt-3' do
+      .d-flex.align-items-center.text-white
+        = image_tag '/img/icon/icon_file_white.svg'
+        .ms-2
+          お店
+    = link_to store_stores_path, class: 'link-no-underline sidebar-menu mt-3' do
+      .d-flex.align-items-center.text-white
+        = image_tag '/img/icon/icon_file_white.svg'
+        .ms-2
+          レシピ
+    = link_to store_stores_path, class: 'link-no-underline sidebar-menu mt-3' do
+      .d-flex.align-items-center.text-white
+        = image_tag '/img/icon/icon_file_white.svg'
+        .ms-2
+          商品
+    .mt-auto
+      -# = link_to 'https://nexway.app.box.com/s/l4tmn0tldtig37klmeotppyh9hwiqtoz', class: 'link-no-underline sidebar-menu', target: :_blank, rel: 'noopener noreferrer' do
+      -#   .d-flex.align-items-center.text-white
+      -#     = image_tag '/img/white/icon_exclamation-circle_white.svg'
+      -#     .ms-2
+      -#       手順書
+
+
+:css
+  .page-aside {
+    background-color: #ffa244;
+  }
+  .page-aside {
+      position: fixed;
+      height: 100%;
+      top: 0px;
+      width: 270px;
+  }
+  .font-0_65rem {
+    font-size: 0.65rem;
+  }

@@ -1,0 +1,14 @@
+- flash.each do |name, msg|
+  - if msg.is_a?(Array)
+    .alert{ class: "alert-#{name.to_s == 'notice' ? 'success' : 'danger'}" }
+      .container
+        - msg.each do |message|
+          .d-flex
+            = image_tag name.to_s == 'notice' ? '/img/icon/icon_file_white.svg' : '/img/icon/icon_file_white.svg', class: 'pe-2'
+            = content_tag :div, simple_format(message, class: "mb-0 flash #{name.to_s == 'notice' ? 'success' : 'danger'}"), id: "flash_#{name}"
+  - if msg.is_a?(String) && msg.present?
+    .alert{ :class => "alert-#{name.to_s == 'notice' ? 'success' : 'danger'}" }
+      .container
+        .d-flex
+          = image_tag name.to_s == 'notice' ? '/img/icon/icon_file_white.svg' : '/img/icon/icon_file_white.svg', class: 'pe-2'
+          = content_tag :div, simple_format(msg, class: "mb-0 flash #{name.to_s == 'notice' ? 'success' : 'danger'}"), id: "flash_#{name}"

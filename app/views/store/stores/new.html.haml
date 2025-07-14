@@ -1,0 +1,47 @@
+.container-fluid.bg-light.min-vh-100.py-4
+  .row.justify-content-center
+    .col-lg-8.col-md-10.col-12
+      .card.shadow-lg.border-0.mb-4
+        .card-body.text-center.py-5
+          %h1.display-4.text-primary.fw-bold 新しいお店を始めよう
+
+      .card.shadow-lg.border-0.mb-4
+        .card-body.p-4
+          - if flash[:alert]
+            .alert.alert-danger.alert-dismissible.fade.show
+              %p.mb-0 #{flash[:alert]}
+              %button.btn-close{"data-bs-dismiss" => "alert"}
+          
+          = form_with model: @store, url: store_stores_path, local: true, class: "needs-validation", novalidate: true do |form|
+            .mb-3
+              %h3 お店の名前
+              = form.text_field :name, class: "form-control form-control-lg", placeholder: "例: 美味しいパン屋、便利なコンビニ、おしゃれなカフェ", required: true
+            
+            .mb-3
+              %h3 どの町に作りますか？
+              = form.select :town_id, @towns.map { |town| [town.name, town.id] }, { prompt: "町を選択してください" }, { class: "form-control", required: true }
+
+            .mb-3
+              %h3 どんなお店ですか？
+              = form.select :store_category_id, @store_categories.map { |category| [category.name, category.id] }, { prompt: "カテゴリを選択してください" }, { class: "form-control", required: true }
+            
+            .mb-3
+              %h3 テーマカラー
+              = form.color_field :theme_color, class: "form-control form-control-color", value: "#FF6B35", title: "お店のメインカラーを選択してください"
+            
+            .mb-3
+              %h3 サブカラー
+              = form.color_field :theme_sub_color, class: "form-control form-control-color", value: "#F7931E", title: "お店のサブカラーを選択してください"
+
+            .d-flex.justify-content-center.gap-3
+              = form.submit "決定", class: "btn btn-primary btn-lg px-4 mx-3"
+              = link_to "やめる", store_dashboard_path, class: "btn btn-secondary btn-lg px-4"
+
+
+:css
+  .text-primary {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  } 
