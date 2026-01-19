@@ -1,13 +1,12 @@
 .store-dashboard-container
   .towns-section
-    %h2 店舗一覧
+    %h2 自分のお店
     - if @towns.any?
       .towns-grid
         - @towns.each do |town|
           .town-card
             .town-header
               %h3.town-name #{town.name}
-              %span.town-stores-count #{town.stores.count}店舗
             - if town.stores.any?
               .stores-list
                 - town.stores.each do |store|
@@ -20,10 +19,8 @@
                       - else
                         %p.store-stock.empty 在庫なし
                     .store-actions
-                      = link_to store_store_path(store), class: "btn btn-primary btn-sm" do
-                        %span 詳細
-                      = link_to edit_store_store_path(store), class: "btn btn-secondary btn-sm" do
-                        %span 編集
+                      = link_to store_items_path(store), class: "btn btn-primary btn-sm" do
+                        %span お店の在庫を見る
             - else
               .no-stores
                 %p この町にはまだ店舗がありません

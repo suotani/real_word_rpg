@@ -1,5 +1,4 @@
 class Store::StoresController < Store::ApplicationController
-  before_action :authenticate_user!
   before_action :set_store, only: [:show, :edit, :update, :destroy]
 
   def index

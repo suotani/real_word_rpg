@@ -1,0 +1,129 @@
+.container-fluid
+  .row
+    .col-12
+      .d-flex.justify-content-between.align-items-center.mb-4
+        %h1.h3.mb-0
+          %i.fas.fa-shopping-bag.text-primary
+          レシピ
+        = link_to new_store_item_path, class: "btn btn-primary" do
+          %i.fas.fa-plus
+          レシピ登録
+
+      / 検索・フィルター機能
+      -# .card.mb-4
+      -#   .card-body
+      -#     .row
+      -#       .col-md-4
+      -#         .form-group
+      -#           %label{for: "search"} レシピ名で検索
+      -#           %input.form-control{type: "text", id: "search", placeholder: "レシピ名を入力..."}
+      -#       .col-md-4
+      -#         .form-group
+      -#           %label{for: "category"} カテゴリー
+      -#           %select.form-control#category
+      -#             %option{value: ""} すべてのカテゴリー
+      -#             - ItemCategory.all.each do |category|
+      -#               %option{value: category.id}= category.name
+      -#       .col-md-4
+      -#         .form-group
+      -#           %label{for: "sort"} 並び順
+      -#           %select.form-control#sort
+      -#             %option{value: "newest"} 新着順
+      -#             %option{value: "name"} 名前順
+      -#             %option{value: "price_low"} 価格安い順
+      -#             %option{value: "price_high"} 価格高い順
+
+      / レシピ一覧
+      - if @items.any?
+        .row
+          - @items.each do |item|
+            .col-lg-3.col-md-4.col-sm-6.mb-4
+              .card.h-100.shadow-sm
+                / レシピ画像プレースホルダー
+                .card-img-top.bg-light.d-flex.align-items-center.justify-content-center{style: "height: 200px;"}
+                  %i.fas.fa-image.text-muted{style: "font-size: 3rem;"}
+                
+                .card-body.d-flex.flex-column
+                  %h5.card-title.text-truncate
+                    = link_to item.name, store_item_path(item), class: "text-decoration-none"
+                  
+                  %p.card-text.text-muted.small.mb-2
+                    %i.fas.fa-tag
+                    = item.item_category&.name || "カテゴリーなし"
+                  
+                  %p.card-text.flex-grow-1
+                    = truncate(item.description, length: 80)
+                  
+                  .mt-auto
+                    .d-flex.justify-content-between.align-items-center.mb-2
+                      %span.badge.badge-info
+                        %i.fas.fa-user
+                        = item.user.name
+                      %small.text-muted
+                        %i.fas.fa-clock
+                        = item.created_at.strftime("%Y/%m/%d")
+                    
+                    .d-flex.justify-content-between.align-items-center
+                      %span.h5.text-primary.mb-0
+                        ¥
+                        = number_with_delimiter(item.price || 0)
+                      
+                      .btn-group{role: "group"}
+                        = link_to store_item_path(item), class: "btn btn-outline-primary btn-sm" do
+                          %i.fas.fa-eye
+                          詳細
+                        - if item.user == current_user
+                          = link_to edit_store_item_path(item), class: "btn btn-outline-secondary btn-sm" do
+                            %i.fas.fa-edit
+                            編集
+
+        / ページネーション
+        .d-flex.justify-content-center.mt-4
+          = paginate @items, theme: 'twitter-bootstrap-4'
+      - else
+        .text-center.py-5
+          %i.fas.fa-box-open.text-muted{style: "font-size: 4rem;"}
+          %h3.text-muted.mt-3 レシピがありません
+          %p.text-muted まだレシピが登録されていません。
+          = link_to new_store_item_path, class: "btn btn-primary" do
+            %i.fas.fa-plus
+            最初のレシピを登録
+
+/ 検索・フィルター機能のJavaScript
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search');
+    const categorySelect = document.getElementById('category');
+    const sortSelect = document.getElementById('sort');
+    
+    function filterItems() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const categoryValue = categorySelect.value;
+      const sortValue = sortSelect.value;
+      
+      const items = document.querySelectorAll('.col-lg-3');
+      
+      items.forEach(item => {
+        const title = item.querySelector('.card-title').textContent.toLowerCase();
+        const category = item.querySelector('.badge-info').textContent;
+        
+        let show = true;
+        
+        // 検索フィルター
+        if (searchTerm && !title.includes(searchTerm)) {
+          show = false;
+        }
+        
+        // カテゴリーフィルター
+        if (categoryValue && !category.includes(categoryValue)) {
+          show = false;
+        }
+        
+        item.style.display = show ? 'block' : 'none';
+      });
+    }
+    
+    searchInput.addEventListener('input', filterItems);
+    categorySelect.addEventListener('change', filterItems);
+    sortSelect.addEventListener('change', filterItems);
+  }); 

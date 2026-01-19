@@ -1,0 +1,119 @@
+.container
+  .row
+    .col-12
+      / パンくずリスト
+      %nav{aria: {label: "breadcrumb"}}
+        %ol.breadcrumb
+          %li.breadcrumb-item
+            = link_to "商品一覧", store_items_path
+          %li.breadcrumb-item.active{aria: {current: "page"}}= @item.name
+
+      .row
+        / 商品画像
+        .col-md-6.mb-4
+          .card
+            .card-body.text-center
+              .bg-light.d-flex.align-items-center.justify-content-center{style: "height: 400px;"}
+                %i.fas.fa-image.text-muted{style: "font-size: 5rem;"}
+
+        / 商品情報
+        .col-md-6
+          .card
+            .card-body
+              %h1.card-title.h2.mb-3= @item.name
+              
+              .mb-3
+                %span.badge.badge-primary.badge-pill.px-3.py-2
+                  %i.fas.fa-tag
+                  = @item.item_category&.name || "カテゴリーなし"
+
+              .mb-4
+                %h3.text-primary.h1
+                  ¥
+                  = number_with_delimiter(@item.price || 0)
+
+              .mb-4
+                %h5 商品説明
+                %p.text-muted
+                  = @item.description.present? ? @item.description : "説明がありません"
+
+              .row.mb-4
+                .col-6
+                  .text-muted.small 出品者
+                  .font-weight-bold
+                    %i.fas.fa-user.text-info
+                    = @item.user.name
+                .col-6
+                  .text-muted.small 登録日
+                  .font-weight-bold
+                    %i.fas.fa-calendar.text-info
+                    = @item.created_at.strftime("%Y年%m月%d日")
+
+              / アクションボタン
+              .d-grid.gap-2
+                - if @item.user == current_user
+                  .btn-group{role: "group"}
+                    = link_to edit_store_item_path(@item), class: "btn btn-outline-primary" do
+                      %i.fas.fa-edit
+                      編集
+                    = link_to store_items_path, class: "btn btn-outline-secondary" do
+                      %i.fas.fa-arrow-left
+                      一覧に戻る
+                - else
+                  %button.btn.btn-success.btn-lg
+                    %i.fas.fa-shopping-cart
+                    購入する
+                  = link_to store_items_path, class: "btn btn-outline-secondary" do
+                    %i.fas.fa-arrow-left
+                    一覧に戻る
+
+      / 在庫情報
+      - if @item.stocks.any?
+        .row.mt-4
+          .col-12
+            .card
+              .card-header
+                %h5.mb-0
+                  %i.fas.fa-boxes
+                  在庫情報
+              .card-body
+                .table-responsive
+                  %table.table.table-hover
+                    %thead.thead-light
+                      %tr
+                        %th 在庫数
+                        %th 更新日
+                        %th ステータス
+                    %tbody
+                      - @item.stocks.each do |stock|
+                        %tr
+                          %td
+                            %span.badge{class: "badge-#{stock.quantity > 0 ? 'success' : 'danger'}"}
+                              = "#{stock.quantity}個"
+                          %td= stock.updated_at.strftime("%Y/%m/%d %H:%M")
+                          %td
+                            - if stock.quantity > 0
+                              %span.badge.badge-success 在庫あり
+                            - else
+                              %span.badge.badge-danger 在庫切れ
+
+      / 材料情報
+      - if @item.materials.any?
+        .row.mt-4
+          .col-12
+            .card
+              .card-header
+                %h5.mb-0
+                  %i.fas.fa-tools
+                  材料情報
+              .card-body
+                .row
+                  - @item.materials.each do |material|
+                    .col-md-4.mb-3
+                      .card.border
+                        .card-body.text-center
+                          %i.fas.fa-cube.text-primary.mb-2{style: "font-size: 2rem;"}
+                          %h6.card-title= material.name
+                          %p.card-text.text-muted.small
+                            必要数: 
+                            = material.quantity 

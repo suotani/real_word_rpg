@@ -1,0 +1,72 @@
+.container
+  .row.justify-content-center
+    .col-lg-8
+      / パンくずリスト
+      %nav{aria: {label: "breadcrumb"}}
+        %ol.breadcrumb
+          %li.breadcrumb-item
+            = link_to "商品一覧", store_items_path
+          %li.breadcrumb-item
+            = link_to @item.name, store_item_path(@item)
+          %li.breadcrumb-item.active{aria: {current: "page"}} 編集
+
+      .card.shadow
+        .card-header.bg-warning.text-dark
+          %h4.mb-0
+            %i.fas.fa-edit
+            商品編集
+        .card-body
+          = form_with model: @item, url: store_item_path(@item), method: :patch, local: true do |form|
+            - if @item.errors.any?
+              .alert.alert-danger
+                %h5= pluralize(@item.errors.count, "error") + " prohibited this item from being saved:"
+                %ul
+                  - @item.errors.full_messages.each do |message|
+                    %li= message
+
+            .row
+              .col-md-8
+                .form-group
+                  = form.label :name, "商品名", class: "form-label font-weight-bold"
+                  = form.text_field :name, class: "form-control form-control-lg", placeholder: "商品名を入力してください"
+                  %small.form-text.text-muted 255文字以内で入力してください
+              
+              .col-md-4
+                .form-group
+                  = form.label :item_category_id, "カテゴリー", class: "form-label font-weight-bold"
+                  = form.select :item_category_id, 
+                      options_from_collection_for_select(@item_categories, :id, :name, @item.item_category_id), 
+                      { prompt: "カテゴリーを選択してください" }, 
+                      { class: "form-control form-control-lg" }
+
+            .form-group
+              = form.label :description, "商品説明", class: "form-label font-weight-bold"
+              = form.text_area :description, rows: 5, class: "form-control", placeholder: "商品の詳細な説明を入力してください"
+              %small.form-text.text-muted 1000文字以内で入力してください
+
+            .form-group
+              = form.label :price, "価格", class: "form-label font-weight-bold"
+              .input-group.input-group-lg
+                .input-group-prepend
+                  %span.input-group-text ¥
+                = form.number_field :price, class: "form-control", placeholder: "0", min: 0
+              %small.form-text.text-muted 価格を円で入力してください
+
+            / 商品画像アップロード（将来の拡張用）
+            .form-group
+              %label.form-label.font-weight-bold 商品画像
+              .custom-file
+                %input.custom-file-input{type: "file", id: "itemImage", disabled: true}
+                %label.custom-file-label{for: "itemImage"} 画像を選択してください
+              %small.form-text.text-muted 画像アップロード機能は現在開発中です
+
+            %hr.my-4
+
+            .d-flex.justify-content-between
+              = link_to store_item_path(@item), class: "btn btn-outline-secondary btn-lg" do
+                %i.fas.fa-arrow-left
+                キャンセル
+              
+              = form.submit "商品を更新", class: "btn btn-warning btn-lg" do
+                %i.fas.fa-save
+                商品を更新 
