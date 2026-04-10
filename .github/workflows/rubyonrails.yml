@@ -4,10 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Deploy branch'
-        required: true
         default: 'master'
-        type: string
 
 jobs:
   test:
