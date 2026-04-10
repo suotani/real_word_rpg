@@ -3,7 +3,7 @@ name: Test Branch Input
 on:
   workflow_dispatch:
     inputs:
-      ref:
+      use-workflow-from:
         default: 'run'
 
 jobs:
