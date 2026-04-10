@@ -1,0 +1,17 @@
+name: Test Branch Input
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Deploy branch'
+        required: true
+        default: 'master'
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo branch
+        run: echo "Branch is ${{ github.event.inputs.branch }}"
