@@ -12,15 +12,18 @@
                 - town.stores.each do |store|
                   .store-item
                     .store-info
-                      %h4.store-name #{store.name}
+                      %h4.store-name
+                        = link_to store.name, store_store_path(store), class: "text-decoration-none text-dark"
                       %p.store-category #{store.store_category&.name || '未分類'}
                       - if store.stocks.any?
                         %p.store-stock 在庫: #{store.stocks.count}アイテム
                       - else
                         %p.store-stock.empty 在庫なし
                     .store-actions
-                      = link_to store_items_path(store), class: "btn btn-primary btn-sm" do
-                        %span お店の在庫を見る
+                      = link_to store_store_path(store), class: "btn btn-outline-primary btn-sm" do
+                        %span 詳細
+                      = link_to store_store_stocks_path(store), class: "btn btn-primary btn-sm" do
+                        %span 在庫を見る
             - else
               .no-stores
                 %p この町にはまだ店舗がありません

@@ -14,7 +14,6 @@ class User < ApplicationRecord
   has_many :user_towns
   has_many :towns, through: :user_towns
   has_many :stores
-  has_many :items
   has_many :stocks
 
   validates :name, presence: true, uniqueness: true

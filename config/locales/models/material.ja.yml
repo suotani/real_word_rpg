@@ -1,0 +1,31 @@
+# Material モデル（レシピ材料）
+# recipe_material は nested attributes 用の別名
+ja:
+  activerecord:
+    models:
+      material: レシピ材料
+      recipe_material: レシピ材料
+    attributes:
+      material:
+        item_id: 材料
+        amount: 数量
+        recipe_id: レシピ
+      recipe_material:
+        item_id: 材料
+        amount: 数量
+    errors:
+      models:
+        material:
+          attributes:
+            amount:
+              blank: を入力してください
+              required: を入力してください
+              not_a_number: は数値で入力してください
+              greater_than: は1以上で入力してください
+        recipe_material:
+          attributes:
+            amount:
+              blank: を入力してください
+              required: を入力してください
+              not_a_number: は数値で入力してください
+              greater_than: は1以上で入力してください

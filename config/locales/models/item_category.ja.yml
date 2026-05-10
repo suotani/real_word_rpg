@@ -1,0 +1,14 @@
+# ItemCategory モデル（商品カテゴリ）
+ja:
+  activerecord:
+    models:
+      item_category: 商品カテゴリ
+    attributes:
+      item_category:
+        name: カテゴリ名
+    errors:
+      models:
+        item_category:
+          attributes:
+            name:
+              blank: を入力してください

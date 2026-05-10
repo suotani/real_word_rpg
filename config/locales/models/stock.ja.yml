@@ -1,0 +1,24 @@
+# Stock モデル（在庫）
+ja:
+  activerecord:
+    models:
+      stock: 在庫
+    attributes:
+      stock:
+        item_id: 商品
+        store_id: 店舗
+        user_id: ユーザー
+        cost: 原価
+        price: 販売価格
+    errors:
+      models:
+        stock:
+          attributes:
+            item_id:
+              required: を選択してください
+            cost:
+              blank: を入力してください
+              not_a_number: は数値で入力してください
+            price:
+              blank: を入力してください
+              not_a_number: は数値で入力してください

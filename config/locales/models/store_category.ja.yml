@@ -1,0 +1,14 @@
+# StoreCategory モデル（店舗カテゴリ）
+ja:
+  activerecord:
+    models:
+      store_category: 店舗カテゴリ
+    attributes:
+      store_category:
+        name: カテゴリ名
+    errors:
+      models:
+        store_category:
+          attributes:
+            name:
+              blank: を入力してください

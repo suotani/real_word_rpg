@@ -13,25 +13,27 @@
               %button.btn-close{"data-bs-dismiss" => "alert"}
           
           = form_with model: @store, url: store_stores_path, local: true, class: "needs-validation", novalidate: true do |form|
-            .mb-3
-              %h3 お店の名前
-              = form.text_field :name, class: "form-control form-control-lg", placeholder: "例: 美味しいパン屋、便利なコンビニ、おしゃれなカフェ", required: true
+            .mb-4
+              = form.label :name, "お店の名前", class: "form-label"
+              = form.text_field :name, class: "form-control", placeholder: "例: 美味しいパン屋、便利なコンビニ、おしゃれなカフェ", required: true
             
-            .mb-3
-              %h3 どの町に作りますか？
+            .mb-4
+              = form.label :town_id, "どの町に作りますか？", class: "form-label"
               = form.select :town_id, @towns.map { |town| [town.name, town.id] }, { prompt: "町を選択してください" }, { class: "form-control", required: true }
 
-            .mb-3
-              %h3 どんなお店ですか？
+            .mb-4
+              = form.label :store_category_id, "どんなお店ですか？", class: "form-label"
               = form.select :store_category_id, @store_categories.map { |category| [category.name, category.id] }, { prompt: "カテゴリを選択してください" }, { class: "form-control", required: true }
             
-            .mb-3
-              %h3 テーマカラー
+            .mb-4
+              = form.label :theme_color, "テーマカラー", class: "form-label"
               = form.color_field :theme_color, class: "form-control form-control-color", value: "#FF6B35", title: "お店のメインカラーを選択してください"
+              %p クリックで色を変えることができます。
             
-            .mb-3
-              %h3 サブカラー
+            .mb-4
+              = form.label :theme_sub_color, "サブカラー", class: "form-label"
               = form.color_field :theme_sub_color, class: "form-control form-control-color", value: "#F7931E", title: "お店のサブカラーを選択してください"
+              %p クリックで色を変えることができます。
 
             .d-flex.justify-content-center.gap-3
               = form.submit "決定", class: "btn btn-primary btn-lg px-4 mx-3"

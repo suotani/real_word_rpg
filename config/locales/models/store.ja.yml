@@ -1,0 +1,29 @@
+# Store モデル（店舗）
+ja:
+  activerecord:
+    models:
+      store: 店舗
+    attributes:
+      store:
+        name: 店舗名
+        town_id: 町
+        store_category_id: 店舗カテゴリ
+        theme_color: テーマカラー
+        theme_sub_color: サブカラー
+    errors:
+      models:
+        store:
+          attributes:
+            name:
+              blank: を入力してください
+              too_long: は%{count}文字以内で入力してください
+            town_id:
+              required: を選択してください
+            store_category_id:
+              required: を選択してください
+            theme_color:
+              blank: を選択してください
+              invalid: は有効なカラーコード（#RRGGBB）で入力してください
+            theme_sub_color:
+              blank: を選択してください
+              invalid: は有効なカラーコード（#RRGGBB）で入力してください
