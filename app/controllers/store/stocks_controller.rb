@@ -1,7 +1,7 @@
 class Store::StocksController < Store::ApplicationController
   before_action :set_store
   before_action :set_stock, only: [:show, :edit, :update, :destroy]
-  before_action :set_items, only: [:index, :new, :create, :edit, :update]
+  before_action :set_item_sub_categories, only: [:index, :new, :create, :edit, :update]
 
   def index
     @stocks = @store.stocks
@@ -51,11 +51,11 @@ class Store::StocksController < Store::ApplicationController
     @stock = @store.stocks.find(params[:id])
   end
 
-  def set_items
-    @items = @store.items.order(:name)
+  def set_item_sub_categories
+    @item_sub_categories = ItemSubCategory.includes(:item_category).order('item_categories.name, item_sub_categories.name')
   end
 
   def stock_params
-    params.require(:stock).permit(:item_id, :cost, :price)
+    params.require(:stock).permit(:name, :item_sub_category_id, :cost, :price)
   end
 end

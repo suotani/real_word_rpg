@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_04_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_18_000001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -95,16 +95,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_04_000000) do
     t.index ["store_category_id"], name: "index_item_categories_on_store_category_id"
   end
 
-  create_table "items", force: :cascade do |t|
-    t.integer "town_id", null: false
-    t.string "name", null: false
+  create_table "item_sub_categories", force: :cascade do |t|
     t.integer "item_category_id", null: false
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "store_id"
-    t.index ["item_category_id"], name: "index_items_on_item_category_id"
-    t.index ["store_id"], name: "index_items_on_store_id"
-    t.index ["town_id"], name: "index_items_on_town_id"
+    t.index ["item_category_id"], name: "index_item_sub_categories_on_item_category_id"
   end
 
   create_table "managed_htmls", force: :cascade do |t|
@@ -125,25 +121,33 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_04_000000) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "materials", force: :cascade do |t|
-    t.integer "item_id", null: false
-    t.integer "amount"
+  create_table "recipe_item_sub_categories", force: :cascade do |t|
+    t.integer "recipe_id", null: false
+    t.integer "item_sub_category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "recipe_id"
-    t.index ["item_id"], name: "index_materials_on_item_id"
-    t.index ["recipe_id"], name: "index_materials_on_recipe_id"
+    t.index ["item_sub_category_id"], name: "index_recipe_item_sub_categories_on_item_sub_category_id"
+    t.index ["recipe_id"], name: "index_recipe_item_sub_categories_on_recipe_id"
+  end
+
+  create_table "recipes", force: :cascade do |t|
+    t.integer "store_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["store_id"], name: "index_recipes_on_store_id"
   end
 
   create_table "stocks", force: :cascade do |t|
-    t.integer "item_id", null: false
     t.integer "store_id"
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.integer "cost", null: false
     t.integer "price", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["item_id"], name: "index_stocks_on_item_id"
+    t.string "name"
+    t.integer "item_sub_category_id"
+    t.index ["item_sub_category_id"], name: "index_stocks_on_item_sub_category_id"
     t.index ["store_id"], name: "index_stocks_on_store_id"
     t.index ["user_id"], name: "index_stocks_on_user_id"
   end
@@ -159,7 +163,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_04_000000) do
     t.string "name", null: false
     t.string "theme_color", null: false
     t.string "theme_sub_color", null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.integer "store_category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -219,12 +223,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_04_000000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "buisiness_times", "item_categories"
   add_foreign_key "item_categories", "store_categories"
-  add_foreign_key "items", "item_categories"
-  add_foreign_key "items", "stores"
-  add_foreign_key "items", "towns"
-  add_foreign_key "materials", "items"
-  add_foreign_key "materials", "items", column: "recipe_id"
-  add_foreign_key "stocks", "items"
+  add_foreign_key "item_sub_categories", "item_categories"
+  add_foreign_key "recipe_item_sub_categories", "item_sub_categories"
+  add_foreign_key "recipe_item_sub_categories", "recipes"
+  add_foreign_key "recipes", "stores"
+  add_foreign_key "stocks", "item_sub_categories"
   add_foreign_key "stocks", "stores"
   add_foreign_key "stocks", "users"
   add_foreign_key "stores", "store_categories"

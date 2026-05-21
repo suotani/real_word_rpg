@@ -30,8 +30,10 @@ Rails.application.routes.draw do
       post 'join', on: :collection
     end
     resources :stores, only: [:index, :show, :new, :create, :edit, :update] do
-      resources :items, only: [:index, :new, :create, :edit, :update, :show]
       resources :stocks, only: [:index, :create, :show, :edit, :update, :destroy]
+      resources :recipes, only: [:index, :new, :create, :edit, :update, :destroy] do
+        post 'craft', on: :member
+      end
     end
     resources :store_actions do
       post 'buy', on: :collection
