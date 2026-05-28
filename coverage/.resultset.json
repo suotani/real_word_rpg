@@ -1,7 +1,7 @@
 {
   "RSpec": {
     "coverage": {
-      "/Users/sakanayachitsukasa/real_word_rpg/lib/core_extensions.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/lib/core_extensions.rb": {
         "lines": [
           null,
           null,
@@ -69,7 +69,7 @@
           }
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/user.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/user.rb": {
         "lines": [
           1,
           null,
@@ -84,7 +84,6 @@
           1,
           null,
           null,
-          1,
           1,
           1,
           1,
@@ -101,7 +100,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/application_record.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/application_record.rb": {
         "lines": [
           1,
           1,
@@ -110,7 +109,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/helpers/application_helper.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/helpers/application_helper.rb": {
         "lines": [
           1,
           1,
@@ -193,7 +192,42 @@
           }
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/users/sessions_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/store_category.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/item_category.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/item_sub_category.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/users/sessions_controller.rb": {
         "lines": [
           null,
           null,
@@ -223,14 +257,14 @@
           null,
           null,
           1,
-          1,
+          2,
           null,
           null
         ],
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/application_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/application_controller.rb": {
         "lines": [
           1,
           null
@@ -238,55 +272,56 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/dashboard_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/dashboard_controller.rb": {
         "lines": [
           1,
           1,
           null,
           1,
-          1,
+          3,
           null,
           null
         ],
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/store.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/store.rb": {
         "lines": [
           1,
           1,
           1,
           1,
           1,
+          1,
           null,
           null,
           1,
           1,
-          1,
-          null,
-          null,
           1,
           null,
           null,
           1,
           null,
+          null,
           1,
           null,
           1,
+          null,
+          1,
+          3,
           0,
-          0,
           null,
           null,
           null
         ],
         "branches": {
-          "[:if, 0, 21, 4, 23, 7]": {
-            "[:then, 1, 22, 6, 22, 101]": 0,
-            "[:else, 2, 21, 4, 23, 7]": 0
+          "[:if, 0, 22, 4, 24, 7]": {
+            "[:then, 1, 23, 6, 23, 101]": 0,
+            "[:else, 2, 22, 4, 24, 7]": 3
           }
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/store/towns_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/store/towns_controller.rb": {
         "lines": [
           1,
           1,
@@ -299,23 +334,29 @@
           null,
           null,
           1,
-          1,
+          2,
           null,
           null,
           1,
-          1,
+          2,
           null,
-          1,
-          1,
-          1,
+          2,
+          2,
+          2,
           null,
-          1,
+          2,
           null,
           0,
           0,
           null,
           null,
           1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
           null,
           null,
           1,
@@ -342,31 +383,31 @@
           1,
           null,
           1,
-          0,
-          null,
-          null,
-          1,
-          1,
-          1,
           1,
           null,
           null,
+          1,
+          2,
+          2,
+          2,
+          null,
+          null,
           null,
           1,
           null,
-          1,
-          9,
+          2,
+          18,
           null,
           null
         ],
         "branches": {
-          "[:if, 0, 33, 4, 38, 7]": {
-            "[:then, 1, 34, 6, 34, 77]": 0,
-            "[:else, 2, 36, 6, 37, 26]": 0
+          "[:if, 0, 39, 4, 44, 7]": {
+            "[:then, 1, 40, 6, 40, 77]": 0,
+            "[:else, 2, 42, 6, 43, 26]": 0
           }
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/store/application_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/store/application_controller.rb": {
         "lines": [
           1,
           1,
@@ -376,38 +417,79 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/town.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/town.rb": {
         "lines": [
           1,
           1,
           1,
           1,
           1,
-          1,
-          null,
           null,
           1,
           null,
           null,
           1,
           null,
+          null,
           1,
           null,
           1,
+          null,
           1,
+          2,
+          2,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          2,
           0,
           null,
           null,
           null
         ],
         "branches": {
-          "[:if, 0, 17, 4, 19, 7]": {
-            "[:then, 1, 18, 6, 18, 70]": 0,
-            "[:else, 2, 17, 4, 19, 7]": 1
+          "[:unless, 0, 19, 4, 19, 36]": {
+            "[:else, 1, 19, 4, 19, 36]": 1,
+            "[:then, 2, 19, 4, 19, 10]": 1
+          },
+          "[:if, 3, 41, 4, 43, 7]": {
+            "[:then, 4, 42, 6, 42, 70]": 0,
+            "[:else, 5, 41, 4, 43, 7]": 2
           }
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/user_town.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/stock.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/user_town.rb": {
         "lines": [
           1,
           1,
@@ -417,38 +499,18 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/store/dashboard_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/store/dashboard_controller.rb": {
         "lines": [
           1,
           1,
-          1,
+          5,
           null,
           null
         ],
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/item.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          null,
-          null,
-          1,
-          1,
-          null,
-          null,
-          1,
-          null
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/store/stores_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/store/stores_controller.rb": {
         "lines": [
           1,
           1,
@@ -461,35 +523,19 @@
           null,
           null,
           1,
-          1,
-          1,
-          1,
-          1,
+          2,
+          2,
+          2,
+          2,
           null,
           null,
           1,
-          0,
+          2,
+          null,
+          2,
+          2,
           null,
           0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          null,
-          null,
-          1,
-          0,
-          0,
-          null,
-          null,
-          1,
-          null,
-          0,
-          0,
-          null,
           0,
           0,
           0,
@@ -497,23 +543,39 @@
           null,
           null,
           1,
+          0,
+          0,
+          null,
+          null,
+          1,
+          null,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          1,
           null,
           1,
           0,
           null,
           null,
           1,
-          0,
+          2,
           null,
           null
         ],
         "branches": {
           "[:if, 0, 15, 4, 15, 106]": {
             "[:then, 1, 15, 4, 15, 89]": 0,
-            "[:else, 2, 15, 4, 15, 106]": 1
+            "[:else, 2, 15, 4, 15, 106]": 2
           },
           "[:if, 3, 21, 4, 28, 7]": {
-            "[:then, 4, 22, 6, 22, 97]": 0,
+            "[:then, 4, 22, 6, 22, 97]": 2,
             "[:else, 5, 24, 6, 27, 17]": 0
           },
           "[:if, 6, 38, 4, 44, 7]": {
@@ -522,17 +584,105 @@
           }
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/store_category.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/store/store_actions_controller.rb": {
         "lines": [
           1,
           1,
           1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
           null
         ],
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/channels/application_cable/channel.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/store/stocks_controller.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 21, 4, 25, 7]": {
+            "[:then, 1, 22, 6, 22, 103]": 0,
+            "[:else, 2, 24, 6, 24, 17]": 0
+          },
+          "[:if, 3, 32, 4, 36, 7]": {
+            "[:then, 4, 33, 6, 33, 103]": 0,
+            "[:else, 5, 35, 6, 35, 18]": 0
+          }
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/channels/application_cable/channel.rb": {
         "lines": [
           0,
           0,
@@ -542,7 +692,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/channels/application_cable/connection.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/channels/application_cable/connection.rb": {
         "lines": [
           0,
           0,
@@ -552,7 +702,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/charactor_tickets_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/charactor_tickets_controller.rb": {
         "lines": [
           0,
           null,
@@ -562,101 +712,6 @@
           0,
           null,
           null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/charactors_controller.rb": {
-        "lines": [
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/experience_logs_controller.rb": {
-        "lines": [
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
           0,
           0,
           0,
@@ -667,7 +722,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/experiences_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/charactors_controller.rb": {
         "lines": [
           0,
           0,
@@ -676,22 +731,6 @@
           0,
           0,
           null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
           null,
           0,
           0,
@@ -709,12 +748,7 @@
           0,
           null,
           0,
-          0,
-          0,
-          0,
-          0,
           null,
-          0,
           null,
           0,
           0,
@@ -724,133 +758,13 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/htmladmin/htmladmin_controller.rb": {
-        "lines": [
-          0,
-          null,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/htmladmin/managed_htmls_controller.rb": {
-        "lines": [
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/htmladmin/sources_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/experience_logs_controller.rb": {
         "lines": [
           0,
           0,
           null,
           0,
-          null,
           0,
-          0,
-          null,
           0,
           0,
           0,
@@ -867,19 +781,23 @@
           0,
           null,
           0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/shops_controller.rb": {
-        "lines": [
-          0,
+          null,
+          null,
           0,
           null,
           0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
           0,
           0,
           0,
@@ -899,7 +817,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/store/items_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/experiences_controller.rb": {
         "lines": [
           0,
           0,
@@ -907,7 +825,92 @@
           0,
           0,
           0,
+          null,
           0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/htmladmin/htmladmin_controller.rb": {
+        "lines": [
+          0,
+          null,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/htmladmin/managed_htmls_controller.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
           0,
           0,
           0,
@@ -920,6 +923,51 @@
           0,
           0,
           0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
           0,
           null,
           0,
@@ -933,15 +981,28 @@
           0,
           0,
           0,
-          null,
-          0,
-          0,
           0,
           0,
           null,
           0,
           0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/htmladmin/sources_controller.rb": {
+        "lines": [
+          0,
+          0,
           null,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
           0,
           0,
           0,
@@ -964,11 +1025,10 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/store/stocks_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/shops_controller.rb": {
         "lines": [
           0,
           0,
-          0,
           null,
           0,
           0,
@@ -977,47 +1037,11 @@
           null,
           0,
           0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          null,
           0,
           0,
           0,
           0,
           0,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
           0,
           0,
           0,
@@ -1026,7 +1050,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/tickets_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/tickets_controller.rb": {
         "lines": [
           0,
           0,
@@ -1077,7 +1101,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/users/confirmations_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/users/confirmations_controller.rb": {
         "lines": [
           null,
           null,
@@ -1113,7 +1137,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/users/omniauth_callbacks_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/users/omniauth_callbacks_controller.rb": {
         "lines": [
           null,
           null,
@@ -1149,7 +1173,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/users/passwords_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/users/passwords_controller.rb": {
         "lines": [
           null,
           null,
@@ -1189,7 +1213,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/users/registrations_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/users/registrations_controller.rb": {
         "lines": [
           null,
           null,
@@ -1257,7 +1281,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/controllers/users/unlocks_controller.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/controllers/users/unlocks_controller.rb": {
         "lines": [
           null,
           null,
@@ -1293,7 +1317,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/jobs/application_job.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/jobs/application_job.rb": {
         "lines": [
           0,
           0
@@ -1301,32 +1325,8 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/mailers/application_mailer.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/mailers/application_mailer.rb": {
         "lines": [
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/buisiness_time.rb": {
-        "lines": [
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/category.rb": {
-        "lines": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
           0,
           0,
           0,
@@ -1335,7 +1335,31 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/charactor.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/buisiness_time.rb": {
+        "lines": [
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/category.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/charactor.rb": {
         "lines": [
           0,
           0,
@@ -1373,7 +1397,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/charactor_ticket.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/charactor_ticket.rb": {
         "lines": [
           0,
           0,
@@ -1383,7 +1407,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/experience.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/experience.rb": {
         "lines": [
           0,
           0,
@@ -1403,7 +1427,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/import_html.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/import_html.rb": {
         "lines": [
           0,
           0,
@@ -1415,18 +1439,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/item_category.rb": {
-        "lines": [
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/managed_html.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/managed_html.rb": {
         "lines": [
           0,
           null,
@@ -1475,8 +1488,22 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/material.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/recipe.rb": {
         "lines": [
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/recipe_item_sub_category.rb": {
+        "lines": [
+          0,
           0,
           0,
           0
@@ -1484,18 +1511,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/stock.rb": {
-        "lines": [
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/ticket.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/ticket.rb": {
         "lines": [
           0,
           0,
@@ -1514,7 +1530,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/vr.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/vr.rb": {
         "lines": [
           0,
           0,
@@ -1526,7 +1542,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/models/yaml_to_html.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/models/yaml_to_html.rb": {
         "lines": [
           null,
           0,
@@ -1713,7 +1729,7 @@
         "branches": {
         }
       },
-      "/Users/sakanayachitsukasa/real_word_rpg/app/services/message_service.rb": {
+      "/Users/satoshi_uotani/playground/real_word_rpg/app/services/message_service.rb": {
         "lines": [
           0,
           null,
@@ -1754,6 +1770,6 @@
         }
       }
     },
-    "timestamp": 1772434725
+    "timestamp": 1779952375
   }
 }

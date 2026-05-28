@@ -7,9 +7,16 @@
           .town-card
             .town-header
               %h3.town-name #{town.name}
-            - if town.stores.any?
+            - market = town.stores.find { |s| s.user_id.nil? }
+            - if market
+              .market-link.mb-2
+                = link_to market_store_town_path(town), class: "btn btn-warning btn-sm" do
+                  %i.fas.fa-store
+                  中央卸売市場
+            - user_stores = town.stores.select { |s| s.user_id == current_user.id }
+            - if user_stores.any?
               .stores-list
-                - town.stores.each do |store|
+                - user_stores.each do |store|
                   .store-item
                     .store-info
                       %h4.store-name

@@ -1,5 +1,5 @@
 class Store::TownsController < Store::ApplicationController
-  before_action :set_town, only: [:show, :edit, :update, :destroy]
+  before_action :set_town, only: [:show, :edit, :update, :destroy, :market]
 
   def index
     @towns = Town.all
@@ -23,6 +23,12 @@ class Store::TownsController < Store::ApplicationController
   rescue => e
     flash.now[:alert] = '町の作成に失敗しました。'
     render :new
+  end
+
+  def market
+    @market = @town.stores.find_by!(user_id: nil, name: '中央卸売市場')
+    @stocks = @market.stocks.includes(:item_sub_category)
+    @user_stores = current_user.stores.where(town: @town)
   end
 
   def join_request
@@ -52,7 +58,7 @@ class Store::TownsController < Store::ApplicationController
   private
 
   def set_town
-    @town = Town.find(params[:id])
+    @town = current_user.towns.find(params[:id])
   end
 
   def town_params

@@ -47,6 +47,11 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
+  # システムテスト（Capybara）はブラウザが別スレッドで動くためトランザクションが使えない
+  config.before(:each, type: :system) do
+    self.use_transactional_tests = false
+  end
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
@@ -76,9 +81,13 @@ RSpec.configure do |config|
   config.include ActionMailer::TestHelper
 
   # for DatabaseCleaner
-  config.before(:all) do
-    DatabaseCleaner.strategy = :truncation
-    DatabaseCleaner.clean_with(:truncation)
+  config.before(:each, type: :system) do
+    DatabaseCleaner.strategy = :deletion
+    DatabaseCleaner.start
+  end
+
+  config.after(:each, type: :system) do
+    DatabaseCleaner.clean
   end
 
   config.before do

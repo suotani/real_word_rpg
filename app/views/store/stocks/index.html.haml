@@ -1,0 +1,31 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_store_path(@store), class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      店舗へ戻る
+    %h1.mb-0= @store.name
+    %span.text-muted.small 在庫一覧
+
+  - if flash[:notice]
+    .alert.alert-success= flash[:notice]
+
+  - if @stocks.any?
+    .table-responsive
+      %table.table.table-hover
+        %thead.table-dark
+          %tr
+            %th 商品名
+            %th カテゴリ
+            %th 仕入れ値
+            %th 販売価格
+        %tbody
+          - @stocks.each do |stock|
+            %tr
+              %td= stock.name
+              %td= stock.item_sub_category&.name
+              %td= "#{stock.cost}円"
+              %td= "#{stock.price}円"
+  - else
+    .alert.alert-info
+      まだ在庫がありません。
+      = link_to '中央卸売市場で仕入れる', market_store_town_path(@store.town), class: "alert-link"

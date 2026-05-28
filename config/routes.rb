@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     resources :towns, only: [:index, :new, :create] do
       get 'join_request', on: :collection
       post 'join', on: :collection
+      get 'market', on: :member
     end
     resources :stores, only: [:index, :show, :new, :create, :edit, :update] do
       resources :stocks, only: [:index, :create, :show, :edit, :update, :destroy]

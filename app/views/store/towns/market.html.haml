@@ -1,0 +1,33 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_root_path, class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      ダッシュボード
+    %h1.mb-0 中央卸売市場
+    %span.text-muted.small= @town.name
+
+  - if @user_stores.empty?
+    .alert.alert-warning
+      この町にまだお店がありません。先にお店を開設してください。
+      = link_to '店舗を開設', new_store_store_path, class: "alert-link"
+
+  - elsif @stocks.any?
+    .row.g-3
+      - @stocks.each do |stock|
+        .col-md-4.col-sm-6
+          .card.h-100.shadow-sm
+            .card-body
+              %h5.card-title= stock.name
+              - if stock.item_sub_category
+                %p.card-text.text-muted.small= stock.item_sub_category.item_category&.name
+              %p.card-text
+                仕入れ値:
+                %strong= "#{stock.price}円"
+              = form_with url: buy_store_store_actions_path, method: :post, local: true do |f|
+                = f.hidden_field :stock_id, value: stock.id
+                .mb-2
+                  = f.label :store_id, '仕入れ先', class: "form-label form-label-sm"
+                  = f.select :store_id, @user_stores.map { |s| [s.name, s.id] }, {}, { class: 'form-select form-select-sm' }
+                = f.submit '仕入れる', class: 'btn btn-success btn-sm w-100'
+  - else
+    .alert.alert-info 現在在庫がありません。
