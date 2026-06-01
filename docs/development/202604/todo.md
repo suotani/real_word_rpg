@@ -7,11 +7,11 @@
 ## 🔴 Critical
 
 ### StoreActionsController（新規作成）
-- [ ] `StoreActionsController#buy` — 在庫購入トランザクション実装
+- [x] `StoreActionsController#buy` — 在庫購入トランザクション実装
 - [ ] `StoreActionsController#sell` — 在庫販売トランザクション実装
 
 ### Stock ビュー
-- [ ] `Stock` index ビュー作成（`app/views/store/stocks/index.html.haml`）
+- [x] `Stock` index ビュー作成（`app/views/store/stocks/index.html.haml`）
 - [ ] `Stock` new ビュー作成（name / item_sub_category / cost / price フォーム）
 - [ ] `Stock` edit ビュー作成
 - [ ] `Stock` show ビュー作成
@@ -21,15 +21,16 @@
 ## 🟣 Recipe システム（新規）
 
 ### RecipesController（新規作成）
-- [ ] `RecipesController#index` — ストアのレシピ一覧
-- [ ] `RecipesController#new` / `#create` — レシピ作成（item_sub_category の複数選択）
-- [ ] `RecipesController#edit` / `#update` — レシピ編集
-- [ ] `RecipesController#destroy` — レシピ削除
-- [ ] `RecipesController#craft` — レシピ実行（素材 Stock を消費して新 Stock を生成）
+- [x] `RecipesController#index` — ストアのレシピ一覧
+- [x] `RecipesController#new` / `#create` — レシピ作成（item_sub_category の複数選択）
+- [x] `RecipesController#destroy` — レシピ削除
+- [x] `RecipesController#craft` — レシピ実行（素材 Stock を消費して新 Stock を生成）
+
+> `edit` / `update` は first リリース対象外。変更したい場合は削除して再登録で対応。
 
 ### Recipe ビュー
-- [ ] `Recipe` index ビュー作成（`app/views/store/recipes/index.html.haml`）
-- [ ] `Recipe` new/edit フォームビュー作成（`_form.html.haml`）
+- [x] `Recipe` index ビュー作成（`app/views/store/recipes/index.html.haml`）
+- [x] `Recipe` new フォームビュー作成（`app/views/store/recipes/new.html.haml`）
 
 ---
 

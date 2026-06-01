@@ -1,0 +1,30 @@
+.container.py-4
+  %h1.mb-4 他のお店
+
+  - if @towns_with_stores.any?
+    - @towns_with_stores.each do |town, stores|
+      .mb-4
+        %h5.text-muted.mb-2
+          %i.fas.fa-map-marker-alt.me-1
+          = town.name
+        .table-responsive
+          %table.table.table-hover.align-middle
+            %thead.table-dark
+              %tr
+                %th お店の名前
+                %th カテゴリ
+                %th オーナー
+                %th 在庫数
+                %th
+            %tbody
+              - stores.each do |store|
+                %tr
+                  %td.fw-bold= store.name
+                  %td.text-muted.small= store.store_category&.name
+                  %td.text-muted.small= store.user&.name
+                  %td= store.stocks.size
+                  %td.text-end
+                    = link_to '見る', store_store_path(store), class: 'btn btn-outline-primary btn-sm'
+  - else
+    .alert.alert-info
+      同じ町に他のお店はまだありません。

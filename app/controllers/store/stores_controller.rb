@@ -1,11 +1,14 @@
 class Store::StoresController < Store::ApplicationController
-  before_action :set_store, only: [:show, :edit, :update, :destroy]
+  before_action :set_store,          only: [:edit, :update, :destroy]
+  before_action :set_store_for_show, only: [:show]
 
   def index
     @stores = current_user.stores.includes(:town, :store_category)
   end
 
   def show
+    @is_owner = @store.user_id == current_user.id
+    @listed_stocks = @store.stocks.listed.includes(:item_sub_category) unless @is_owner
   end
 
   def new
@@ -48,6 +51,10 @@ class Store::StoresController < Store::ApplicationController
 
   def set_store
     @store = current_user.stores.find(params[:id])
+  end
+
+  def set_store_for_show
+    @store = Store.find(params[:id])
   end
 
   def store_params

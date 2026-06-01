@@ -1,0 +1,45 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_store_path(@store), class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      店舗へ戻る
+    %h1.mb-0= @store.name
+    %span.text-muted.small レシピ一覧
+
+  - if flash[:notice]
+    .alert.alert-success= flash[:notice]
+  - if flash[:alert]
+    .alert.alert-danger= flash[:alert]
+
+  .mb-3
+    = link_to new_store_store_recipe_path(@store), class: "btn btn-primary" do
+      %i.fas.fa-plus
+      レシピを登録
+
+  - if @recipes.any?
+    .row.g-3
+      - @recipes.each do |recipe|
+        .col-md-6.col-lg-4
+          .card.h-100.shadow-sm
+            .card-body
+              %h5.card-title= recipe.name
+              %p.text-muted.small.mb-1
+                完成品:
+                %span.badge.bg-primary= recipe.item_sub_category&.name
+              %p.text-muted.small.mb-2 素材
+              - if recipe.item_sub_categories.any?
+                .d-flex.flex-wrap.gap-1.mb-3
+                  - recipe.item_sub_categories.each do |sub_cat|
+                    %span.badge.bg-secondary= sub_cat.name
+              - else
+                %p.text-muted.small 素材なし
+            .card-footer.bg-transparent.d-flex.justify-content-between
+              = button_to craft_store_store_recipe_path(@store, recipe), method: :post, class: "btn btn-success btn-sm" do
+                %i.fas.fa-hammer
+                クラフト
+              = button_to store_store_recipe_path(@store, recipe), method: :delete, class: "btn btn-outline-danger btn-sm", data: { turbo_confirm: "「#{recipe.name}」を削除しますか？" } do
+                %i.fas.fa-trash
+                削除
+  - else
+    .alert.alert-info
+      まだレシピが登録されていません。

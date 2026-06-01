@@ -15,18 +15,37 @@
         = image_tag '/img/icon/icon_file_white.svg'
         .ms-2
           自分のお店
-    .mt-3.text-white
-      お買い物する
-    = link_to store_dashboard_path, class: 'link-no-underline sidebar-menu mt-3' do
-      .d-flex.align-items-center.text-white
-        = image_tag '/img/icon/icon_file_white.svg'
-        .ms-2
-          中央卸売市場
-    = link_to store_dashboard_path, class: 'link-no-underline sidebar-menu mt-3' do
-      .d-flex.align-items-center.text-white
-        = image_tag '/img/icon/icon_file_white.svg'
-        .ms-2
-          他のお店
+
+    - current_town = current_user.town
+    - if current_town
+      .mt-3.text-white.small.opacity-75= current_town.name
+      .mt-1.text-white
+        お買い物する
+      - market = current_town.stores.find { |s| s.user_id.nil? }
+      - if market
+        = link_to market_store_town_path(current_town), class: 'link-no-underline sidebar-menu mt-2' do
+          .d-flex.align-items-center.text-white
+            = image_tag '/img/icon/icon_file_white.svg'
+            .ms-2
+              中央卸売市場
+      = link_to store_other_stores_path, class: 'link-no-underline sidebar-menu mt-2' do
+        .d-flex.align-items-center.text-white
+          = image_tag '/img/icon/icon_file_white.svg'
+          .ms-2
+            他のお店
+    - else
+      .mt-3.text-white.small.opacity-75 町未選択
+
+    .mt-auto.mb-2
+      = link_to select_store_towns_path, class: 'link-no-underline sidebar-menu' do
+        .d-flex.align-items-center.text-white
+          %i.fas.fa-map.me-2
+          .small 街を切り替える
+      .mt-3.mb-4
+        .text-white.small.mb-1 所持金
+        .d-flex.align-items-center.gap-1.text-white
+          %i.fas.fa-coins
+          %span.fw-bold= "#{current_user.balance}円"
 
 :css
   .page-aside {

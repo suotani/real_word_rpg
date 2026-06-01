@@ -1,7 +1,8 @@
 .container-fluid.bg-light.min-vh-100.py-4
   .row.justify-content-center
     .col-lg-8.col-md-10.col-12
-      / 店舗ヘッダー（テーマカラー反映）
+
+      / 店舗ヘッダー
       .card.shadow-lg.border-0.mb-4.overflow-hidden
         .store-header{style: "background: linear-gradient(135deg, #{@store.theme_color} 0%, #{@store.theme_sub_color} 100%); min-height: 120px;"}
         .card-body.p-4
@@ -15,42 +16,57 @@
                 %i.fas.fa-tag
                 = @store.store_category&.name || '未分類'
             .store-actions
-              = link_to edit_store_store_path(@store), class: "btn btn-outline-primary btn-sm mb-2" do
-                %i.fas.fa-edit
-                編集
-              = link_to store_dashboard_path, class: "btn btn-outline-secondary btn-sm mb-2" do
+              - if @is_owner
+                = link_to edit_store_store_path(@store), class: "btn btn-outline-primary btn-sm mb-2" do
+                  %i.fas.fa-edit
+                  編集
+              = link_to store_other_stores_path, class: "btn btn-outline-secondary btn-sm mb-2" do
                 %i.fas.fa-arrow-left
-                ダッシュボード
+                他のお店一覧
 
-      / テーマカラー
-      .card.shadow-sm.border-0.mb-4
-        .card-body
-          %h5.card-title.mb-3
-            %i.fas.fa-palette.text-primary
-            テーマカラー
-          .d-flex.align-items-center.gap-3.flex-wrap
-            .d-flex.align-items-center.gap-2
-              .color-swatch.rounded{style: "width: 32px; height: 32px; background: #{@store.theme_color};"}
-              %span.small= @store.theme_color
-            .d-flex.align-items-center.gap-2
-              .color-swatch.rounded{style: "width: 32px; height: 32px; background: #{@store.theme_sub_color};"}
-              %span.small= @store.theme_sub_color
+      - if @is_owner
+        / オーナー向け：在庫・レシピ管理導線
+        .card.shadow-sm.border-0.mb-4
+          .card-body
+            %h5.card-title.mb-3
+              %i.fas.fa-box-open.text-primary
+              在庫・レシピ
+            - stock_count = @store.stocks.count
+            %p.text-muted.mb-3
+              - if stock_count.positive?
+                この店舗の在庫: #{stock_count} 件
+              - else
+                まだ在庫は登録されていません。
+            = link_to store_store_recipes_path(@store), class: "btn btn-primary me-2" do
+              %i.fas.fa-list
+              レシピ一覧
+            = link_to store_store_stocks_path(@store), class: "btn btn-outline-primary" do
+              %i.fas.fa-box
+              在庫を見る
 
-      / 在庫・レシピへの導線
-      .card.shadow-sm.border-0.mb-4
-        .card-body
-          %h5.card-title.mb-3
-            %i.fas.fa-box-open.text-primary
-            在庫・レシピ
-          - stock_count = @store.stocks.count
-          %p.text-muted.mb-3
-            - if stock_count.positive?
-              この店舗の在庫: #{stock_count} 件
+      - else
+        / 訪問者向け：出品中の商品一覧
+        .card.shadow-sm.border-0.mb-4
+          .card-body
+            %h5.card-title.mb-3
+              %i.fas.fa-shopping-bag.text-warning
+              出品中の商品
+            - if @listed_stocks.any?
+              .table-responsive
+                %table.table.table-hover.align-middle
+                  %thead.table-light
+                    %tr
+                      %th 商品名
+                      %th カテゴリ
+                      %th 価格
+                      %th
+                  %tbody
+                    - @listed_stocks.each do |stock|
+                      %tr
+                        %td.fw-bold= stock.name
+                        %td.text-muted.small= stock.item_sub_category&.name
+                        %td.text-warning.fw-bold= "#{stock.price}円"
+                        %td.text-end
+                          = link_to '購入する', purchase_store_store_actions_path(stock_id: stock.id), class: 'btn btn-warning btn-sm'
             - else
-              まだ在庫は登録されていません。レシピを登録して在庫を追加しましょう。
-          = link_to store_store_items_path(@store), class: "btn btn-primary me-2" do
-            %i.fas.fa-list
-            レシピ一覧
-          = link_to store_store_stocks_path(@store), class: "btn btn-outline-primary" do
-            %i.fas.fa-box
-            在庫を見る
+              %p.text-muted.mb-0 現在出品中の商品はありません。

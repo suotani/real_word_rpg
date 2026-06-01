@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_18_000001) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_01_100423) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -135,6 +135,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_18_000001) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "item_sub_category_id"
+    t.index ["item_sub_category_id"], name: "index_recipes_on_item_sub_category_id"
     t.index ["store_id"], name: "index_recipes_on_store_id"
   end
 
@@ -147,6 +149,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_18_000001) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.integer "item_sub_category_id"
+    t.boolean "listed", default: false, null: false
     t.index ["item_sub_category_id"], name: "index_stocks_on_item_sub_category_id"
     t.index ["store_id"], name: "index_stocks_on_store_id"
     t.index ["user_id"], name: "index_stocks_on_user_id"
@@ -208,6 +211,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_18_000001) do
     t.datetime "updated_at", precision: nil, null: false
     t.string "name"
     t.integer "town_id"
+    t.integer "balance", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["town_id"], name: "index_users_on_town_id"
@@ -226,6 +230,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_18_000001) do
   add_foreign_key "item_sub_categories", "item_categories"
   add_foreign_key "recipe_item_sub_categories", "item_sub_categories"
   add_foreign_key "recipe_item_sub_categories", "recipes"
+  add_foreign_key "recipes", "item_sub_categories"
   add_foreign_key "recipes", "stores"
   add_foreign_key "stocks", "item_sub_categories"
   add_foreign_key "stocks", "stores"

@@ -1,0 +1,34 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-5.col-md-7
+
+      .d-flex.align-items-center.gap-3.mb-4
+        = link_to :back, class: "btn btn-outline-secondary btn-sm" do
+          %i.fas.fa-arrow-left
+          戻る
+        %h1.mb-0 購入
+
+      .card.shadow-sm.mb-3
+        .card-body
+          %h5.card-title= @target_stock.name
+          %p.text-muted.mb-1= @target_stock.item_sub_category&.item_category&.name
+          %p.mb-0
+            販売価格:
+            %strong.text-warning.fs-5= "#{@target_stock.price}円"
+
+      .card.shadow-sm
+        .card-body
+          - if flash[:alert]
+            .alert.alert-danger= flash[:alert]
+
+          = form_with url: purchase_store_store_actions_path, method: :post, local: true do |f|
+            = hidden_field_tag :stock_id, @target_stock.id
+
+            .mb-4
+              = label_tag :store_id, '受け取り先の店舗', class: 'form-label fw-bold'
+              = select_tag :store_id,
+                  options_from_collection_for_select(@user_stores, :id, :name),
+                  prompt: '選択してください',
+                  class: 'form-select'
+
+            = submit_tag '購入する', class: 'btn btn-warning w-100 fw-bold'

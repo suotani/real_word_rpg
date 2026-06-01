@@ -1,6 +1,6 @@
 class Store::StocksController < Store::ApplicationController
   before_action :set_store
-  before_action :set_stock, only: [:show, :edit, :update, :destroy]
+  before_action :set_stock, only: [:show, :edit, :update, :destroy, :list, :unlist]
   before_action :set_item_sub_categories, only: [:index, :new, :create, :edit, :update]
 
   def index
@@ -39,6 +39,25 @@ class Store::StocksController < Store::ApplicationController
   def destroy
     @stock.destroy
     redirect_to store_store_stocks_path(@store), notice: '在庫が正常に削除されました。'
+  end
+
+  def list
+    if request.post?
+      price = params[:price].to_i
+      if price > 0
+        @stock.update!(price: price, listed: true)
+        redirect_to store_store_stocks_path(@store), notice: "「#{@stock.name}」を出品しました。"
+      else
+        flash.now[:alert] = '販売価格を1円以上で入力してください。'
+        render :list
+      end
+    end
+    # GET: list.html.haml を暗黙レンダリング
+  end
+
+  def unlist
+    @stock.update!(listed: false)
+    redirect_to store_store_stocks_path(@store), notice: "「#{@stock.name}」の出品を取り消しました。"
   end
 
   private
