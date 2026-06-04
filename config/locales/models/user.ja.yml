@@ -1,0 +1,25 @@
+# User モデル（ユーザー）
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+    attributes:
+      user:
+        name: アカウント名
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認）
+    errors:
+      models:
+        user:
+          attributes:
+            name:
+              blank: を入力してください
+              taken: はすでに使用されています
+            email:
+              blank: を入力してください
+              invalid: は有効なメールアドレスを入力してください
+              taken: はすでに登録されています
+            password:
+              blank: を入力してください
+              too_short: は%{count}文字以上で入力してください

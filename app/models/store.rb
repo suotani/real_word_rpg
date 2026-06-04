@@ -1,8 +1,9 @@
 class Store < ApplicationRecord
   belongs_to :town
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :store_category
   has_many :stocks, dependent: :destroy
+  has_many :recipes, dependent: :destroy
 
   # バリデーション
   validates :name, presence: true, length: { maximum: 255 }

@@ -1,33 +1,183 @@
-<div class="container">
-  <div class="card" style="max-width: 700px; margin: 50px auto">
-    <div class="card-header">
-      ログイン
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">⚔️</div>
+      <h1 class="auth-brand-name">RealRPG</h1>
+      <p class="auth-brand-sub">現実世界をゲームに</p>
     </div>
-    <div class="card-body">
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        <div class="field form-group">
-          <%= f.label :email, value: "メールアドレス" %><br />
-          <%= f.email_field :email, autofocus: true, class: "form-control" %>
-        </div>
 
-        <div class="field form-group">
-          <%= f.label :password, value: "パスワード" %><br />
-          <%= f.password_field :password, class: "form-control" %>
-        </div>
+    <h2 class="auth-title">ログイン</h2>
 
-        <% if devise_mapping.rememberable? %>
-          <div class="field form-group form-check">
-            <%= f.check_box :remember_me , class: "form-check-input"%>
-            <%= f.label "ログイン状態を記憶" , class: "form-check-label"%>
-          </div>
-        <% end %>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="auth-field">
+        <%= f.label :email, "メールアドレス", class: "auth-label" %>
+        <%= f.email_field :email, autofocus: true, class: "auth-input", placeholder: "example@email.com" %>
+      </div>
 
-        <div class="actions mt-2">
-          <%= f.submit "ログイン", class: "btn btn-primary" %>
+      <div class="auth-field">
+        <%= f.label :password, "パスワード", class: "auth-label" %>
+        <%= f.password_field :password, class: "auth-input", placeholder: "••••••••" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="auth-remember">
+          <%= f.check_box :remember_me, id: "remember_me" %>
+          <%= f.label :remember_me, "ログイン状態を保持する", for: "remember_me" %>
         </div>
       <% end %>
-      <%= render "devise/shared/links" %>
+
+      <%= f.submit "ログイン", class: "auth-btn" %>
+    <% end %>
+
+    <div class="auth-links">
+      <% if devise_mapping.registerable? %>
+        <span class="auth-links-text">アカウントをお持ちでない方は</span>
+        <%= link_to "新規登録", new_registration_path(resource_name), class: "auth-link" %>
+      <% end %>
+      <% if devise_mapping.recoverable? %>
+        <%= link_to "パスワードを忘れた方", new_password_path(resource_name), class: "auth-link-muted" %>
+      <% end %>
     </div>
   </div>
-
 </div>
+
+<style>
+  body { background: #f5f0e8; }
+
+  .auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .auth-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+
+  .auth-brand {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .auth-brand-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .auth-brand-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff6b35 0%, #ffa244 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+  }
+
+  .auth-brand-sub {
+    color: #999;
+    font-size: 0.85rem;
+    margin: 0.25rem 0 0;
+  }
+
+  .auth-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .auth-field {
+    margin-bottom: 1.2rem;
+  }
+
+  .auth-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.4rem;
+  }
+
+  .auth-input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .auth-input:focus {
+    border-color: #ffa244;
+  }
+
+  .auth-remember {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .auth-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #ff6b35 0%, #ffa244 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .auth-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .auth-links {
+    margin-top: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .auth-links-text {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .auth-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ff6b35;
+    text-decoration: none;
+  }
+
+  .auth-link:hover { text-decoration: underline; }
+
+  .auth-link-muted {
+    font-size: 0.82rem;
+    color: #aaa;
+    text-decoration: none;
+  }
+
+  .auth-link-muted:hover { color: #666; }
+</style>

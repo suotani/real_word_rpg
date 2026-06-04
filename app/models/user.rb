@@ -11,13 +11,22 @@ class User < ApplicationRecord
   has_many :managed_htmls
 
   # SHOP
+  belongs_to :town, optional: true
   has_many :user_towns
   has_many :towns, through: :user_towns
   has_many :stores
-  has_many :items
   has_many :stocks
 
   validates :name, presence: true, uniqueness: true
+  validates :balance, numericality: { greater_than_or_equal_to: 0 }
+
+  def afford?(amount)
+    balance >= amount
+  end
+
+  def deduct!(amount)
+    decrement!(:balance, amount)
+  end
 
   def admin?
     true

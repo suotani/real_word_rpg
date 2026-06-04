@@ -1,0 +1,27 @@
+# Item モデル（レシピ・商品）
+ja:
+  activerecord:
+    models:
+      item: レシピ
+    attributes:
+      item:
+        name: 名前
+        description: 説明
+        item_category: カテゴリー
+        item_category_id: カテゴリー
+        town_id: 町
+        user_id: ユーザー
+    errors:
+      models:
+        item:
+          attributes:
+            name:
+              blank: を入力してください
+              too_long: は%{count}文字以内で入力してください
+            description:
+              blank: を入力してください
+              too_long: は%{count}文字以内で入力してください
+            item_category:
+              required: を選択してください
+            item_category_id:
+              required: を選択してください

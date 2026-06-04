@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+require "fileutils"
+
+APP_ROOT = File.expand_path("..", __dir__)
+
+def system!(*args)
+  system(*args, exception: true)
+end
+
+FileUtils.chdir APP_ROOT do
+  puts "== Installing Playwright =="
+  playwright_cli_version = `bundle exec ruby -e 'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'`.strip
+  system!("npm install --save-dev @playwright/test@#{playwright_cli_version}")
+  system!("npx playwright install-deps")
+  system!("npx playwright install chromium")
+end

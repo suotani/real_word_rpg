@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
 
   root to: "dashboard#index"
+
+  namespace :api do
+    namespace :batches do
+      post 'virtual_purchase', to: 'virtual_purchases#create'
+    end
+  end
+
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }
@@ -26,15 +33,32 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     get 'dashboard', to: 'dashboard#index'
     resources :towns, only: [:index, :new, :create] do
-      get 'join_request', on: :collection
-      post 'join', on: :collection
+      get  'join_request', on: :collection
+      get  'select',       on: :collection
+      post 'join',         on: :collection
+      post 'switch',       on: :collection
+      get  'market',       on: :member
     end
-    resources :stores, only: [:index, :new, :create, :edit, :update]
-    resources :items, only: [:index, :new, :create, :edit, :update, :show]
-    resources :stocks, only: [:index, :create]
-    resources :store_actions do
-      post 'buy', on: :collection
-      post 'sell', on: :collection
+    resources :stores, only: [:index, :show, :new, :create, :edit, :update] do
+      resources :stocks, only: [:index, :create, :show, :edit, :update, :destroy] do
+        member do
+          get  :list
+          post :list
+          post :unlist
+        end
+      end
+      resources :recipes, only: [:index, :new, :create, :destroy] do
+        post 'craft', on: :member
+      end
+    end
+    resources :item_sub_categories, only: [:new, :create]
+    get 'other_stores', to: 'other_stores#index'
+    resources :store_actions, only: [] do
+      get  'buy',      on: :collection
+      post 'buy',      on: :collection
+      get  'purchase', on: :collection
+      post 'purchase', on: :collection
+      post 'sell',     on: :collection
     end
   end
 

@@ -72,30 +72,31 @@ class Htmladmin::ManagedHtmlsController < Htmladmin::HtmladminController
   end
 
   private
-    def set_managed_html
-      @managed_html = ManagedHtml.find(params[:id])
-    end
-    
-    def set_imports
-      @import_js = current_user.managed_htmls.where.not("managed_htmls.js_note = ''")
-      @import_css = current_user.managed_htmls.where.not("managed_htmls.css_note = ''")
-    end
 
-    def managed_html_params
-      params.require(:managed_html).permit(:title, :note, :public, :level, :js_note, :css_note, :address)
+  def set_managed_html
+    @managed_html = ManagedHtml.find(params[:id])
+  end
+  
+  def set_imports
+    @import_js = current_user.managed_htmls.where.not("managed_htmls.js_note = ''")
+    @import_css = current_user.managed_htmls.where.not("managed_htmls.css_note = ''")
+  end
+
+  def managed_html_params
+    params.require(:managed_html).permit(:title, :note, :public, :level, :js_note, :css_note, :address)
+  end
+  
+  def delete_insert_imports
+    @managed_html.import_htmls.destroy_all
+    params[:js].present? && params[:js].each do |i, js|
+      @managed_html.import_htmls.create(import_html_id: js["id"], asset_type: "js") if js[:use]
     end
-    
-    def delete_insert_imports
-      @managed_html.import_htmls.destroy_all
-      params[:js].present? && params[:js].each do |i, js|
-        @managed_html.import_htmls.create(import_html_id: js["id"], asset_type: "js") if js[:use]
-      end
-      params[:css].present? && params[:css].each do |i, css|
-        @managed_html.import_htmls.create(import_html_id: css["id"], asset_type: "css") if css[:use]
-      end
+    params[:css].present? && params[:css].each do |i, css|
+      @managed_html.import_htmls.create(import_html_id: css["id"], asset_type: "css") if css[:use]
     end
-    
-    def check_public
-      @managed_html.public || @managed_html.user_id == current_user.id
-    end
+  end
+  
+  def check_public
+    @managed_html.public || @managed_html.user_id == current_user.id
+  end
 end

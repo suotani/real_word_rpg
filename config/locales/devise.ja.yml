@@ -1,0 +1,101 @@
+# Additional translations at https://github.com/plataformatec/devise/wiki/I18n
+
+ja:
+  devise:
+    confirmations:
+      confirmed: メールアドレスの確認が完了しました。
+      send_instructions: |
+        入力されたアドレスにメールを送信しました。
+        記載されたリンクから手続きを行って下さい。
+      send_paranoid_instructions: |
+        入力されたアドレスにメールを送信しました。
+        記載されたリンクから手続きを行って下さい。
+    failure:
+      already_authenticated: '' # すでにログインしています。
+      inactive: メールアドレスの認証が完了していません。
+      discarded_account: アカウントが削除されました。
+      frozen_account: アカウントが凍結されました。
+      invalid: |
+        認証に失敗しました。
+        メールアドレスまたはパスワードに誤りがあります。
+      locked: |
+        アカウントがロックされました。
+        暫く経ってから再度お試し下さい。
+      last_attempt: あと1回パスワードの入力に失敗すると一定時間ログインできなくなります。
+      not_found_in_database: |
+        認証に失敗しました。
+        メールアドレスまたはパスワードに誤りがあります。
+      timeout: しばらく操作が行われなかったため、セッションがタイムアウトしました。
+      unauthenticated: '' # アカウント登録もしくはログインしてください。
+      unconfirmed: メールアドレスの認証が完了していません。
+      two_fa_token:
+        blank: 認証コードを入力してください。
+        invalid: 認証コードが間違っています。
+        send_mail: 認証コードを登録アドレスに送信しました。
+        success: ログインしました。
+    mailer:
+      confirmation_on_create_instructions:
+        subject: '[アスヤク配信ポータル【β版】] 管理者招待のご案内'
+      confirmation_instructions:
+        subject: '[アスヤク配信ポータル【β版】] メールアドレスのご確認'
+      reset_password_instructions:
+        subject: '[アスヤク配信ポータル【β版】] パスワード再発行のご案内'
+      password_change:
+        subject: '[アスヤク配信ポータル【β版】] パスワードの変更について'
+      email_changed:
+        subject: '[アスヤク配信ポータル【β版】] メールアドレスの変更について'
+      unlock_instructions:
+        subject: '[アスヤク配信ポータル【β版】] アカウントロックの解除について'
+    #    omniauth_callbacks:
+    #      failure: "%{kind} アカウントによる認証に失敗しました。理由：（%{reason}）"
+    #      success: "%{kind} アカウントによる認証に成功しました。"
+    passwords:
+      no_token: このページにはアクセスできません。パスワード再発行メールのリンクからアクセスされた場合には、URL をご確認ください。
+      send_instructions: |
+        入力されたアドレスにメールを送信しました。
+        記載されたリンクから手続きを行って下さい。
+      send_paranoid_instructions: |
+        入力されたアドレスにメールを送信しました。
+        記載されたリンクから手続きを行って下さい。
+      updated: パスワードが更新されました。
+      updated_not_active: パスワードが更新されました。
+    registrations:
+      destroyed: 退会処理が完了しました。
+      signed_up: アカウント登録が完了しました。
+      signed_up_but_inactive: |
+        登録アドレスにメールを送信しました。
+        記載されたリンクからログインして下さい。
+      signed_up_but_locked: アカウントがロックされています。
+      signed_up_but_unconfirmed: |
+        登録アドレスにメールを送信しました。
+        記載されたリンクからログインして下さい。
+      update_needs_confirmation: |
+        登録アドレスにメールを送信しました。
+        記載されたリンクからログインして下さい。
+      updated: アカウント情報を変更しました。
+      updated_but_not_signed_in: アカウント情報を変更しました。再度ログインしてください。
+    sessions:
+      signed_in: ログインしました。
+      signed_out: ログアウトしました。
+      already_signed_out: '' # 既にログアウト済みです。
+    unlocks:
+      send_instructions: |
+        登録アドレスにメールを送信しました。
+        記載されたリンクからログインして下さい。
+      send_paranoid_instructions: |
+        登録アドレスにメールを送信しました。
+        記載されたリンクからログインして下さい。
+      unlocked: アカウントロックを解除しました。
+    omniauth_callbacks:
+      failure: "%{kind} アカウントによる認証に失敗しました。理由：（%{reason}）"
+      success: "%{kind} アカウントによる認証に成功しました。"
+  errors:
+    messages:
+      already_confirmed: 入力されたメールアドレスは既に認証が完了しています。
+      confirmation_period_expired: の期限が切れました。%{period} までに確認する必要があります。新しくリクエストしてください。
+      expired: の有効期限が切れました。新しくリクエストしてください。
+      not_found: は見つかりませんでした。
+      not_locked: はアカウントロックされていません。
+      not_saved:
+        one: "エラーが発生したため %{resource} は保存されませんでした:"
+        other: "%{count} 件のエラーが発生したため %{resource} は保存されませんでした:"

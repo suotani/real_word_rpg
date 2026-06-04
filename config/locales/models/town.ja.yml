@@ -1,0 +1,15 @@
+# Town モデル（町）
+ja:
+  activerecord:
+    models:
+      town: 町
+    attributes:
+      town:
+        name: 町の名前
+    errors:
+      models:
+        town:
+          attributes:
+            name:
+              blank: を入力してください
+              too_long: は%{count}文字以内で入力してください

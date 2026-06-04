@@ -1,8 +1,13 @@
 class Store::TownsController < Store::ApplicationController
-  before_action :set_town, only: [:show, :edit, :update, :destroy]
+  before_action :set_town, only: [:show, :edit, :update, :destroy, :market]
 
   def index
     @towns = Town.all
+  end
+
+  def select
+    @towns = current_user.towns.includes(:stores)
+    @current_town = current_user.town
   end
 
   def show
@@ -14,15 +19,28 @@ class Store::TownsController < Store::ApplicationController
 
   def create
     @town = Town.new(town_params)
-    
+
     ActiveRecord::Base.transaction do
       @town.save!
       UserTown.create!(user: current_user, town: @town)
+      current_user.update!(town: @town)
     end
     redirect_to store_dashboard_path(@town), notice: "町「#{@town.name}」が作成されました。パスワード: #{@town.password}"
   rescue => e
     flash.now[:alert] = '町の作成に失敗しました。'
     render :new
+  end
+
+  def switch
+    town = current_user.towns.find(params[:town_id])
+    current_user.update!(town: town)
+    redirect_back fallback_location: store_root_path, notice: "「#{town.name}」に切り替えました。"
+  end
+
+  def market
+    @market = @town.stores.find_by!(user_id: nil, name: '中央卸売市場')
+    @stocks = @market.stocks.includes(:item_sub_category)
+    @user_stores = current_user.stores.where(town: @town)
   end
 
   def join_request
@@ -31,6 +49,7 @@ class Store::TownsController < Store::ApplicationController
   def join
     @town = Town.find_by(name: params[:name], password: params[:password])
     if @town && @town.users.exclude?(current_user) && UserTown.create(user: current_user, town: @town)
+      current_user.update!(town: @town)
       redirect_to store_dashboard_path, notice: '町に参加しました。'
     else
       flash.now[:alert] = '町に参加できませんでした。'
@@ -52,7 +71,7 @@ class Store::TownsController < Store::ApplicationController
   private
 
   def set_town
-    @town = Town.find(params[:id])
+    @town = current_user.towns.find(params[:id])
   end
 
   def town_params

@@ -1,0 +1,73 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-6.col-md-8
+
+      .d-flex.align-items-center.gap-3.mb-4
+        = link_to store_store_recipes_path(@store), class: "btn btn-outline-secondary btn-sm" do
+          %i.fas.fa-arrow-left
+          レシピ一覧へ
+        %h1.mb-0 レシピを登録
+
+      .card.shadow-sm
+        .card-body
+          = form_with model: [@store, @recipe], url: store_store_recipes_path(@store) do |f|
+            - if @recipe.errors.any?
+              .alert.alert-danger
+                %ul.mb-0
+                  - @recipe.errors.full_messages.each do |msg|
+                    %li= msg
+
+            .mb-3
+              = f.label :name, 'レシピ名', class: 'form-label fw-bold'
+              = f.text_field :name, class: 'form-control', placeholder: 'かぼちゃスープ'
+
+            %hr
+            %p.fw-bold.mb-1 完成品
+            .mb-3
+              = label_tag 'output_item_category_select', 'カテゴリ', class: 'form-label'
+              = select_tag :output_item_category_id,
+                  options_from_collection_for_select(@item_categories, :id, :name),
+                  prompt: '選択してください',
+                  class: 'form-select',
+                  id: 'output_item_category_select'
+
+            .mb-1
+              = label_tag 'output_sub_cat_select', 'サブカテゴリ', class: 'form-label'
+              = f.select :item_sub_category_id,
+                  @item_sub_categories.map { |s| [s.name, s.id, { 'data-item-category-id' => s.item_category_id }] },
+                  { prompt: '先にカテゴリを選択' },
+                  { class: 'form-select', id: 'output_sub_cat_select' }
+
+            .mb-3.text-end
+              = link_to '+ サブカテゴリを新規登録', new_store_item_sub_category_path, class: 'small', target: '_blank'
+
+            %hr
+            .mb-4
+              %label.form-label.fw-bold 素材（複数選択可）
+              - if @item_sub_categories.any?
+                - @item_sub_categories.group_by(&:item_category).each do |category, sub_cats|
+                  %p.mb-1.text-muted.small= category.name
+                  .d-flex.flex-wrap.gap-2.mb-2
+                    - sub_cats.each do |sub_cat|
+                      .form-check.form-check-inline
+                        = f.check_box :item_sub_category_ids, { multiple: true, id: "sub_cat_#{sub_cat.id}", class: 'form-check-input' }, sub_cat.id, false
+                        = label_tag "sub_cat_#{sub_cat.id}", sub_cat.name, class: 'form-check-label'
+              - else
+                .alert.alert-warning この店舗カテゴリに対応した素材がありません。
+
+            = f.submit '登録する', class: 'btn btn-primary w-100'
+
+:javascript
+  $(function () {
+    function filterSubCats(categoryId) {
+      var $select = $('#output_sub_cat_select');
+      $select.find('option[data-item-category-id]').each(function () {
+        $(this).toggle(String($(this).data('item-category-id')) === String(categoryId));
+      });
+      $select.val('');
+    }
+
+    $('#output_item_category_select').on('change', function () {
+      filterSubCats($(this).val());
+    });
+  });

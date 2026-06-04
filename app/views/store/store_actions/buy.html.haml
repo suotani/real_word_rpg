@@ -1,0 +1,35 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-5.col-md-7
+
+      .d-flex.align-items-center.gap-3.mb-4
+        = link_to :back, class: "btn btn-outline-secondary btn-sm" do
+          %i.fas.fa-arrow-left
+          市場へ戻る
+        %h1.mb-0 仕入れ
+
+      .card.shadow-sm.mb-3
+        .card-body
+          %h5.card-title= @target_stock.name
+          %p.text-muted.mb-1= @target_stock.item_sub_category&.item_category&.name
+          %p.mb-0
+            仕入れ値:
+            %strong= "#{@target_stock.price}円"
+
+      .card.shadow-sm
+        .card-body
+          = form_with url: buy_store_store_actions_path, method: :post, local: true do |f|
+            = hidden_field_tag :stock_id, @target_stock.id
+
+            .mb-3
+              = label_tag :store_id, '仕入れ先', class: 'form-label fw-bold'
+              = select_tag :store_id,
+                  options_from_collection_for_select(@user_stores, :id, :name),
+                  prompt: '選択してください',
+                  class: 'form-select'
+
+            .mb-4
+              = label_tag :quantity, '個数', class: 'form-label fw-bold'
+              = number_field_tag :quantity, 1, min: 1, max: 99, class: 'form-control'
+
+            = submit_tag '決定', class: 'btn btn-success w-100'

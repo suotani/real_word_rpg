@@ -1,0 +1,43 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_store_path(@store), class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      店舗へ戻る
+    %h1.mb-0= @store.name
+    %span.text-muted.small 在庫一覧
+
+  - if flash[:notice]
+    .alert.alert-success= flash[:notice]
+
+  - if @stocks.any?
+    .table-responsive
+      %table.table.table-hover.align-middle
+        %thead.table-dark
+          %tr
+            %th 商品名
+            %th カテゴリ
+            %th 仕入れ値
+            %th 販売価格
+            %th 状態
+            %th
+        %tbody
+          - @stocks.each do |stock|
+            %tr
+              %td.fw-bold= stock.name
+              %td.text-muted.small= stock.item_sub_category&.name
+              %td= "#{stock.cost}円"
+              %td= "#{stock.price}円"
+              %td
+                - if stock.listed?
+                  %span.badge.bg-warning.text-dark 出品中
+                - else
+                  %span.badge.bg-secondary 未出品
+              %td.text-end
+                - if stock.listed?
+                  = button_to '取り消し', unlist_store_store_stock_path(@store, stock), method: :post, class: "btn btn-outline-secondary btn-sm"
+                - else
+                  = link_to '出品する', list_store_store_stock_path(@store, stock), class: 'btn btn-warning btn-sm'
+  - else
+    .alert.alert-info
+      まだ在庫がありません。
+      = link_to '中央卸売市場で仕入れる', market_store_town_path(@store.town), class: "alert-link"

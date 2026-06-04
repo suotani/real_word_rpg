@@ -1,0 +1,36 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_root_path, class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      ダッシュボード
+    %h1.mb-0 中央卸売市場
+    %span.text-muted.small= @town.name
+
+  - if flash[:notice]
+    .alert.alert-success= flash[:notice]
+
+  - if @user_stores.empty?
+    .alert.alert-warning
+      この町にまだお店がありません。先にお店を開設してください。
+      = link_to '店舗を開設', new_store_store_path, class: "alert-link"
+
+  - elsif @stocks.any?
+    .table-responsive
+      %table.table.table-hover.align-middle
+        %thead.table-dark
+          %tr
+            %th 商品名
+            %th カテゴリ
+            %th 仕入れ値
+            %th
+        %tbody
+          - @stocks.each do |stock|
+            %tr
+              %td
+                %span.fw-bold= stock.name
+              %td.text-muted.small= stock.item_sub_category&.item_category&.name
+              %td= "#{stock.price}円"
+              %td.text-end
+                = link_to '仕入れる', buy_store_store_actions_path(stock_id: stock.id), class: 'btn btn-success btn-sm'
+  - else
+    .alert.alert-info 現在在庫がありません。

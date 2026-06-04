@@ -1,0 +1,36 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_root_path, class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      ダッシュボード
+    %h1.mb-0 街を選ぶ
+
+  - if @towns.any?
+    .row.g-3
+      - @towns.each do |town|
+        .col-md-6.col-lg-4
+          .card.h-100.shadow-sm{ class: @current_town&.id == town.id ? 'border-warning border-2' : '' }
+            .card-body
+              .d-flex.justify-content-between.align-items-start.mb-2
+                %h5.card-title.mb-0= town.name
+                - if @current_town&.id == town.id
+                  %span.badge.bg-warning.text-dark 現在地
+              %p.text-muted.small.mb-2
+                店舗数: #{town.stores.count { |s| s.user_id == current_user.id }} 件
+            .card-footer.bg-transparent
+              - if @current_town&.id == town.id
+                %button.btn.btn-warning.w-100{ disabled: true } 選択中
+              - else
+                = form_with url: switch_store_towns_path, method: :post, local: true do |f|
+                  = f.hidden_field :town_id, value: town.id
+                  = f.submit 'この街に切り替える', class: 'btn btn-outline-warning w-100'
+  - else
+    .alert.alert-info まだどの町にも参加していません。
+
+  .d-flex.gap-3.mt-4
+    = link_to join_request_store_towns_path, class: "btn btn-outline-primary" do
+      %i.fas.fa-door-open.me-1
+      町に参加する
+    = link_to new_store_town_path, class: "btn btn-outline-info" do
+      %i.fas.fa-plus.me-1
+      新しい町を作る

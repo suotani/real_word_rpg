@@ -1,0 +1,60 @@
+.container-fluid.bg-light.min-vh-100.py-4
+  .row
+    .col-12
+      .d-flex.justify-content-between.align-items-center.mb-4
+        %h1.h3.mb-0
+          %i.fas.fa-store.text-primary
+          自分の店舗一覧
+        = link_to new_store_store_path, class: "btn btn-primary" do
+          %i.fas.fa-plus
+          新規店舗を開設
+
+      - if @stores.any?
+        .row
+          - @stores.each do |store|
+            .col-lg-4.col-md-6.mb-4
+              .card.h-100.shadow-sm.border-0.overflow-hidden
+                .store-card-header{style: "background: linear-gradient(135deg, #{store.theme_color} 0%, #{store.theme_sub_color} 100%); min-height: 80px;"}
+                .card-body
+                  %h5.card-title
+                    = link_to store.name, store_store_path(store), class: "text-decoration-none text-dark"
+                  %p.card-text.text-muted.small.mb-1
+                    %i.fas.fa-map-marker-alt
+                    = store.town.name
+                  %p.card-text.text-muted.small.mb-2
+                    %i.fas.fa-tag
+                    = store.store_category&.name || '未分類'
+                  - if store.stocks.any?
+                    %p.card-text.small.text-success.mb-2
+                      %i.fas.fa-box
+                      在庫: #{store.stocks.count} 件
+                  - else
+                    %p.card-text.small.text-muted.mb-2
+                      %i.fas.fa-box
+                      在庫なし
+                  .d-flex.gap-2.flex-wrap
+                    = link_to store_store_path(store), class: "btn btn-outline-primary btn-sm" do
+                      %i.fas.fa-info-circle
+                      詳細
+                    = link_to edit_store_store_path(store), class: "btn btn-outline-secondary btn-sm" do
+                      %i.fas.fa-edit
+                      編集
+                    = link_to store_store_recipes_path(store), class: "btn btn-primary btn-sm" do
+                      %i.fas.fa-list
+                      レシピ
+                    = link_to store_store_stocks_path(store), class: "btn btn-outline-primary btn-sm" do
+                      %i.fas.fa-box
+                      在庫
+      - else
+        .card.shadow-sm.border-0
+          .card-body.text-center.py-5
+            %i.fas.fa-store.text-muted{style: "font-size: 4rem;"}
+            %h4.text-muted.mt-3 まだ店舗がありません
+            %p.text-muted.mb-4 町に参加したら、お店を開設しましょう。
+            = link_to new_store_store_path, class: "btn btn-primary" do
+              %i.fas.fa-plus
+              最初の店舗を開設
+            .mt-3
+              = link_to store_dashboard_path, class: "text-muted" do
+                %i.fas.fa-arrow-left
+                ダッシュボードに戻る

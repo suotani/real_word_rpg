@@ -18,3 +18,19 @@ services:
           property: connectionString
       - key: <%= ENV['RAILS_MASTER_KEY'] %>
         sync: false
+      - key: SOLID_QUEUE_IN_PUMA
+        value: "true"
+
+  - type: cron
+    name: virtual-customer-batch
+    env: ruby
+    region: singapore
+    schedule: "0 * * * *"   # 毎時0分
+    buildCommand: "echo 'no build'"
+    startCommand: >
+      curl -s -o /dev/null -w "%{http_code}"
+      -X POST https://real-world-rpg.onrender.com/api/batches/virtual_purchase
+      -H "X-Batch-Token: $BATCH_SECRET_TOKEN"
+    envVars:
+      - key: BATCH_SECRET_TOKEN
+        sync: false

@@ -1,0 +1,30 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-5.col-md-7
+
+      .d-flex.align-items-center.gap-3.mb-4
+        = link_to store_store_stocks_path(@store), class: "btn btn-outline-secondary btn-sm" do
+          %i.fas.fa-arrow-left
+          在庫一覧へ
+        %h1.mb-0 出品
+
+      .card.shadow-sm.mb-3
+        .card-body
+          %h5.card-title= @stock.name
+          %p.text-muted.small.mb-1= @stock.item_sub_category&.item_category&.name
+          %p.mb-0
+            仕入れ値:
+            %strong= "#{@stock.cost}円"
+
+      .card.shadow-sm
+        .card-body
+          - if flash[:alert]
+            .alert.alert-danger= flash[:alert]
+
+          = form_with url: list_store_store_stock_path(@store, @stock), method: :post, local: true do |f|
+            .mb-4
+              = label_tag :price, '販売価格（円）', class: 'form-label fw-bold'
+              = number_field_tag :price, @stock.price, min: 1, class: 'form-control form-control-lg'
+              %p.text-muted.small.mt-1 仕入れ値より高い価格をおすすめします
+
+            = submit_tag '出品する', class: 'btn btn-warning w-100 fw-bold'
