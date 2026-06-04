@@ -8,6 +8,7 @@ gem 'rails', '~> 7.2.1'
 
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
+gem 'solid_queue'
 # Use SCSS for stylesheets
 gem 'sassc-rails', '~> 2.1'
 # Use Uglifier as compressor for JavaScript assets

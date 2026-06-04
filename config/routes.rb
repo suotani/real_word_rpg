@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
 
   root to: "dashboard#index"
+
+  namespace :api do
+    namespace :batches do
+      post 'virtual_purchase', to: 'virtual_purchases#create'
+    end
+  end
+
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }

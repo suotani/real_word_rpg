@@ -59,8 +59,8 @@ Rails.application.configure do
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 
-  # Use a real queuing backend for Active Job (and separate queues per environment)
-  # config.active_job.queue_adapter     = :resque
+  # Solid Queue を Active Job バックエンドとして使用（Puma 内で動作）
+  config.active_job.queue_adapter = :solid_queue
   # config.active_job.queue_name_prefix = "real_rpg_#{Rails.env}"
 
   config.action_mailer.perform_caching = false
