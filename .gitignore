@@ -31,3 +31,4 @@ env
 /config/master.key
 /vendor/bundle/*
 heroku.txt
+.env
