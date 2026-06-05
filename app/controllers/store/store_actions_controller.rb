@@ -102,5 +102,4 @@ class Store::StoreActionsController < Store::ApplicationController
       @user_stores = base
     end
   end
-  end
 end
