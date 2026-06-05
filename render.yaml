@@ -7,7 +7,7 @@ services:
     buildCommand: "echo 'no build'"
     startCommand: >
       curl -s -o /dev/null -w "%{http_code}"
-      -X POST https://real-world-rpg.onrender.com/api/batches/virtual_purchase
+      -X POST https://real-word-rpg.onrender.com/api/batches/virtual_purchase
       -H "X-Batch-Token: $BATCH_SECRET_TOKEN"
     envVars:
       - key: BATCH_SECRET_TOKEN
