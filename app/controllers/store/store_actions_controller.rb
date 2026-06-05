@@ -11,7 +11,12 @@ class Store::StoreActionsController < Store::ApplicationController
       return
     end
 
-    destination_store = @user_stores.find(params[:store_id])
+    destination_store = @user_stores.find_by(id: params[:store_id])
+    unless destination_store
+      redirect_to buy_store_store_actions_path(stock_id: @target_stock.id),
+                  alert: 'この商品はその店舗では取り扱えません。'
+      return
+    end
     quantity = [[params[:quantity].to_i, 1].max, 99].min
     total_cost = @target_stock.price * quantity
 
@@ -86,6 +91,16 @@ class Store::StoreActionsController < Store::ApplicationController
   end
 
   def set_user_stores
-    @user_stores = current_user.stores
+    town = current_user.town
+    base = town ? current_user.stores.where(town: town) : current_user.stores.none
+
+    # item_sub_category がある場合は store_category で絞り込む
+    if @target_stock&.item_sub_category&.item_category&.store_category
+      store_category = @target_stock.item_sub_category.item_category.store_category
+      @user_stores = base.where(store_category: store_category)
+    else
+      @user_stores = base
+    end
+  end
   end
 end

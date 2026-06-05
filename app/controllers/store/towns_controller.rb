@@ -38,9 +38,20 @@ class Store::TownsController < Store::ApplicationController
   end
 
   def market
-    @market = @town.stores.find_by!(user_id: nil, name: '中央卸売市場')
-    @stocks = @market.stocks.includes(:item_sub_category)
+    @market      = @town.stores.find_by!(user_id: nil, name: '中央卸売市場')
     @user_stores = current_user.stores.where(town: @town)
+
+    stocks = @market.stocks.includes(item_sub_category: :item_category)
+
+    if params[:item_category_id].present?
+      stocks = stocks.where(item_sub_categories: { item_category_id: params[:item_category_id] })
+    end
+
+    @stocks         = stocks
+    @item_categories = ItemCategory.joins(item_sub_categories: :stocks)
+                                   .where(stocks: { store_id: @market.id })
+                                   .distinct
+                                   .order(:name)
   end
 
   def join_request

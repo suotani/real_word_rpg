@@ -1,25 +1,25 @@
-databases:
-  - name: real_world_rpg_db
-    databaseName: real_world_rpg_db
-    user: real_world_rpg_db_user
-    region: singapore
+# databases:
+#   - name: real_world_rpg_db
+#     databaseName: real_world_rpg_db
+#     user: real_world_rpg_db_user
+#     region: singapore
 
 services:
-  - type: web
-    name: real-world-rpg
-    env: ruby
-    region: singapore
-    buildCommand: "./bin/render-build.sh"
-    startCommand: "bundle exec puma -C config/puma.rb"
-    envVars:
-      - key: <%= ENV['DATABASE_URL'] %>
-        fromDatabase:
-          name: real_world_rpg
-          property: connectionString
-      - key: <%= ENV['RAILS_MASTER_KEY'] %>
-        sync: false
-      - key: SOLID_QUEUE_IN_PUMA
-        value: "true"
+  # - type: web
+  #   name: real-world-rpg
+  #   env: ruby
+  #   region: singapore
+  #   buildCommand: "./bin/render-build.sh"
+  #   startCommand: "bundle exec puma -C config/puma.rb"
+  #   envVars:
+  #     - key: <%= ENV['DATABASE_URL'] %>
+  #       fromDatabase:
+  #         name: real_world_rpg
+  #         property: connectionString
+  #     - key: <%= ENV['RAILS_MASTER_KEY'] %>
+  #       sync: false
+  #     - key: SOLID_QUEUE_IN_PUMA
+  #       value: "true"
 
   - type: cron
     name: virtual-customer-batch

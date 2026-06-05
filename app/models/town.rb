@@ -15,8 +15,7 @@ class Town < ApplicationRecord
   private
 
   def create_central_wholesale_market
-    wholesale_category = StoreCategory.find_by(name: '卸市場')
-    return unless wholesale_category
+    wholesale_category = StoreCategory.find_or_create_by!(name: '卸市場')
 
     market = stores.create!(
       name: '中央卸売市場',

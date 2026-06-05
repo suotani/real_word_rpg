@@ -38,10 +38,9 @@ RSpec.describe 'Store Scenario', type: :system do
     expect(town.stores.find_by(name: '中央卸売市場')).to be_present
     expect(user.reload.town).to eq(town)
 
-    # 自分の店舗を作成
+    # 自分の店舗を作成（町はバックエンドで自動アサイン）
     visit new_store_store_path
     fill_in 'お店の名前', with: 'テスト飯屋'
-    select 'テスト街', from: 'どの町に作りますか？'
     select '飲食店', from: 'どんなお店ですか？'
     click_button '決定'
     expect(page).to have_content('「テスト飯屋」が作成されました')

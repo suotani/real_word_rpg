@@ -3,7 +3,8 @@ class Store::StoresController < Store::ApplicationController
   before_action :set_store_for_show, only: [:show]
 
   def index
-    @stores = current_user.stores.includes(:town, :store_category)
+    stores = current_user.stores.includes(:town, :store_category, :stocks)
+    @stores_by_town = stores.group_by(&:town)
   end
 
   def show
@@ -12,28 +13,27 @@ class Store::StoresController < Store::ApplicationController
   end
 
   def new
+    current_town = current_user.town
+    redirect_to select_store_towns_path, alert: "先に街を選択してください。" and return unless current_town
     @store = Store.new
-    @towns = current_user.towns
-    @store_categories = StoreCategory.all
-    redirect_to join_request_store_towns_path, alert: "町に参加してください。" if @towns.empty?
+    @store_categories = StoreCategory.where.not(name: '卸市場')
   end
 
   def create
     @store = current_user.stores.build(store_params)
-    
+    @store.town = current_user.town
+
     if @store.save
       redirect_to store_dashboard_path, notice: "「#{@store.name}」が作成されました。"
     else
-      @towns = current_user.towns
-      @store_categories = StoreCategory.all
+      @store_categories = StoreCategory.where.not(name: '卸市場')
       flash.now[:alert] = '失敗しました。'
       render :new
     end
   end
 
   def edit
-    @towns = current_user.towns
-    @store_categories = StoreCategory.all
+    @store_categories = StoreCategory.where.not(name: '卸市場')
   end
 
   def update
@@ -41,8 +41,7 @@ class Store::StoresController < Store::ApplicationController
     if @store.update(store_params)
       redirect_to store_store_path(@store), notice: '更新されました。'
     else
-      @towns = current_user.towns
-      @store_categories = StoreCategory.all
+      @store_categories = StoreCategory.where.not(name: '卸市場')
       render :edit
     end
   end
@@ -58,6 +57,6 @@ class Store::StoresController < Store::ApplicationController
   end
 
   def store_params
-    params.require(:store).permit(:name, :town_id, :store_category_id, :theme_color, :theme_sub_color)
+    params.require(:store).permit(:name, :store_category_id, :theme_color, :theme_sub_color)
   end
 end 

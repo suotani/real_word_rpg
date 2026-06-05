@@ -41,11 +41,19 @@
         .d-flex.align-items-center.text-white
           %i.fas.fa-map.me-2
           .small 街を切り替える
-      .mt-3.mb-4
+      .mt-3.mb-1
         .text-white.small.mb-1 所持金
         .d-flex.align-items-center.gap-1.text-white
           %i.fas.fa-coins
           %span.fw-bold= "#{current_user.balance}円"
+      .mt-2.mb-4
+        .text-white.small.mb-1 選択中の街
+        .d-flex.align-items-center.gap-1.text-white
+          %i.fas.fa-map-marker-alt
+          - if current_user.town
+            %span.fw-bold= current_user.town.name
+          - else
+            %span.opacity-75.small 未選択
 
 :css
   .page-aside {

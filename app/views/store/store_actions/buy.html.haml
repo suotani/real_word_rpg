@@ -23,13 +23,19 @@
 
             .mb-3
               = label_tag :store_id, '仕入れ先', class: 'form-label fw-bold'
-              = select_tag :store_id,
-                  options_from_collection_for_select(@user_stores, :id, :name),
-                  prompt: '選択してください',
-                  class: 'form-select'
+              - if @user_stores.any?
+                = select_tag :store_id,
+                    options_from_collection_for_select(@user_stores, :id, :name),
+                    prompt: '選択してください',
+                    class: 'form-select'
+              - else
+                .alert.alert-warning.mb-0
+                  この商品（#{@target_stock.item_sub_category&.item_category&.name}）を扱える店舗がありません。
+                  = link_to '店舗を開設する', new_store_store_path, class: 'alert-link'
 
             .mb-4
               = label_tag :quantity, '個数', class: 'form-label fw-bold'
               = number_field_tag :quantity, 1, min: 1, max: 99, class: 'form-control'
 
-            = submit_tag '決定', class: 'btn btn-success w-100'
+            - if @user_stores.any?
+              = submit_tag '決定', class: 'btn btn-success w-100'
