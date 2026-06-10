@@ -5,7 +5,8 @@ class ItemSubCategory < ApplicationRecord
   has_many :recipe_item_sub_categories, dependent: :destroy
   has_many :recipes, through: :recipe_item_sub_categories
 
-  validates :name, presence: true
+  validates :name, presence: true,
+                   uniqueness: { scope: [:town_id, :item_category_id] }
 
   after_create :add_to_town_wholesale_market
 

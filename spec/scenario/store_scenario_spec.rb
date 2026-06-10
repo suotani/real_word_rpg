@@ -37,10 +37,10 @@ RSpec.describe 'Store Scenario', type: :system do
     expect(town.stores.find_by(name: '中央卸売市場')).to be_present
     expect(user.reload.town).to eq(town)
 
-    # ItemSubCategory は town 作成後に登録（add_to_town_wholesale_market で市場在庫が自動追加される）
-    ItemSubCategory.create!(name: 'かぼちゃ',       item_category: item_cat, town: town)
-    ItemSubCategory.create!(name: 'たまねぎ',       item_category: item_cat, town: town)
-    ItemSubCategory.create!(name: 'かぼちゃスープ',  item_category: item_cat, town: town)
+    # 「かぼちゃ」「たまねぎ」は WholesaleItemsImporter による初期インポートで既に登録済み
+    # （add_to_town_wholesale_market で市場在庫も自動追加されている）。
+    # 「かぼちゃスープ」は卸売 CSV に存在しないため、ここで個別に登録する。
+    ItemSubCategory.create!(name: 'かぼちゃスープ', item_category: item_cat, town: town)
 
     # 銀行で25万円借入
     visit store_bank_path

@@ -32,3 +32,6 @@ env
 /vendor/bundle/*
 heroku.txt
 .env
+
+# Ignore SimpleCov coverage reports
+/coverage/

@@ -31,8 +31,8 @@
           - if current_user.remaining_loan_capacity > 0
             = form_with url: borrow_store_bank_path, method: :post, local: true do |f|
               .mb-3
-                = f.label :amount, '借入額（円）', class: 'form-label'
-                = f.number_field :amount, class: 'form-control', min: 1, max: current_user.remaining_loan_capacity, value: current_user.remaining_loan_capacity
+                = f.label :amount, '借入額（円）', for: 'borrow_amount', class: 'form-label'
+                = f.number_field :amount, id: 'borrow_amount', class: 'form-control', min: 1, max: current_user.remaining_loan_capacity, value: current_user.remaining_loan_capacity
                 .form-text 上限（残枠）: #{number_with_delimiter(current_user.remaining_loan_capacity)}円
               = f.submit '借り入れる', class: 'btn btn-primary w-100'
           - else
@@ -44,8 +44,8 @@
           - if current_user.in_debt?
             = form_with url: repay_store_bank_path, method: :post, local: true do |f|
               .mb-3
-                = f.label :amount, '返済額（円）', class: 'form-label'
-                = f.number_field :amount, class: 'form-control', min: 1, max: [current_user.loan_amount, current_user.balance].min, value: current_user.loan_amount
+                = f.label :amount, '返済額（円）', for: 'repay_amount', class: 'form-label'
+                = f.number_field :amount, id: 'repay_amount', class: 'form-control', min: 1, max: [current_user.loan_amount, current_user.balance].min, value: current_user.loan_amount
                 .form-text 借入残高: #{number_with_delimiter(current_user.loan_amount)}円 / 所持金: #{number_with_delimiter(current_user.balance)}円
               = f.submit '返済する', class: 'btn btn-danger w-100'
           - else
