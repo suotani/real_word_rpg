@@ -1,0 +1,50 @@
+.container.py-4
+  .d-flex.align-items-center.justify-content-between.mb-4
+    %h1.mb-0 店舗カテゴリ一覧
+    - if current_user.admin?
+      = link_to new_store_store_category_path, class: 'btn btn-primary btn-sm' do
+        %i.fas.fa-plus.me-1
+        店舗カテゴリを追加
+
+  - if @store_categories.any?
+    - @store_categories.each do |sc|
+      .card.mb-4.shadow-sm
+        - hours = sc.buisiness_times.map(&:sales_at).sort.uniq
+        .card-header.d-flex.align-items-center.justify-content-between
+          %span.fw-bold.fs-5= sc.name
+          - if current_user.admin?
+            .d-flex.gap-2
+              = link_to edit_store_store_category_path(sc), class: 'btn btn-outline-secondary btn-sm' do
+                %i.fas.fa-pen
+                編集
+              = button_to store_store_category_path(sc), method: :delete,
+                  data: { turbo_confirm: "「#{sc.name}」を削除しますか？紐づくデータがある場合は削除できません。" },
+                  class: 'btn btn-outline-danger btn-sm' do
+                %i.fas.fa-trash
+                削除
+        .card-body.py-2
+          .d-flex.align-items-center.gap-3.mb-2
+            .d-flex.align-items-center.gap-1
+              %span.fw-bold.small 購入時間帯:
+              - if hours.any?
+                %span= hours.map { |h| "#{h}時" }.join(', ')
+              - else
+                %span.text-muted 未設定
+            .d-flex.align-items-center.gap-1
+              %span.fw-bold.small 出店料:
+              %span= "#{number_with_delimiter(sc.listing_fee)}円"
+          - if sc.item_categories.any?
+            %table.table.table-sm.align-middle.mb-0
+              %thead.table-light
+                %tr
+                  %th 売ることができる商品カテゴリ
+                  %th.text-end サブカテゴリ数
+              %tbody
+                - sc.item_categories.sort_by(&:name).each do |ic|
+                  %tr
+                    %td= ic.name
+                    %td.text-end.text-muted= ic.item_sub_categories.size
+          - else
+            %p.text-muted.mb-0.py-2 商品カテゴリが登録されていません
+  - else
+    .alert.alert-info 店舗カテゴリが登録されていません

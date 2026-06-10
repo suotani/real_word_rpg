@@ -3,6 +3,6 @@ class VirtualCustomerBatchJob < ApplicationJob
 
   def perform
     result = VirtualCustomerBatchService.new.run
-    Rails.logger.info "[VirtualCustomerBatchJob] purchased=#{result[:count]} errors=#{result[:errors].size}"
+    Rails.logger.info "[VirtualCustomerBatchJob] hour=#{Time.current.hour} purchased=#{result[:count]} total=#{result[:total_amount]} errors=#{result[:errors].size}"
   end
 end

@@ -9,7 +9,8 @@ Rails.application.routes.draw do
   end
 
   devise_for :users, controllers: {
-    sessions: 'users/sessions'
+    sessions:      'users/sessions',
+    registrations: 'users/registrations'
   }
   
   # ダッシュボードルート
@@ -51,7 +52,18 @@ Rails.application.routes.draw do
         post 'craft', on: :member
       end
     end
-    resources :item_sub_categories, only: [:new, :create]
+    get 'guide',           to: 'guide#index'
+    get 'shopping_street', to: 'shopping_street#index'
+    resource  :bank, only: [:show] do
+      post :borrow
+      post :repay
+    end
+    resources :item_sub_categories, only: [:index, :new, :create]
+    resources :item_categories,     only: [:index, :new, :create, :edit, :update, :destroy]
+    resources :store_categories,    only: [:index, :new, :create, :edit, :update, :destroy] do
+      post :assign_item_category,  on: :member
+      post :unlink_item_category,  on: :member
+    end
     get 'other_stores', to: 'other_stores#index'
     resources :store_actions, only: [] do
       get  'buy',      on: :collection

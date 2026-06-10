@@ -18,8 +18,18 @@
               = form.text_field :name, class: "form-control", placeholder: "例: 美味しいパン屋、便利なコンビニ、おしゃれなカフェ", required: true
             
             .mb-4
-              = form.label :store_category_id, "どんなお店ですか？", class: "form-label"
-              = form.select :store_category_id, @store_categories.map { |category| [category.name, category.id] }, { prompt: "カテゴリを選択してください" }, { class: "form-control", required: true }
+              = form.label :store_category_id, "どんなお店ですか？", class: "form-label", for: "store_category_select"
+              = form.select :store_category_id,
+                  @store_categories.map { |sc| [sc.name, sc.id, { 'data-listing-fee': sc.listing_fee }] },
+                  { prompt: "カテゴリを選択してください" },
+                  { class: "form-control", required: true, id: "store_category_select" }
+              .mt-2.d-flex.align-items-center.gap-2
+                %i.fas.fa-coins.text-warning
+                %span.small.text-muted 出店料:
+                %span#listing-fee-display.fw-bold.text-muted —
+              .mt-1.small.text-muted
+                現在の所持金:
+                %span.fw-bold= "#{current_user.balance}円"
             
             .mb-4
               = form.label :theme_color, "テーマカラー", class: "form-label"
@@ -35,6 +45,17 @@
               = form.submit "決定", class: "btn btn-primary btn-lg px-4 mx-3"
               = link_to "やめる", store_dashboard_path, class: "btn btn-secondary btn-lg px-4"
 
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    var select  = document.getElementById('store_category_select');
+    var display = document.getElementById('listing-fee-display');
+    select.addEventListener('change', function() {
+      var option = select.options[select.selectedIndex];
+      var fee    = option.dataset.listingFee;
+      display.textContent = fee ? Number(fee).toLocaleString() + '円' : '—';
+    });
+  });
 
 :css
   .text-primary {

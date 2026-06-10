@@ -1,0 +1,15 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-5.col-md-7
+      .d-flex.align-items-center.gap-3.mb-4
+        = link_to store_store_categories_path, class: 'btn btn-outline-secondary btn-sm' do
+          %i.fas.fa-arrow-left
+          一覧へ戻る
+        %h1.mb-0 店舗カテゴリを追加
+
+      .card.shadow-sm
+        .card-body
+          = render 'form', store_category: @store_category
+      .alert.alert-info.mt-3
+        %i.fas.fa-info-circle.me-1
+        作成後の編集画面で商品カテゴリを追加できます。

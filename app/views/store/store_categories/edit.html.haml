@@ -1,0 +1,50 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_store_categories_path, class: 'btn btn-outline-secondary btn-sm' do
+      %i.fas.fa-arrow-left
+      一覧へ戻る
+    %h1.mb-0 店舗カテゴリを編集
+
+  .row.g-4
+    .col-lg-5
+      %h5.fw-bold.mb-3 基本設定
+      .card.shadow-sm
+        .card-body
+          = render 'form', store_category: @store_category
+
+    .col-lg-7
+      .d-flex.align-items-center.justify-content-between.mb-3
+        %h5.fw-bold.mb-0 商品カテゴリ
+
+      - if @store_category.item_categories.any?
+        .card.shadow-sm.mb-3
+          %table.table.table-hover.align-middle.mb-0
+            %thead.table-dark
+              %tr
+                %th カテゴリ名
+                %th
+            %tbody
+              - @store_category.item_categories.order(:name).each do |ic|
+                %tr
+                  %td= ic.name
+                  %td.text-end
+                    = button_to unlink_item_category_store_store_category_path(@store_category),
+                        params: { item_category_id: ic.id },
+                        method: :post,
+                        data: { turbo_confirm: "「#{ic.name}」の紐付けを解除しますか？（カテゴリ自体は削除されません）" },
+                        class: 'btn btn-outline-secondary btn-sm' do
+                      %i.fas.fa-times
+
+      - available = ItemCategory.where.not(id: @store_category.item_category_ids).order(:name)
+      .card.shadow-sm
+        .card-header.fw-bold 商品カテゴリを追加
+        .card-body
+          - if available.any?
+            = form_with url: assign_item_category_store_store_category_path(@store_category), method: :post, local: true, class: 'd-flex gap-2 align-items-center' do |f|
+              = select_tag :item_category_id,
+                  options_from_collection_for_select(available, :id, :name),
+                  prompt: '選択してください',
+                  class: 'form-select form-select-sm'
+              = f.submit '追加', class: 'btn btn-primary btn-sm'
+          - else
+            %p.text-muted.mb-0 追加できる商品カテゴリがありません

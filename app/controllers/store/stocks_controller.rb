@@ -4,7 +4,16 @@ class Store::StocksController < Store::ApplicationController
   before_action :set_item_sub_categories, only: [:index, :new, :create, :edit, :update]
 
   def index
-    @stocks = @store.stocks
+    @stocks = @store.stocks.includes(item_sub_category: :item_category)
+
+    if params[:item_sub_category_id].present?
+      @stocks = @stocks.where(item_sub_category_id: params[:item_sub_category_id])
+    end
+
+    case params[:status]
+    when 'listed'   then @stocks = @stocks.where(listed: true)
+    when 'unlisted' then @stocks = @stocks.where(listed: false)
+    end
   end
 
   def show
@@ -46,6 +55,7 @@ class Store::StocksController < Store::ApplicationController
       price = params[:price].to_i
       if price > 0
         @stock.update!(price: price, listed: true)
+        @stock.recalculate_attractiveness!
         redirect_to store_store_stocks_path(@store), notice: "「#{@stock.name}」を出品しました。"
       else
         flash.now[:alert] = '販売価格を1円以上で入力してください。'
@@ -71,7 +81,11 @@ class Store::StocksController < Store::ApplicationController
   end
 
   def set_item_sub_categories
-    @item_sub_categories = ItemSubCategory.includes(:item_category).order('item_categories.name, item_sub_categories.name')
+    @item_sub_categories = ItemSubCategory.where(town: @store.town)
+                                          .includes(:item_category)
+                                          .order('item_categories.name, item_sub_categories.name')
+    @grouped_item_sub_categories = @item_sub_categories.group_by { |s| s.item_category&.name || '未分類' }
+                                                       .transform_values { |items| items.map { |s| [s.name, s.id] } }
   end
 
   def stock_params

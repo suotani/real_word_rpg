@@ -48,7 +48,8 @@ class Store::RecipesController < Store::ApplicationController
         item_sub_category: @recipe.item_sub_category,
         cost: total_cost,
         price: 0,
-        user: current_user
+        user: current_user,
+        ingredient_count: ingredient_stocks.size
       )
     end
 
@@ -68,12 +69,19 @@ class Store::RecipesController < Store::ApplicationController
   end
 
   def item_categories_for_store
-    ItemCategory.where(store_category_id: @store.store_category_id).order(:name)
+    return ItemCategory.none unless @store.store_category_id
+
+    ItemCategory.joins(:item_category_store_categories)
+                .where(item_category_store_categories: { store_category_id: @store.store_category_id })
+                .order(:name)
   end
 
   def item_sub_categories_for_store
-    ItemSubCategory.joins(item_category: :store_category)
-                   .where(item_categories: { store_category_id: @store.store_category_id })
+    return ItemSubCategory.none unless @store.store_category_id
+
+    ItemSubCategory.where(town: @store.town)
+                   .joins(item_category: :item_category_store_categories)
+                   .where(item_category_store_categories: { store_category_id: @store.store_category_id })
                    .includes(:item_category)
                    .order('item_categories.name, item_sub_categories.name')
   end

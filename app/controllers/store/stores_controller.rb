@@ -4,12 +4,15 @@ class Store::StoresController < Store::ApplicationController
 
   def index
     stores = current_user.stores.includes(:town, :store_category, :stocks)
-    @stores_by_town = stores.group_by(&:town)
+    active_town = current_user.town
+    @stores_by_town = stores.group_by(&:town).sort_by do |town, _|
+      town == active_town ? 0 : 1
+    end
   end
 
   def show
-    @is_owner = @store.user_id == current_user.id
-    @listed_stocks = @store.stocks.listed.includes(:item_sub_category) unless @is_owner
+    @listed_stocks = @store.stocks.listed.includes(:item_sub_category)
+    @is_owner      = @store.user_id == current_user.id
   end
 
   def new
@@ -22,14 +25,22 @@ class Store::StoresController < Store::ApplicationController
   def create
     @store = current_user.stores.build(store_params)
     @store.town = current_user.town
+    @store_categories = StoreCategory.where.not(name: '卸市場')
 
-    if @store.save
-      redirect_to store_dashboard_path, notice: "「#{@store.name}」が作成されました。"
-    else
-      @store_categories = StoreCategory.where.not(name: '卸市場')
-      flash.now[:alert] = '失敗しました。'
-      render :new
+    listing_fee = @store.store_category&.listing_fee.to_i
+    unless current_user.afford?(listing_fee)
+      flash.now[:alert] = "所持金が不足しています。出店料: #{listing_fee}円 / 所持: #{current_user.balance}円"
+      render :new and return
     end
+
+    ActiveRecord::Base.transaction do
+      @store.save!
+      current_user.deduct!(listing_fee)
+    end
+    redirect_to store_dashboard_path, notice: "「#{@store.name}」が作成されました。（出店料: #{listing_fee}円）"
+  rescue ActiveRecord::RecordInvalid
+    flash.now[:alert] = '失敗しました。'
+    render :new
   end
 
   def edit

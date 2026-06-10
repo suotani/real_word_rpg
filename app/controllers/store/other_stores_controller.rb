@@ -7,7 +7,7 @@ class Store::OtherStoresController < Store::ApplicationController
     end
 
     town_with_stores = town.stores.includes(:store_category, :user)
-                           .reject { |s| s.user_id.nil? || s.user_id == current_user.id }
+                           .reject { |s| s.user_id.nil? }
     @towns_with_stores = town_with_stores.any? ? [[town, town_with_stores]] : []
   end
 end

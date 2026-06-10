@@ -1,0 +1,52 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-6.col-md-8
+
+      %h1.mb-4 銀行
+
+      - if flash[:notice]
+        .alert.alert-success= flash[:notice]
+      - if flash[:alert]
+        .alert.alert-danger= flash[:alert]
+
+      .card.shadow-sm.mb-4
+        .card-body
+          .row.text-center
+            .col-4
+              .text-muted.small 所持金
+              .fs-5.fw-bold= "#{number_with_delimiter(current_user.balance)}円"
+            .col-4
+              .text-muted.small 借入残高
+              - if current_user.in_debt?
+                .fs-5.fw-bold.text-danger= "#{number_with_delimiter(current_user.loan_amount)}円"
+              - else
+                .fs-5.fw-bold.text-muted 0円
+            .col-4
+              .text-muted.small 借入可能残枠
+              .fs-5.fw-bold= "#{number_with_delimiter(current_user.remaining_loan_capacity)}円"
+
+      .card.shadow-sm.mb-4
+        .card-header.fw-bold 借り入れる
+        .card-body
+          - if current_user.remaining_loan_capacity > 0
+            = form_with url: borrow_store_bank_path, method: :post, local: true do |f|
+              .mb-3
+                = f.label :amount, '借入額（円）', class: 'form-label'
+                = f.number_field :amount, class: 'form-control', min: 1, max: current_user.remaining_loan_capacity, value: current_user.remaining_loan_capacity
+                .form-text 上限（残枠）: #{number_with_delimiter(current_user.remaining_loan_capacity)}円
+              = f.submit '借り入れる', class: 'btn btn-primary w-100'
+          - else
+            %p.text-muted.mb-0 借入上限（#{number_with_delimiter(User::MAX_LOAN)}円）に達しています。
+
+      .card.shadow-sm
+        .card-header.fw-bold 返済する
+        .card-body
+          - if current_user.in_debt?
+            = form_with url: repay_store_bank_path, method: :post, local: true do |f|
+              .mb-3
+                = f.label :amount, '返済額（円）', class: 'form-label'
+                = f.number_field :amount, class: 'form-control', min: 1, max: [current_user.loan_amount, current_user.balance].min, value: current_user.loan_amount
+                .form-text 借入残高: #{number_with_delimiter(current_user.loan_amount)}円 / 所持金: #{number_with_delimiter(current_user.balance)}円
+              = f.submit '返済する', class: 'btn btn-danger w-100'
+          - else
+            %p.text-muted.mb-0 借入残高がありません。

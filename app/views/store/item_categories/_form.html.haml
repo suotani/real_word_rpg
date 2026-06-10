@@ -1,0 +1,12 @@
+= form_with model: [:store, item_category] do |f|
+  - if item_category.errors.any?
+    .alert.alert-danger
+      %ul.mb-0
+        - item_category.errors.full_messages.each do |msg|
+          %li= msg
+
+  .mb-4
+    = f.label :name, '商品カテゴリ名', class: 'form-label fw-bold'
+    = f.text_field :name, class: 'form-control'
+
+  = f.submit class: 'btn btn-primary w-100'

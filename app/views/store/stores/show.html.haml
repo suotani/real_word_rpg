@@ -1,72 +1,49 @@
-.container-fluid.bg-light.min-vh-100.py-4
-  .row.justify-content-center
-    .col-lg-8.col-md-10.col-12
+- color     = @store.theme_color
+- sub_color = @store.theme_sub_color
 
-      / 店舗ヘッダー
-      .card.shadow-lg.border-0.mb-4.overflow-hidden
-        .store-header{style: "background: linear-gradient(135deg, #{@store.theme_color} 0%, #{@store.theme_sub_color} 100%); min-height: 120px;"}
-        .card-body.p-4
-          .d-flex.justify-content-between.align-items-start.flex-wrap.gap-2
-            .store-title
-              %h1.h2.mb-1= @store.name
-              %p.text-muted.mb-0
-                %i.fas.fa-map-marker-alt
-                = @store.town.name
-              %p.text-muted.mb-0
-                %i.fas.fa-tag
-                = @store.store_category&.name || '未分類'
-            .store-actions
-              - if @is_owner
-                = link_to edit_store_store_path(@store), class: "btn btn-outline-primary btn-sm mb-2" do
-                  %i.fas.fa-edit
-                  編集
-              = link_to store_other_stores_path, class: "btn btn-outline-secondary btn-sm mb-2" do
-                %i.fas.fa-arrow-left
-                他のお店一覧
+.col-lg-8.col-md-10.mx-auto.py-4
 
-      - if @is_owner
-        / オーナー向け：在庫・レシピ管理導線
-        .card.shadow-sm.border-0.mb-4
-          .card-body
-            %h5.card-title.mb-3
-              %i.fas.fa-box-open.text-primary
-              在庫・レシピ
-            - stock_count = @store.stocks.count
-            %p.text-muted.mb-3
-              - if stock_count.positive?
-                この店舗の在庫: #{stock_count} 件
-              - else
-                まだ在庫は登録されていません。
-            = link_to store_store_recipes_path(@store), class: "btn btn-primary me-2" do
-              %i.fas.fa-list
-              レシピ一覧
-            = link_to store_store_stocks_path(@store), class: "btn btn-outline-primary" do
-              %i.fas.fa-box
-              在庫を見る
+  / ヒーローバナー（店名を重ねて表示）
+  .rounded-4.overflow-hidden.shadow.mb-4{style: "background: linear-gradient(135deg, #{color} 0%, #{sub_color} 100%);"}
+    .p-5
+      %h1.fw-bold.mb-1{style: 'color: rgba(255,255,255,0.95); text-shadow: 0 1px 4px rgba(0,0,0,0.3);'}
+        = @store.name
+      .d-flex.flex-wrap.gap-3.mt-2{style: 'color: rgba(255,255,255,0.8);'}
+        %span
+          %i.fas.fa-tag.me-1
+          = @store.store_category&.name
+        %span
+          %i.fas.fa-map-marker-alt.me-1
+          = @store.town.name
+        %span
+          %i.fas.fa-user.me-1
+          = @store.user&.name
 
+  / 出品中の商品
+  .card.border-0.shadow-sm.overflow-hidden
+    .card-header.fw-bold.py-3{style: "background: linear-gradient(90deg, #{color}22 0%, transparent 100%); border-left: 4px solid #{color};"}
+      %i.fas.fa-shopping-bag.me-2{style: "color: #{color};"}
+      出品中の商品
+    .card-body.p-0
+      - if @listed_stocks.any?
+        .table-responsive
+          %table.table.table-hover.align-middle.mb-0
+            %thead{style: "background: #{color}11;"}
+              %tr
+                %th.ps-4 商品名
+                %th カテゴリ
+                %th.text-end 価格
+                %th
+            %tbody
+              - @listed_stocks.each do |stock|
+                %tr
+                  %td.ps-4.fw-bold= stock.name
+                  %td.text-muted.small= stock.item_sub_category&.name
+                  %td.text-end.fw-bold= "#{number_with_delimiter(stock.price)}円"
+                  %td.text-end.pe-3
+                    - unless @is_owner
+                      = link_to '購入する', purchase_store_store_actions_path(stock_id: stock.id),
+                          class: 'btn btn-sm fw-bold',
+                          style: "background: #{color}; color: #fff; border: none;"
       - else
-        / 訪問者向け：出品中の商品一覧
-        .card.shadow-sm.border-0.mb-4
-          .card-body
-            %h5.card-title.mb-3
-              %i.fas.fa-shopping-bag.text-warning
-              出品中の商品
-            - if @listed_stocks.any?
-              .table-responsive
-                %table.table.table-hover.align-middle
-                  %thead.table-light
-                    %tr
-                      %th 商品名
-                      %th カテゴリ
-                      %th 価格
-                      %th
-                  %tbody
-                    - @listed_stocks.each do |stock|
-                      %tr
-                        %td.fw-bold= stock.name
-                        %td.text-muted.small= stock.item_sub_category&.name
-                        %td.text-warning.fw-bold= "#{stock.price}円"
-                        %td.text-end
-                          = link_to '購入する', purchase_store_store_actions_path(stock_id: stock.id), class: 'btn btn-warning btn-sm'
-            - else
-              %p.text-muted.mb-0 現在出品中の商品はありません。
+        .p-4.text-muted 現在出品中の商品はありません。

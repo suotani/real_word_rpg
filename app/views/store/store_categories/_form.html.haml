@@ -1,0 +1,21 @@
+= form_with model: [:store, store_category] do |f|
+  - if store_category.errors.any?
+    .alert.alert-danger
+      %ul.mb-0
+        - store_category.errors.full_messages.each do |msg|
+          %li= msg
+
+  .mb-3
+    = f.label :name, '店舗カテゴリ名', class: 'form-label fw-bold'
+    = f.text_field :name, class: 'form-control'
+
+  .mb-3
+    = f.label :sales_hours, '販売時間帯', class: 'form-label fw-bold'
+    = f.text_field :sales_hours, class: 'form-control', placeholder: '例: 12,20'
+    %div.form-text カンマ区切りで 0〜23 の時間を入力してください。
+
+  .mb-4
+    = f.label :listing_fee, '出店料（円）', class: 'form-label fw-bold'
+    = f.number_field :listing_fee, class: 'form-control', min: 0
+
+  = f.submit class: 'btn btn-primary w-100'

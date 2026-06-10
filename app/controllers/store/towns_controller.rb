@@ -22,6 +22,8 @@ class Store::TownsController < Store::ApplicationController
 
     ActiveRecord::Base.transaction do
       @town.save!
+      @town.create_central_wholesale_market!
+      @town.populate_wholesale_items!
       UserTown.create!(user: current_user, town: @town)
       current_user.update!(town: @town)
     end

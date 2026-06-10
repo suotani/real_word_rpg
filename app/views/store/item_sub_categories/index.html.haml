@@ -1,0 +1,29 @@
+.container.py-4
+  .d-flex.align-items-center.justify-content-between.mb-4
+    %h1.mb-0 商品サブカテゴリ一覧
+    = link_to new_store_item_sub_category_path, class: 'btn btn-primary btn-sm' do
+      %i.fas.fa-plus.me-1
+      サブカテゴリを追加
+
+  - if @item_sub_categories.any?
+    - grouped = @item_sub_categories.group_by(&:item_category)
+    - grouped.each do |item_cat, sub_cats|
+      .mb-4
+        %h5.text-muted.mb-2
+          %i.fas.fa-tag.me-1
+          = item_cat&.name || '未分類'
+          - if item_cat
+            %span.text-muted.small.ms-2= item_cat.store_categories.map(&:name).join(', ')
+        .card.shadow-sm
+          %table.table.table-hover.align-middle.mb-0
+            %thead.table-dark
+              %tr
+                %th サブカテゴリ名
+            %tbody
+              - sub_cats.each do |sc|
+                %tr
+                  %td.fw-bold= sc.name
+  - else
+    .alert.alert-info
+      サブカテゴリが登録されていません。
+      = link_to 'サブカテゴリを追加する', new_store_item_sub_category_path, class: 'alert-link'

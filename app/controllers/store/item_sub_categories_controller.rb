@@ -1,4 +1,13 @@
 class Store::ItemSubCategoriesController < Store::ApplicationController
+  def index
+    town = current_user.town
+    @item_sub_categories = town \
+      ? ItemSubCategory.where(town: town)
+                       .includes(item_category: :store_categories)
+                       .order('item_categories.name, item_sub_categories.name')
+      : ItemSubCategory.none
+  end
+
   def new
     @item_sub_category = ItemSubCategory.new
     @item_categories = ItemCategory.order(:name)
@@ -6,6 +15,7 @@ class Store::ItemSubCategoriesController < Store::ApplicationController
 
   def create
     @item_sub_category = ItemSubCategory.new(item_sub_category_params)
+    @item_sub_category.town = current_user.town
 
     if @item_sub_category.save
       redirect_back fallback_location: store_root_path,

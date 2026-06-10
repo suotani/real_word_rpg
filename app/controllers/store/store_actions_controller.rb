@@ -95,9 +95,9 @@ class Store::StoreActionsController < Store::ApplicationController
     base = town ? current_user.stores.where(town: town) : current_user.stores.none
 
     # item_sub_category がある場合は store_category で絞り込む
-    if @target_stock&.item_sub_category&.item_category&.store_category
-      store_category = @target_stock.item_sub_category.item_category.store_category
-      @user_stores = base.where(store_category: store_category)
+    store_categories = @target_stock&.item_sub_category&.item_category&.store_categories
+    if store_categories.present?
+      @user_stores = base.where(store_category: store_categories)
     else
       @user_stores = base
     end

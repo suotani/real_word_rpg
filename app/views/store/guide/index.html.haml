@@ -1,0 +1,29 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-7.col-md-9
+
+      %h1.mb-1 あそびかた
+      %p.text-muted.mb-5 このゲームのながれをせつめいします。
+
+      - @steps.each do |s|
+        .d-flex.gap-3.mb-5
+          .d-flex.flex-column.align-items-center
+            - if s[:done] == true
+              .rounded-circle.bg-success.text-white.fw-bold.d-flex.align-items-center.justify-content-center{style: 'width:40px;height:40px;flex-shrink:0;font-size:1.1rem'}
+                %i.fas.fa-check
+            - elsif s[:done] == false
+              .rounded-circle.bg-secondary.text-white.fw-bold.d-flex.align-items-center.justify-content-center{style: 'width:40px;height:40px;flex-shrink:0;font-size:1.1rem;opacity:0.4'}
+                = s[:num]
+            - else
+              .rounded-circle.bg-primary.text-white.fw-bold.d-flex.align-items-center.justify-content-center{style: 'width:40px;height:40px;flex-shrink:0;font-size:1.1rem'}
+                = s[:num]
+            - unless s == @steps.last
+              .border-start.border-2.flex-grow-1.mt-2{class: s[:done] == true ? 'border-success' : 'border-primary opacity-25', style: 'width:2px'}
+          .pb-4
+            .d-flex.align-items-center.gap-2.mb-1
+              %h5.fw-bold.mb-0= s[:title]
+              - if s[:done] == true
+                %span.badge.bg-success クリア！
+              - elsif s[:done] == false
+                %span.badge.bg-secondary まだ
+            %p.text-muted.mb-0= s[:body]

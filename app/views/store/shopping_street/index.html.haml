@@ -1,0 +1,37 @@
+.container.py-4
+  .d-flex.align-items-center.gap-2.mb-4
+    %h1.mb-0 商店街
+
+  - if @town.nil?
+    .alert.alert-info 街を選択すると商店街が表示されます。
+
+  - elsif @stores.empty?
+    .alert.alert-info まだお店がありません。
+
+  - else
+    .row.g-3
+      - @stores.each do |store|
+        .col-lg-4.col-md-6
+          .card.h-100.shadow-sm.border-0.overflow-hidden
+            .store-banner{style: "background: linear-gradient(135deg, #{store.theme_color} 0%, #{store.theme_sub_color} 100%); height: 60px;"}
+            .card-body
+              .d-flex.justify-content-between.align-items-start.mb-1
+                %h6.fw-bold.mb-0= store.name
+                - if store.user == current_user
+                  %span.badge.bg-primary.small 自分のお店
+              %p.text-muted.small.mb-2= store.store_category&.name
+              .d-flex.justify-content-between.align-items-center
+                .small.text-muted
+                  %i.fas.fa-user.me-1
+                  = store.user&.name
+                .small
+                  - listed = store.stocks.count(&:listed?)
+                  - if listed > 0
+                    %span.text-warning
+                      %i.fas.fa-tag.me-1
+                      = "#{listed}件 出品中"
+                  - else
+                    %span.text-muted 出品なし
+              .mt-3
+                = link_to store_store_path(store), class: 'btn btn-outline-primary btn-sm w-100' do
+                  お店を見る

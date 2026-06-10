@@ -9,6 +9,25 @@
   - if flash[:notice]
     .alert.alert-success= flash[:notice]
 
+  .card.shadow-sm.mb-4
+    .card-body.py-2
+      = form_with url: store_store_stocks_path(@store), method: :get, local: true do |f|
+        .row.g-2.align-items-end
+          .col-sm-5
+            = f.label :item_sub_category_id, 'カテゴリ', class: 'form-label form-label-sm mb-1'
+            = f.select :item_sub_category_id, grouped_options_for_select(@grouped_item_sub_categories, params[:item_sub_category_id]), { prompt: 'すべてのカテゴリ' }, { class: 'form-select form-select-sm' }
+          .col-sm-4
+            = f.label :status, '状態', class: 'form-label form-label-sm mb-1'
+            = f.select :status,
+                [['すべて', ''], ['出品中', 'listed'], ['未出品', 'unlisted']],
+                { selected: params[:status] },
+                { class: 'form-select form-select-sm' }
+          .col-sm-auto
+            = f.submit '絞り込む', class: 'btn btn-primary btn-sm'
+          - if params[:item_sub_category_id].present? || params[:status].present?
+            .col-sm-auto
+              = link_to 'リセット', store_store_stocks_path(@store), class: 'btn btn-outline-secondary btn-sm'
+
   - if @stocks.any?
     .table-responsive
       %table.table.table-hover.align-middle
@@ -39,5 +58,8 @@
                   = link_to '出品する', list_store_store_stock_path(@store, stock), class: 'btn btn-warning btn-sm'
   - else
     .alert.alert-info
-      まだ在庫がありません。
-      = link_to '中央卸売市場で仕入れる', market_store_town_path(@store.town), class: "alert-link"
+      - if params[:item_sub_category_id].present? || params[:status].present?
+        絞り込み条件に一致する在庫がありません。
+      - else
+        まだ在庫がありません。
+        = link_to '中央卸売市場で仕入れる', market_store_town_path(@store.town), class: "alert-link"

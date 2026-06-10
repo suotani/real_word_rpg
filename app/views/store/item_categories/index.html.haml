@@ -1,0 +1,40 @@
+.container.py-4
+  .d-flex.align-items-center.justify-content-between.mb-4
+    %h1.mb-0 商品カテゴリ一覧
+    - if current_user.admin?
+      = link_to new_store_item_category_path, class: 'btn btn-primary btn-sm' do
+        %i.fas.fa-plus.me-1
+        商品カテゴリを追加
+
+  - if @item_categories.any?
+    .card.shadow-sm
+      %table.table.table-hover.align-middle.mb-0
+        %thead.table-dark
+          %tr
+            %th 商品カテゴリ名
+            %th 店舗カテゴリ
+            %th.text-end
+              サブカテゴリ数
+              - if @current_town
+                %span.text-muted.fw-normal.small （#{@current_town.name}）
+            - if current_user.admin?
+              %th
+        %tbody
+          - @item_categories.each do |ic|
+            %tr
+              %td.fw-bold= ic.name
+              %td.text-muted.small= ic.store_categories.map(&:name).join(', ').presence || '—'
+              %td.text-end.text-muted= @current_town ? ic.item_sub_categories.count { |s| s.town_id == @current_town.id } : ic.item_sub_categories.size
+              - if current_user.admin?
+                %td.text-end
+                  .d-flex.justify-content-end.gap-2
+                    = link_to edit_store_item_category_path(ic), class: 'btn btn-outline-secondary btn-sm' do
+                      %i.fas.fa-pen
+                      編集
+                    = button_to store_item_category_path(ic), method: :delete,
+                        data: { turbo_confirm: "「#{ic.name}」を削除しますか？サブカテゴリが紐づいている場合は削除できません。" },
+                        class: 'btn btn-outline-danger btn-sm' do
+                      %i.fas.fa-trash
+                      削除
+  - else
+    .alert.alert-info 商品カテゴリが登録されていません

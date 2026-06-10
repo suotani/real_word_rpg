@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_09_233155) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -32,12 +32,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "batch_logs", force: :cascade do |t|
+    t.date "target_date", null: false
+    t.integer "hour", null: false
+    t.integer "purchased_count", default: 0, null: false
+    t.integer "total_amount", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["target_date", "hour"], name: "index_batch_logs_on_target_date_and_hour"
+  end
+
   create_table "buisiness_times", force: :cascade do |t|
-    t.integer "item_category_id", null: false
     t.integer "sales_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["item_category_id"], name: "index_buisiness_times_on_item_category_id"
+    t.integer "store_category_id", null: false
+    t.index ["store_category_id"], name: "index_buisiness_times_on_store_category_id"
   end
 
   create_table "charactor_tickets", force: :cascade do |t|
@@ -88,11 +98,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
   end
 
   create_table "item_categories", force: :cascade do |t|
-    t.integer "store_category_id", null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["store_category_id"], name: "index_item_categories_on_store_category_id"
+  end
+
+  create_table "item_category_store_categories", force: :cascade do |t|
+    t.integer "item_category_id", null: false
+    t.integer "store_category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_category_id", "store_category_id"], name: "index_item_category_store_categories_unique", unique: true
+    t.index ["item_category_id"], name: "index_item_category_store_categories_on_item_category_id"
+    t.index ["store_category_id"], name: "index_item_category_store_categories_on_store_category_id"
   end
 
   create_table "item_sub_categories", force: :cascade do |t|
@@ -100,7 +118,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "town_id"
     t.index ["item_category_id"], name: "index_item_sub_categories_on_item_category_id"
+    t.index ["town_id"], name: "index_item_sub_categories_on_town_id"
   end
 
   create_table "managed_htmls", force: :cascade do |t|
@@ -271,6 +291,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
     t.string "name"
     t.integer "item_sub_category_id"
     t.boolean "listed", default: false, null: false
+    t.integer "ingredient_count", default: 0, null: false
+    t.integer "unsold_count", default: 0, null: false
+    t.float "attractiveness", default: 0.0, null: false
     t.index ["item_sub_category_id"], name: "index_stocks_on_item_sub_category_id"
     t.index ["store_id"], name: "index_stocks_on_store_id"
     t.index ["user_id"], name: "index_stocks_on_user_id"
@@ -280,6 +303,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "sales_hours", default: ""
+    t.integer "listing_fee", default: 200000, null: false
   end
 
   create_table "stores", force: :cascade do |t|
@@ -333,6 +358,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
     t.string "name"
     t.integer "town_id"
     t.integer "balance", default: 0, null: false
+    t.integer "loan_amount", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["town_id"], name: "index_users_on_town_id"
@@ -346,9 +372,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_04_063029) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "buisiness_times", "item_categories"
-  add_foreign_key "item_categories", "store_categories"
+  add_foreign_key "buisiness_times", "store_categories"
+  add_foreign_key "item_category_store_categories", "item_categories"
+  add_foreign_key "item_category_store_categories", "store_categories"
   add_foreign_key "item_sub_categories", "item_categories"
+  add_foreign_key "item_sub_categories", "towns"
   add_foreign_key "recipe_item_sub_categories", "item_sub_categories"
   add_foreign_key "recipe_item_sub_categories", "recipes"
   add_foreign_key "recipes", "item_sub_categories"
