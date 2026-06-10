@@ -1,9 +1,10 @@
 .container.py-4
-  .d-flex.align-items-center.justify-content-between.mb-4
-    %h1.mb-0 商品サブカテゴリ一覧
+  .d-flex.align-items-center.justify-content-between.mb-2
+    %h1.mb-0 商品の種類一覧
     = link_to new_store_item_sub_category_path, class: 'btn btn-primary btn-sm' do
       %i.fas.fa-plus.me-1
-      サブカテゴリを追加
+      種類を追加
+  %p.text-muted.mb-4 商品カテゴリをさらに細かく分けた、商品の種類です。お店にならべたり、レシピの材料にしたりできます。
 
   - if @item_sub_categories.any?
     - grouped = @item_sub_categories.group_by(&:item_category)
@@ -18,12 +19,12 @@
           %table.table.table-hover.align-middle.mb-0
             %thead.table-dark
               %tr
-                %th サブカテゴリ名
+                %th 種類名
             %tbody
               - sub_cats.each do |sc|
                 %tr
                   %td.fw-bold= sc.name
   - else
     .alert.alert-info
-      サブカテゴリが登録されていません。
-      = link_to 'サブカテゴリを追加する', new_store_item_sub_category_path, class: 'alert-link'
+      商品の種類が登録されていません。
+      = link_to '種類を追加する', new_store_item_sub_category_path, class: 'alert-link'

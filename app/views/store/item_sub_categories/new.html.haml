@@ -6,7 +6,7 @@
         = link_to :back, class: "btn btn-outline-secondary btn-sm" do
           %i.fas.fa-arrow-left
           戻る
-        %h1.mb-0 サブカテゴリを登録
+        %h1.mb-0 商品の種類を登録
 
       .card.shadow-sm
         .card-body
@@ -25,7 +25,7 @@
                   { class: 'form-select' }
 
             .mb-4
-              = f.label :name, 'サブカテゴリ名', class: 'form-label fw-bold'
+              = f.label :name, '種類名', class: 'form-label fw-bold'
               = f.text_field :name, class: 'form-control'
 
             = f.submit '登録する', class: 'btn btn-primary w-100'

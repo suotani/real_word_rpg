@@ -17,7 +17,7 @@ class Store::StoresController < Store::ApplicationController
 
   def new
     current_town = current_user.town
-    redirect_to select_store_towns_path, alert: "先に街を選択してください。" and return unless current_town
+    redirect_to select_store_towns_path, alert: "先に町を選択してください。" and return unless current_town
     @store = Store.new
     @store_categories = StoreCategory.where.not(name: '卸市場')
   end

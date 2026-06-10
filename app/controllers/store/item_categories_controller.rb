@@ -1,5 +1,5 @@
 class Store::ItemCategoriesController < Store::ApplicationController
-  before_action :require_admin!
+  before_action :require_admin!, except: [:index]
   before_action :set_item_category, only: [:edit, :update, :destroy]
 
   def index

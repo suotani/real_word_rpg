@@ -1,10 +1,11 @@
 .container.py-4
-  .d-flex.align-items-center.justify-content-between.mb-4
+  .d-flex.align-items-center.justify-content-between.mb-2
     %h1.mb-0 商品カテゴリ一覧
     - if current_user.admin?
       = link_to new_store_item_category_path, class: 'btn btn-primary btn-sm' do
         %i.fas.fa-plus.me-1
         商品カテゴリを追加
+  %p.text-muted.mb-4 お店で売ることができる商品を、大きなグループに分けたものです。どの店舗カテゴリで売れるかも、ここで確認できます。
 
   - if @item_categories.any?
     .card.shadow-sm
@@ -14,7 +15,7 @@
             %th 商品カテゴリ名
             %th 店舗カテゴリ
             %th.text-end
-              サブカテゴリ数
+              商品の種類数
               - if @current_town
                 %span.text-muted.fw-normal.small （#{@current_town.name}）
             - if current_user.admin?
@@ -32,7 +33,7 @@
                       %i.fas.fa-pen
                       編集
                     = button_to store_item_category_path(ic), method: :delete,
-                        data: { turbo_confirm: "「#{ic.name}」を削除しますか？サブカテゴリが紐づいている場合は削除できません。" },
+                        data: { turbo_confirm: "「#{ic.name}」を削除しますか？商品の種類が紐づいている場合は削除できません。" },
                         class: 'btn btn-outline-danger btn-sm' do
                       %i.fas.fa-trash
                       削除

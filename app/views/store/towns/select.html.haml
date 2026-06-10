@@ -3,7 +3,7 @@
     = link_to store_root_path, class: "btn btn-outline-secondary btn-sm" do
       %i.fas.fa-arrow-left
       ダッシュボード
-    %h1.mb-0 街を選ぶ
+    %h1.mb-0 町を選ぶ
 
   - if @towns.any?
     .row.g-3
@@ -23,7 +23,7 @@
               - else
                 = form_with url: switch_store_towns_path, method: :post, local: true do |f|
                   = f.hidden_field :town_id, value: town.id
-                  = f.submit 'この街に切り替える', class: 'btn btn-outline-warning w-100'
+                  = f.submit 'この町に切り替える', class: 'btn btn-outline-warning w-100'
   - else
     .alert.alert-info まだどの町にも参加していません。
 

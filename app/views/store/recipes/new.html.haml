@@ -32,14 +32,14 @@
                   id: 'output_item_category_select'
 
             .mb-1
-              = label_tag 'output_sub_cat_select', 'サブカテゴリ', class: 'form-label'
+              = label_tag 'output_sub_cat_select', '商品の種類', class: 'form-label'
               = f.select :item_sub_category_id,
                   @item_sub_categories.map { |s| [s.name, s.id, { 'data-item-category-id' => s.item_category_id }] },
                   { prompt: '先にカテゴリを選択' },
                   { class: 'form-select', id: 'output_sub_cat_select' }
 
             .mb-3.text-end
-              = link_to '+ サブカテゴリを新規登録', new_store_item_sub_category_path, class: 'small', target: '_blank'
+              = link_to '+ 商品の種類を新規登録', new_store_item_sub_category_path, class: 'small', target: '_blank'
 
             %hr
             .mb-4

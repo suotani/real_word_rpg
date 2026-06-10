@@ -104,41 +104,16 @@ Experience.insert_all([
 # ストアエコノミー データ
 puts "ストアデータを投入中..."
 
-# StoreCategory
-StoreCategory.insert_all([
-  { name: '飲食店', created_at: now, updated_at: now },
-  { name: '工芸店', created_at: now, updated_at: now },
-  { name: '卸市場', created_at: now, updated_at: now },
-])
-food_cat_id  = StoreCategory.find_by!(name: '飲食店').id
-craft_cat_id = StoreCategory.find_by!(name: '工芸店').id
+# StoreCategory / ItemCategory / 商品カテゴリの紐付け / 商品サブカテゴリ階層は CSV から同期する
+StoreCategoriesImporter.import!
+WholesaleItemsImporter.import!(town: nil)
 
-# ItemCategory
-ItemCategory.insert_all([
-  { name: '食材', store_category_id: food_cat_id,  created_at: now, updated_at: now },
-  { name: '飲料', store_category_id: food_cat_id,  created_at: now, updated_at: now },
-  { name: '素材', store_category_id: craft_cat_id, created_at: now, updated_at: now },
-])
-ingredient_cat_id = ItemCategory.find_by!(name: '食材').id
-drink_cat_id      = ItemCategory.find_by!(name: '飲料').id
-material_cat_id   = ItemCategory.find_by!(name: '素材').id
+food_cat_id = StoreCategory.find_by!(name: '飲食店').id
 
-# ItemSubCategory
-ItemSubCategory.insert_all([
-  { name: 'かぼちゃ', item_category_id: ingredient_cat_id, created_at: now, updated_at: now },
-  { name: 'りんご',   item_category_id: ingredient_cat_id, created_at: now, updated_at: now },
-  { name: '鶏肉',     item_category_id: ingredient_cat_id, created_at: now, updated_at: now },
-  { name: '豚肉',     item_category_id: ingredient_cat_id, created_at: now, updated_at: now },
-  { name: 'オレンジ', item_category_id: drink_cat_id,      created_at: now, updated_at: now },
-  { name: 'オーク材', item_category_id: material_cat_id,   created_at: now, updated_at: now },
-  { name: '鉄',       item_category_id: material_cat_id,   created_at: now, updated_at: now },
-])
-pumpkin_sub_id = ItemSubCategory.find_by!(name: 'かぼちゃ').id
-chicken_sub_id = ItemSubCategory.find_by!(name: '鶏肉').id
-orange_sub_id  = ItemSubCategory.find_by!(name: 'オレンジ').id
-
-# Town（after_create コールバックで中央卸売市場が自動生成されるため create! を使用）
+# Town（中央卸売市場の自動生成・卸売 CSV からの市場在庫投入を行う）
 town = Town.create!(name: 'サンプルタウン', user_id: user.id, password: 'abc12345')
+town.create_central_wholesale_market!
+town.populate_wholesale_items!
 town_id = town.id
 
 # UserTown
@@ -152,11 +127,15 @@ Store.insert_all([
 ])
 store_id = Store.find_by!(name: 'サンプルストア').id
 
+pumpkin_sub_id = ItemSubCategory.find_by!(name: 'かぼちゃ', town_id: town_id).id
+chicken_sub_id = ItemSubCategory.find_by!(name: '鶏肉',     town_id: town_id).id
+onion_sub_id   = ItemSubCategory.find_by!(name: 'たまねぎ', town_id: town_id).id
+
 # Stock
 Stock.insert_all([
-  { name: 'かぼちゃ',       store_id: store_id, user_id: user.id, item_sub_category_id: pumpkin_sub_id, cost: 50,  price: 100, created_at: now, updated_at: now },
-  { name: '鶏もも肉',       store_id: store_id, user_id: user.id, item_sub_category_id: chicken_sub_id, cost: 200, price: 350, created_at: now, updated_at: now },
-  { name: 'オレンジ', store_id: nil,      user_id: user.id, item_sub_category_id: orange_sub_id,  cost: 80,  price: 150, created_at: now, updated_at: now },
+  { name: 'かぼちゃ',   store_id: store_id, user_id: user.id, item_sub_category_id: pumpkin_sub_id, cost: 50,  price: 100, created_at: now, updated_at: now },
+  { name: '鶏もも肉',   store_id: store_id, user_id: user.id, item_sub_category_id: chicken_sub_id, cost: 200, price: 350, created_at: now, updated_at: now },
+  { name: 'たまねぎ',   store_id: nil,      user_id: user.id, item_sub_category_id: onion_sub_id,   cost: 80,  price: 150, created_at: now, updated_at: now },
 ])
 
 # Recipe

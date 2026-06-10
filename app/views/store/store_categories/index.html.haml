@@ -1,10 +1,11 @@
 .container.py-4
-  .d-flex.align-items-center.justify-content-between.mb-4
+  .d-flex.align-items-center.justify-content-between.mb-2
     %h1.mb-0 店舗カテゴリ一覧
     - if current_user.admin?
       = link_to new_store_store_category_path, class: 'btn btn-primary btn-sm' do
         %i.fas.fa-plus.me-1
         店舗カテゴリを追加
+  %p.text-muted.mb-4 お店の種類ごとに、開いている時間や、お店を出すときに必要なお金（出店料）が決まっています。
 
   - if @store_categories.any?
     - @store_categories.each do |sc|
@@ -34,16 +35,9 @@
               %span.fw-bold.small 出店料:
               %span= "#{number_with_delimiter(sc.listing_fee)}円"
           - if sc.item_categories.any?
-            %table.table.table-sm.align-middle.mb-0
-              %thead.table-light
-                %tr
-                  %th 売ることができる商品カテゴリ
-                  %th.text-end サブカテゴリ数
-              %tbody
-                - sc.item_categories.sort_by(&:name).each do |ic|
-                  %tr
-                    %td= ic.name
-                    %td.text-end.text-muted= ic.item_sub_categories.size
+            .d-flex.align-items-start.gap-1
+              %span.fw-bold.small.text-nowrap 売ることができる商品カテゴリ:
+              %span= sc.item_categories.sort_by(&:name).map(&:name).join(', ')
           - else
             %p.text-muted.mb-0.py-2 商品カテゴリが登録されていません
   - else

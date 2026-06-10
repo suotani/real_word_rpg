@@ -1,9 +1,11 @@
 class Store::StoreCategoriesController < Store::ApplicationController
-  before_action :require_admin!
+  before_action :require_admin!, except: [:index]
   before_action :set_store_category, only: [:edit, :update, :destroy, :assign_item_category, :unlink_item_category]
 
   def index
-    @store_categories = StoreCategory.includes(:buisiness_times, item_categories: :item_sub_categories).order(:name)
+    @store_categories = StoreCategory.where.not(name: '卸市場')
+                                      .includes(:buisiness_times, item_categories: :item_sub_categories)
+                                      .order(:listing_fee)
   end
 
   def new

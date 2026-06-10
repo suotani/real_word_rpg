@@ -106,7 +106,7 @@ RSpec.describe 'Store Scenario', type: :system do
     click_link 'レシピを登録'
     fill_in 'レシピ名', with: 'かぼちゃスープ'
     select '食材', from: 'カテゴリ'
-    select 'かぼちゃスープ', from: 'サブカテゴリ'
+    select 'かぼちゃスープ', from: '商品の種類'
     check 'かぼちゃ'
     check 'たまねぎ'
     click_button '登録する'
