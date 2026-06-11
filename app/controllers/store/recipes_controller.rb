@@ -4,6 +4,7 @@ class Store::RecipesController < Store::ApplicationController
 
   def index
     @recipes = @store.recipes.includes(:item_sub_categories, :item_sub_category)
+    @stocked_item_sub_category_ids = @store.stocks.distinct.pluck(:item_sub_category_id).to_set
   end
 
   def new
@@ -53,7 +54,7 @@ class Store::RecipesController < Store::ApplicationController
       )
     end
 
-    redirect_to store_store_stocks_path(@store), notice: "「#{@recipe.name}」をクラフトしました。"
+    redirect_to store_store_recipes_path(@store), notice: "「#{@recipe.name}」をクラフトしました。"
   rescue ActiveRecord::RecordInvalid
     redirect_to store_store_recipes_path(@store), alert: 'クラフトに失敗しました。'
   end

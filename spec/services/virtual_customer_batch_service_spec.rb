@@ -49,6 +49,15 @@ RSpec.describe VirtualCustomerBatchService do
         expect(seller.reload.balance).to be > 0
       end
 
+      it '売り手の売上記録（当日分）が記録される' do
+        service.run(hour: 12)
+        log = SalesLog.find_by(user: seller, target_date: Date.current)
+        expect(log).to be_present
+        expect(log.sales_count).to be > 0
+        expect(log.sales_amount).to eq(seller.reload.balance)
+        expect(log.profit_amount).to eq(log.sales_amount - log.cost_amount)
+      end
+
       it 'errors が空である' do
         result = service.run(hour: 12)
         expect(result[:errors]).to be_empty

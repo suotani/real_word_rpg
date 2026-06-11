@@ -59,6 +59,7 @@ class Store::StoreActionsController < Store::ApplicationController
 
     destination_store = @user_stores.find(params[:store_id])
     price = @target_stock.price
+    cost = @target_stock.cost
     seller = @target_stock.user
 
     unless current_user.afford?(price)
@@ -77,6 +78,7 @@ class Store::StoreActionsController < Store::ApplicationController
       )
       current_user.deduct!(price)
       seller&.increment!(:balance, price)
+      SalesLog.record_sale!(seller, price, cost)
       @target_stock.destroy!
     end
 

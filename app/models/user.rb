@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :towns, through: :user_towns
   has_many :stores
   has_many :stocks
+  has_many :sales_logs
 
   MAX_LOAN = 300_000
 

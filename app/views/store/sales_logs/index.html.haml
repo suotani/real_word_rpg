@@ -1,0 +1,24 @@
+.container.py-4
+  %h1.mb-1 売上記録
+  %p.text-muted.mb-4 1日ごとの売り上げ件数と金額の記録です。
+
+  - if @sales_logs.any?
+    .card.shadow-sm
+      %table.table.table-hover.align-middle.mb-0
+        %thead.table-dark
+          %tr
+            %th 日付
+            %th.text-end 売上件数
+            %th.text-end 売上金額
+            %th.text-end コスト
+            %th.text-end 利益
+        %tbody
+          - @sales_logs.each do |log|
+            %tr
+              %td.fw-bold= log.target_date.strftime('%Y/%m/%d')
+              %td.text-end= "#{log.sales_count}件"
+              %td.text-end= "#{log.sales_amount}円"
+              %td.text-end= "#{log.cost_amount}円"
+              %td.text-end= "#{log.profit_amount}円"
+  - else
+    .alert.alert-info まだ売上の記録がありません。

@@ -68,6 +68,7 @@ class VirtualCustomerBatchService
             # 並行処理による二重販売を防ぐため DB から再取得して destroy
             live = Stock.find(stock.id)
             live.user&.increment!(:balance, live.price)
+            SalesLog.record_sale!(live.user, live.price, live.cost)
             live.destroy!
             count += 1
             total += live.price

@@ -14,8 +14,8 @@
       = form_with url: store_store_stocks_path(@store), method: :get, local: true do |f|
         .row.g-2.align-items-end
           .col-sm-5
-            = f.label :item_sub_category_id, 'カテゴリ', class: 'form-label form-label-sm mb-1'
-            = f.select :item_sub_category_id, grouped_options_for_select(@grouped_item_sub_categories, params[:item_sub_category_id]), { prompt: 'すべてのカテゴリ' }, { class: 'form-select form-select-sm' }
+            = f.label :item_category_id, '商品カテゴリ', class: 'form-label form-label-sm mb-1'
+            = f.select :item_category_id, options_from_collection_for_select(@item_categories_for_filter, :id, :name, params[:item_category_id]), { prompt: 'すべてのカテゴリ' }, { class: 'form-select form-select-sm' }
           .col-sm-4
             = f.label :status, '状態', class: 'form-label form-label-sm mb-1'
             = f.select :status,
@@ -24,7 +24,7 @@
                 { class: 'form-select form-select-sm' }
           .col-sm-auto
             = f.submit '絞り込む', class: 'btn btn-primary btn-sm'
-          - if params[:item_sub_category_id].present? || params[:status].present?
+          - if params[:item_category_id].present? || params[:status].present?
             .col-sm-auto
               = link_to 'リセット', store_store_stocks_path(@store), class: 'btn btn-outline-secondary btn-sm'
 
@@ -58,7 +58,7 @@
                   = link_to '出品する', list_store_store_stock_path(@store, stock), class: 'btn btn-warning btn-sm'
   - else
     .alert.alert-info
-      - if params[:item_sub_category_id].present? || params[:status].present?
+      - if params[:item_category_id].present? || params[:status].present?
         絞り込み条件に一致する在庫がありません。
       - else
         まだ在庫がありません。

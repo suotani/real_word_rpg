@@ -54,6 +54,7 @@ Rails.application.routes.draw do
     end
     get 'guide',           to: 'guide#index'
     get 'shopping_street', to: 'shopping_street#index'
+    resources :sales_logs, only: [:index]
     resource  :bank, only: [:show] do
       post :borrow
       post :repay

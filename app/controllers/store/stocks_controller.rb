@@ -6,14 +6,16 @@ class Store::StocksController < Store::ApplicationController
   def index
     @stocks = @store.stocks.includes(item_sub_category: :item_category)
 
-    if params[:item_sub_category_id].present?
-      @stocks = @stocks.where(item_sub_category_id: params[:item_sub_category_id])
+    if params[:item_category_id].present?
+      @stocks = @stocks.where(item_sub_categories: { item_category_id: params[:item_category_id] })
     end
 
     case params[:status]
     when 'listed'   then @stocks = @stocks.where(listed: true)
     when 'unlisted' then @stocks = @stocks.where(listed: false)
     end
+
+    @item_categories_for_filter = @item_sub_categories.map(&:item_category).uniq.compact.sort_by(&:name)
   end
 
   def show

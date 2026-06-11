@@ -62,6 +62,11 @@
 
     .mt-3.text-white
       その他
+    = link_to store_sales_logs_path, class: 'link-no-underline sidebar-menu mt-2' do
+      .d-flex.align-items-center.text-white
+        %i.fas.fa-receipt.fa-fw
+        .ms-2
+          売上記録
     = link_to store_guide_path, class: 'link-no-underline sidebar-menu mt-2' do
       .d-flex.align-items-center.text-white
         %i.fas.fa-book-open.fa-fw
