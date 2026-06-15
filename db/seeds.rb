@@ -106,7 +106,6 @@ puts "ストアデータを投入中..."
 
 # StoreCategory / ItemCategory / 商品カテゴリの紐付け / 商品サブカテゴリ階層は CSV から同期する
 StoreCategoriesImporter.import!
-WholesaleItemsImporter.import!(town: nil)
 
 food_cat_id = StoreCategory.find_by!(name: '飲食店').id
 

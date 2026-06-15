@@ -1,8 +1,8 @@
 class Store::ItemSubCategoriesController < Store::ApplicationController
   def index
-    town = current_user.town
-    @item_sub_categories = town \
-      ? ItemSubCategory.where(town: town)
+    @current_town = current_user.town
+    @item_sub_categories = @current_town \
+      ? ItemSubCategory.where(town: @current_town)
                        .includes(item_category: :store_categories)
                        .order('item_categories.name, item_sub_categories.name')
       : ItemSubCategory.none
@@ -23,6 +23,23 @@ class Store::ItemSubCategoriesController < Store::ApplicationController
     else
       @item_categories = ItemCategory.order(:name)
       render :new
+    end
+  end
+
+  def import_master
+    town = current_user.town
+
+    if town.nil?
+      redirect_to store_item_sub_categories_path, alert: '町が選択されていません。'
+      return
+    end
+
+    count = town.populate_wholesale_items!
+
+    if count.positive?
+      redirect_to store_item_sub_categories_path, notice: "商品マスタから#{count}件の商品の種類を追加しました。"
+    else
+      redirect_to store_item_sub_categories_path, notice: '追加できる商品はありませんでした（すべて登録済みです）。'
     end
   end
 

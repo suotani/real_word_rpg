@@ -59,7 +59,9 @@ Rails.application.routes.draw do
       post :borrow
       post :repay
     end
-    resources :item_sub_categories, only: [:index, :new, :create]
+    resources :item_sub_categories, only: [:index, :new, :create] do
+      post :import_master, on: :collection
+    end
     resources :item_categories,     only: [:index, :new, :create, :edit, :update, :destroy]
     resources :store_categories,    only: [:index, :new, :create, :edit, :update, :destroy] do
       post :assign_item_category,  on: :member

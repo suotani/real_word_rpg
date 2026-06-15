@@ -2,7 +2,6 @@ namespace :wholesale do
   desc 'CSVから店舗カテゴリ・商品カテゴリ階層を同期する（既存のサブカテゴリは変更しない）'
   task sync_categories: :environment do
     StoreCategoriesImporter.import!
-    WholesaleItemsImporter.import!(town: nil)
     puts 'カテゴリ階層を同期しました。'
   end
 

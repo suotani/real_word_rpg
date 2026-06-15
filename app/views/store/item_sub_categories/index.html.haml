@@ -1,9 +1,14 @@
 .container.py-4
   .d-flex.align-items-center.justify-content-between.mb-2
     %h1.mb-0 商品の種類一覧
-    = link_to new_store_item_sub_category_path, class: 'btn btn-primary btn-sm' do
-      %i.fas.fa-plus.me-1
-      種類を追加
+    .d-flex.gap-2
+      - if @current_town
+        = button_to import_master_store_item_sub_categories_path, method: :post, class: 'btn btn-outline-primary btn-sm', data: { turbo_confirm: 'まだ登録されていない商品マスタの商品の種類を、この町に追加します。よろしいですか？' } do
+          %i.fas.fa-download.me-1
+          商品マスタをインポート
+      = link_to new_store_item_sub_category_path, class: 'btn btn-primary btn-sm' do
+        %i.fas.fa-plus.me-1
+        種類を追加
   %p.text-muted.mb-4 商品カテゴリをさらに細かく分けた、商品の種類です。お店にならべたり、レシピの材料にしたりできます。
 
   - if @item_sub_categories.any?

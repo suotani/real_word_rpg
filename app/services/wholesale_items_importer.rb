@@ -3,7 +3,7 @@ require 'csv'
 class WholesaleItemsImporter
   CSV_PATH = Rails.root.join('db/seeds/wholesale_items.csv')
 
-  # CSV を読み込み、ItemCategory / ItemSubCategory を同期する。
+  # CSV を読み込み、中央卸売市場へ商品を登録する。
   # town を指定するとその町用の ItemSubCategory を生成する（市場への自動追加も走る）。
   # town が nil の場合は ItemCategory のみ同期してサブカテゴリは生成しない。
   def self.import!(town: nil)
@@ -14,7 +14,10 @@ class WholesaleItemsImporter
     @town = town
   end
 
+  # 新規に作成した ItemSubCategory の件数を返す
   def import!
+    created_count = 0
+
     CSV.foreach(CSV_PATH, headers: true) do |row|
       item_cat_name = row['item_category'].strip
       sub_cat_name  = row['item_sub_category'].strip
@@ -30,7 +33,10 @@ class WholesaleItemsImporter
           item_category: item_category,
           town:          @town
         )
+        created_count += 1
       end
     end
+
+    created_count
   end
 end
