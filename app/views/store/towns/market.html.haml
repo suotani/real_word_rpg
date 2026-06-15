@@ -29,7 +29,6 @@
           %thead.table-dark
             %tr
               %th 商品名
-              %th カテゴリ
               %th 仕入れ値
               %th
           %tbody
@@ -37,7 +36,6 @@
               %tr
                 %td
                   %span.fw-bold= stock.name
-                %td.text-muted.small= stock.item_sub_category&.item_category&.name
                 %td= "#{stock.price}円"
                 %td.text-end
                   = link_to '仕入れる', buy_store_store_actions_path(stock_id: stock.id), class: 'btn btn-success btn-sm'

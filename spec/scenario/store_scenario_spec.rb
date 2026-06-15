@@ -8,8 +8,8 @@ RSpec.describe 'Store Scenario', type: :system do
   # 3. 銀行で25万円借入 → 残高・借入残高を確認
   # 4. 店舗作成（出店料20万円） → 残高確認
   # 5. 市場でかぼちゃ・たまねぎを仕入れる → cost/price を確認
-  # 6. レシピ「かぼちゃスープ」を登録（完成品はカテゴリ選択 → サブカテゴリ選択、素材2つ）
-  # 7. クラフト実行 → 素材在庫が消えて新在庫が生成、item_sub_category 引き継ぎを確認
+  # 6. レシピ「かぼちゃスープ」を登録（完成品は商品カテゴリ選択、素材は手持ち在庫から2つ選択）
+  # 7. クラフト実行 → 素材在庫が消えて新在庫が生成されることを確認
   # 8. バッチ実行して仮想購入者が発生することを確認（購入された在庫は削除される）
   # 9. 銀行に返済する
   # 10. ログアウト
@@ -39,8 +39,6 @@ RSpec.describe 'Store Scenario', type: :system do
 
     # 「かぼちゃ」「たまねぎ」は WholesaleItemsImporter による初期インポートで既に登録済み
     # （add_to_town_wholesale_market で市場在庫も自動追加されている）。
-    # 「かぼちゃスープ」は卸売 CSV に存在しないため、ここで個別に登録する。
-    ItemSubCategory.create!(name: 'かぼちゃスープ', item_category: item_cat, town: town)
 
     # 銀行で25万円借入
     visit store_bank_path
@@ -105,15 +103,14 @@ RSpec.describe 'Store Scenario', type: :system do
     # レシピ登録
     click_link 'レシピを登録'
     fill_in 'レシピ名', with: 'かぼちゃスープ'
-    select '食材', from: 'カテゴリ'
-    select 'かぼちゃスープ', from: '商品の種類'
+    select '食材', from: '完成品の商品カテゴリ'
     check 'かぼちゃ'
     check 'たまねぎ'
     click_button '登録する'
     expect(page).to have_content('レシピ「かぼちゃスープ」を登録しました')
 
     recipe = store.recipes.find_by!(name: 'かぼちゃスープ')
-    expect(recipe.item_sub_category.name).to eq('かぼちゃスープ')
+    expect(recipe.item_category.name).to eq('食材')
     expect(recipe.item_sub_categories.map(&:name)).to contain_exactly('かぼちゃ', 'たまねぎ')
 
     # クラフト実行
@@ -124,7 +121,7 @@ RSpec.describe 'Store Scenario', type: :system do
     crafted = store.stocks.reload.find_by!(name: 'かぼちゃスープ')
     expect(crafted.cost).to eq(200)
     expect(crafted.price).to eq(0)
-    expect(crafted.item_sub_category.name).to eq('かぼちゃスープ')
+    expect(crafted.item_sub_category).to be_nil
     expect(store.stocks.find_by(name: 'かぼちゃ')).to be_nil
     expect(store.stocks.find_by(name: 'たまねぎ')).to be_nil
 

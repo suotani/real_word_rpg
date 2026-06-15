@@ -138,8 +138,9 @@ Stock.insert_all([
 ])
 
 # Recipe
+cooking_cat_id = ItemCategory.find_by!(name: '料理').id
 Recipe.insert_all([
-  { name: 'かぼちゃチキン炒め', store_id: store_id, created_at: now, updated_at: now },
+  { name: 'かぼちゃチキン炒め', store_id: store_id, item_category_id: cooking_cat_id, created_at: now, updated_at: now },
 ])
 recipe_id = Recipe.find_by!(name: 'かぼちゃチキン炒め').id
 

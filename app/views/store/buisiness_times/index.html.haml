@@ -1,0 +1,22 @@
+.container.py-4
+  %h1.mb-2 販売時間帯一覧
+  %p.text-muted.mb-4 各時間帯に、どの店舗カテゴリで仮想顧客が購入するかを確認できます。
+
+  .card.shadow-sm
+    %table.table.table-hover.align-middle.mb-0
+      %thead.table-dark
+        %tr
+          %th.text-nowrap 時間
+          %th 店舗カテゴリ
+      %tbody
+        - (0..23).each do |hour|
+          %tr
+            %td.fw-bold.text-nowrap= "#{hour}時"
+            %td
+              - store_categories = @store_categories_by_hour[hour]
+              - if store_categories.any?
+                .d-flex.flex-wrap.gap-1
+                  - store_categories.each do |sc|
+                    %span.badge.bg-primary= sc.name
+              - else
+                %span.text-muted なし

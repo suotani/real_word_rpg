@@ -29,6 +29,13 @@
                       %p.card-text.text-muted.small.mb-2
                         %i.fas.fa-tag
                         = store.store_category&.name || '未分類'
+                      - hours = store.store_category&.buisiness_times&.map(&:sales_at)&.sort&.uniq || []
+                      %p.card-text.text-muted.small.mb-2
+                        %i.fas.fa-clock
+                        - if hours.any?
+                          = "販売時間帯: #{hours.map { |h| "#{h}時" }.join(', ')}"
+                        - else
+                          販売時間帯: 未設定
                       - if store.stocks.any?
                         %p.card-text.small.text-success.mb-2
                           %i.fas.fa-box

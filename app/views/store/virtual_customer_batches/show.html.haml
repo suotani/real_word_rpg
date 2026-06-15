@@ -1,0 +1,40 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-7.col-md-9
+
+      %h1.mb-4 仮想顧客購入バッチ（手動実行）
+
+      .card.shadow-sm.mb-4
+        .card-body
+          %p.text-muted.mb-3
+            指定した時間（0〜23時）が販売時間帯に含まれる店舗カテゴリを対象に、仮想顧客#{VirtualCustomerBatchService::VIRTUAL_CUSTOMER_COUNT}人の購入処理を即時実行します。
+          = form_with url: store_virtual_customer_batch_path, method: :post, local: true, class: 'd-flex gap-2 align-items-end' do |f|
+            .flex-grow-0
+              = label_tag :hour, '時間', class: 'form-label fw-bold mb-1 d-block'
+              = select_tag :hour, options_for_select((0..23).map { |h| ["#{h}時", h] }, @hour), class: 'form-select'
+            = f.submit '実行', class: 'btn btn-primary'
+
+      - if @result
+        .card.shadow-sm
+          .card-header.fw-bold
+            実行結果（#{@hour}時）
+          .card-body
+            %dl.row.mb-0
+              %dt.col-sm-4 購入件数
+              %dd.col-sm-8= "#{@result[:count]}件"
+              %dt.col-sm-4 購入総額
+              %dd.col-sm-8= "#{number_with_delimiter(@result[:total_amount])}円"
+              %dt.col-sm-4 エラー件数
+              %dd.col-sm-8= "#{@result[:errors].size}件"
+
+            - if @result[:errors].any?
+              %table.table.table-sm.table-bordered.mt-3.mb-0
+                %thead
+                  %tr
+                    %th Stock ID
+                    %th エラー内容
+                %tbody
+                  - @result[:errors].each do |err|
+                    %tr
+                      %td= err[:stock_id]
+                      %td= err[:message]

@@ -34,7 +34,6 @@
         %thead.table-dark
           %tr
             %th 商品名
-            %th カテゴリ
             %th 仕入れ値
             %th 販売価格
             %th 状態
@@ -43,7 +42,6 @@
           - @stocks.each do |stock|
             %tr
               %td.fw-bold= stock.name
-              %td.text-muted.small= stock.item_sub_category&.name
               %td= "#{stock.cost}円"
               %td= "#{stock.price}円"
               %td

@@ -3,7 +3,7 @@ class Store::RecipesController < Store::ApplicationController
   before_action :set_recipe, only: [:destroy, :craft]
 
   def index
-    @recipes = @store.recipes.includes(:item_sub_categories, :item_sub_category)
+    @recipes = @store.recipes.includes(:item_sub_categories, :item_category)
     @stocked_item_sub_category_ids = @store.stocks.distinct.pluck(:item_sub_category_id).to_set
   end
 
@@ -46,7 +46,6 @@ class Store::RecipesController < Store::ApplicationController
       ingredient_stocks.each(&:destroy!)
       @store.stocks.create!(
         name: @recipe.name,
-        item_sub_category: @recipe.item_sub_category,
         cost: total_cost,
         price: 0,
         user: current_user,
@@ -78,16 +77,11 @@ class Store::RecipesController < Store::ApplicationController
   end
 
   def item_sub_categories_for_store
-    return ItemSubCategory.none unless @store.store_category_id
-
-    ItemSubCategory.where(town: @store.town)
-                   .joins(item_category: :item_category_store_categories)
-                   .where(item_category_store_categories: { store_category_id: @store.store_category_id })
-                   .includes(:item_category)
-                   .order('item_categories.name, item_sub_categories.name')
+    sub_category_ids = @store.stocks.distinct.pluck(:item_sub_category_id).compact
+    ItemSubCategory.where(id: sub_category_ids).order(:name)
   end
 
   def recipe_params
-    params.require(:recipe).permit(:name, :item_sub_category_id, item_sub_category_ids: [])
+    params.require(:recipe).permit(:name, :item_category_id, item_sub_category_ids: [])
   end
 end

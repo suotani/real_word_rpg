@@ -41,6 +41,11 @@ class Store::ItemCategoriesController < Store::ApplicationController
                     alert: "「#{@item_category.name}」にはサブカテゴリが紐づいているため削除できません。"
       return
     end
+    if @item_category.recipes.exists?
+      redirect_back fallback_location: store_item_categories_path,
+                    alert: "「#{@item_category.name}」にはレシピが紐づいているため削除できません。"
+      return
+    end
     @item_category.destroy!
     redirect_back fallback_location: store_item_categories_path,
                   notice: "「#{@item_category.name}」を削除しました。"

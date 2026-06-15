@@ -14,10 +14,6 @@
           %tr
             %th 商品カテゴリ名
             %th 店舗カテゴリ
-            %th.text-end
-              商品の種類数
-              - if @current_town
-                %span.text-muted.fw-normal.small （#{@current_town.name}）
             - if current_user.admin?
               %th
         %tbody
@@ -25,7 +21,6 @@
             %tr
               %td.fw-bold= ic.name
               %td.text-muted.small= ic.store_categories.map(&:name).join(', ').presence || '—'
-              %td.text-end.text-muted= @current_town ? ic.item_sub_categories.count { |s| s.town_id == @current_town.id } : ic.item_sub_categories.size
               - if current_user.admin?
                 %td.text-end
                   .d-flex.justify-content-end.gap-2
@@ -33,7 +28,7 @@
                       %i.fas.fa-pen
                       編集
                     = button_to store_item_category_path(ic), method: :delete,
-                        data: { turbo_confirm: "「#{ic.name}」を削除しますか？商品の種類が紐づいている場合は削除できません。" },
+                        data: { turbo_confirm: "「#{ic.name}」を削除しますか？関連する商品が登録されている場合は削除できません。" },
                         class: 'btn btn-outline-danger btn-sm' do
                       %i.fas.fa-trash
                       削除

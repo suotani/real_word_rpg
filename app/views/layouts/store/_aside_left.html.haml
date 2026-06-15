@@ -54,11 +54,11 @@
         %i.fas.fa-list-alt.fa-fw
         .ms-2
           商品カテゴリ
-    = link_to store_item_sub_categories_path, class: 'link-no-underline sidebar-menu mt-2' do
+    = link_to store_buisiness_times_path, class: 'link-no-underline sidebar-menu mt-2' do
       .d-flex.align-items-center.text-white
-        %i.fas.fa-sitemap.fa-fw
+        %i.fas.fa-clock.fa-fw
         .ms-2
-          商品の種類
+          販売時間帯
 
     .mt-3.text-white
       その他
@@ -72,6 +72,15 @@
         %i.fas.fa-book-open.fa-fw
         .ms-2
           遊び方
+
+    - if current_user.admin?
+      .mt-3.text-white
+        管理者メニュー
+      = link_to store_virtual_customer_batch_path, class: 'link-no-underline sidebar-menu mt-2' do
+        .d-flex.align-items-center.text-white
+          %i.fas.fa-robot.fa-fw
+          .ms-2
+            仮想顧客バッチ
 
     .mt-auto.mb-2
       = link_to select_store_towns_path, class: 'link-no-underline sidebar-menu' do

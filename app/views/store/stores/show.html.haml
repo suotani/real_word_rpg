@@ -31,14 +31,12 @@
             %thead{style: "background: #{color}11;"}
               %tr
                 %th.ps-4 商品名
-                %th カテゴリ
                 %th.text-end 価格
                 %th
             %tbody
               - @listed_stocks.each do |stock|
                 %tr
                   %td.ps-4.fw-bold= stock.name
-                  %td.text-muted.small= stock.item_sub_category&.name
                   %td.text-end.fw-bold= "#{number_with_delimiter(stock.price)}円"
                   %td.text-end.pe-3
                     - unless @is_owner

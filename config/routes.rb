@@ -59,10 +59,12 @@ Rails.application.routes.draw do
       post :borrow
       post :repay
     end
+    resource  :virtual_customer_batch, only: [:show, :create]
     resources :item_sub_categories, only: [:index, :new, :create] do
       post :import_master, on: :collection
     end
     resources :item_categories,     only: [:index, :new, :create, :edit, :update, :destroy]
+    resources :buisiness_times,     only: [:index]
     resources :store_categories,    only: [:index, :new, :create, :edit, :update, :destroy] do
       post :assign_item_category,  on: :member
       post :unlink_item_category,  on: :member
