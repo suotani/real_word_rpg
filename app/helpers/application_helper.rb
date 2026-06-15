@@ -46,4 +46,9 @@ module ApplicationHelper
       return "btn-primary"
     end
   end
+
+  def store_category_color(store_category)
+    hue = (store_category.id * 67) % 360
+    "hsl(#{hue}, 65%, 42%)"
+  end
 end

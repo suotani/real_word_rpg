@@ -2,6 +2,12 @@
   %h1.mb-2 販売時間帯一覧
   %p.text-muted.mb-4 各時間帯に、どの店舗カテゴリで仮想顧客が購入するかを確認できます。
 
+  .card.shadow-sm.mb-3
+    .card-body.py-2
+      .d-flex.flex-wrap.gap-2
+        - @store_categories.each do |sc|
+          %span.badge{ style: "background-color: #{store_category_color(sc)};" }= sc.name
+
   .card.shadow-sm
     %table.table.table-hover.align-middle.mb-0
       %thead.table-dark
@@ -17,6 +23,6 @@
               - if store_categories.any?
                 .d-flex.flex-wrap.gap-1
                   - store_categories.each do |sc|
-                    %span.badge.bg-primary= sc.name
+                    %span.badge{ style: "background-color: #{store_category_color(sc)};" }= sc.name
               - else
                 %span.text-muted なし
