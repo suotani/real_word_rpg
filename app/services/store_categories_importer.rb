@@ -7,8 +7,8 @@ class StoreCategoriesImporter
   # 既存の同名カテゴリはスキップし、未登録のカテゴリのみ新規登録する。
   # CSV に存在しないカテゴリは関連レコード（店舗・在庫・レシピ等）を含めて削除する。
   # item_categories 列はセミコロン区切りで、その店舗カテゴリで売ることができる ItemCategory を列挙する。
-  # CSV のどの行の item_categories にも存在しない ItemCategory は削除する
-  # （ただし ItemSubCategory が紐づいている場合は削除しない）。
+  # CSV のどの行の item_categories にも存在しない ItemCategory は、
+  # 紐づく ItemSubCategory・在庫・レシピ等を含めて削除する。
   def self.import!
     new.import!
   end
@@ -41,10 +41,6 @@ class StoreCategoriesImporter
 
     StoreCategory.where.not(name: csv_names).destroy_all
 
-    ItemCategory.where.not(name: item_category_names.uniq).find_each do |item_category|
-      next if item_category.item_sub_categories.exists?
-
-      item_category.destroy!
-    end
+    ItemCategory.where.not(name: item_category_names.uniq).destroy_all
   end
 end
