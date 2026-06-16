@@ -30,6 +30,18 @@ Rails.application.routes.draw do
     resources :managed_htmls
   end
 
+  namespace :admin do
+    root to: 'resources#models'
+    get    'resources/:model_name/new',      to: 'resources#new',     as: :new_resource_record
+    post   'resources/:model_name',          to: 'resources#create',  as: :resource_records
+    get    'resources/:model_name/:id/edit', to: 'resources#edit',    as: :edit_resource_record
+    patch  'resources/:model_name/:id',      to: 'resources#update'
+    put    'resources/:model_name/:id',      to: 'resources#update'
+    delete 'resources/:model_name/:id',      to: 'resources#destroy'
+    get    'resources/:model_name/:id',      to: 'resources#show',    as: :resource_record
+    get    'resources/:model_name',          to: 'resources#index',   as: :resource_record_list
+  end
+
   namespace :store do
     root to: "dashboard#index"
     get 'dashboard', to: 'dashboard#index'

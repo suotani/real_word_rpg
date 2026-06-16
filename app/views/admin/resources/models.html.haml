@@ -1,0 +1,15 @@
+%h2.mb-4 モデル一覧
+
+.row.row-cols-1.row-cols-md-3.g-4
+  - @admin_models.each do |model_name|
+    - model_class = model_name.classify.constantize
+    .col
+      .card.h-100
+        .card-body
+          %h5.card-title= model_name.humanize
+          %p.card-text.text-muted.small= model_class.name
+          - count = model_class.count rescue '?'
+          %span.badge.bg-secondary.mb-2= "#{count} 件"
+        .card-footer
+          = link_to 'レコード一覧', admin_resource_record_list_path(model_name: model_name), class: 'btn btn-primary btn-sm'
+          = link_to '新規作成', admin_new_resource_record_path(model_name: model_name), class: 'btn btn-outline-primary btn-sm ms-1'

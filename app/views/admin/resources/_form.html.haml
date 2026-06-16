@@ -1,0 +1,44 @@
+- action_url = record.new_record? ? admin_resource_records_path(model_name: model_name) : admin_resource_record_path(model_name: model_name, id: record.id)
+- form_method = record.new_record? ? :post : :patch
+
+= form_tag action_url, method: form_method do
+  - if record.errors.any?
+    .alert.alert-danger
+      %ul.mb-0
+        - record.errors.full_messages.each do |msg|
+          %li= msg
+
+  - editable_columns(model).each do |col|
+    - column = model.columns_hash[col]
+    .mb-3
+      = label_tag "record_#{col}", col.humanize, class: 'form-label fw-bold'
+      - case column.type
+      - when :boolean
+        .form-check
+          = hidden_field_tag "record[#{col}]", "0"
+          = check_box_tag "record[#{col}]", "1", record.try(col), class: 'form-check-input', id: "record_#{col}"
+      - when :text
+        = text_area_tag "record[#{col}]", record.try(col), class: 'form-control', rows: 4, id: "record_#{col}"
+      - when :integer
+        = number_field_tag "record[#{col}]", record.try(col), class: 'form-control', id: "record_#{col}"
+      - when :datetime
+        = datetime_local_field_tag "record[#{col}]", record.try(col)&.strftime('%Y-%m-%dT%H:%M'), class: 'form-control', id: "record_#{col}"
+      - when :date
+        = date_field_tag "record[#{col}]", record.try(col), class: 'form-control', id: "record_#{col}"
+      - when :float, :decimal
+        = number_field_tag "record[#{col}]", record.try(col), class: 'form-control', step: 'any', id: "record_#{col}"
+      - else
+        = text_field_tag "record[#{col}]", record.try(col), class: 'form-control', id: "record_#{col}"
+
+  - if model == User
+    .mb-3
+      = label_tag 'record_password', 'パスワード（変更する場合のみ入力）', class: 'form-label fw-bold'
+      = password_field_tag 'record[password]', nil, class: 'form-control', id: 'record_password'
+    .mb-3
+      = label_tag 'record_password_confirmation', 'パスワード確認', class: 'form-label fw-bold'
+      = password_field_tag 'record[password_confirmation]', nil, class: 'form-control', id: 'record_password_confirmation'
+
+  .mt-4
+    = submit_tag (record.new_record? ? '登録する' : '更新する'), class: 'btn btn-primary'
+    - back_url = record.new_record? ? admin_resource_record_list_path(model_name: model_name) : admin_resource_record_path(model_name: model_name, id: record.id)
+    = link_to 'キャンセル', back_url, class: 'btn btn-outline-secondary ms-2'
