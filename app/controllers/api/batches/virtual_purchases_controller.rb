@@ -1,6 +1,6 @@
 class Api::Batches::VirtualPurchasesController < Api::BatchesController
   def create
-    VirtualCustomerBatchJob.perform_later
-    render json: { ok: true, queued: true }, status: :accepted
+    result = VirtualCustomerBatchService.new.run
+    render json: { ok: true, count: result[:count], total_amount: result[:total_amount], errors: result[:errors] }, status: :ok
   end
 end
