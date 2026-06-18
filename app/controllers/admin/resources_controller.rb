@@ -57,7 +57,7 @@ class Admin::ResourcesController < Admin::ApplicationController
       .sort
   end
 
-  helper_method :editable_columns, :all_columns
+  helper_method :editable_columns, :all_columns, :associated_name
 
   def editable_columns(model = @model)
     model.column_names.reject { |c| EXCLUDED_COLUMNS.include?(c) }
@@ -65,6 +65,14 @@ class Admin::ResourcesController < Admin::ApplicationController
 
   def all_columns(model = @model)
     model.column_names
+  end
+
+  def associated_name(record, col)
+    return nil unless col.end_with?('_id')
+    assoc_name = col.delete_suffix('_id')
+    return nil unless record.respond_to?(assoc_name)
+    assoc = record.public_send(assoc_name)
+    assoc&.respond_to?(:name) ? assoc.name.presence : nil
   end
 
   private

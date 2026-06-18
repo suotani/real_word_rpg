@@ -28,10 +28,15 @@
                 - elsif val == false
                   %span.badge.bg-secondary いいえ
                 - else
-                  = truncate(val.to_s, length: 40)
+                  - name = associated_name(record, col)
+                  - if name
+                    = truncate("#{name} (#{val})", length: 40)
+                  - elsif val.is_a?(Time) || val.is_a?(DateTime)
+                    = val.strftime('%Y-%m-%d %H:%M:%S')
+                  - else
+                    = truncate(val.to_s, length: 40)
             %td.text-nowrap
-              = link_to '詳細', admin_resource_record_path(model_name: @model_name, id: record.id), class: 'btn btn-sm btn-outline-info'
-              = link_to '編集', admin_edit_resource_record_path(model_name: @model_name, id: record.id), class: 'btn btn-sm btn-outline-warning ms-1'
+              = link_to '編集', admin_edit_resource_record_path(model_name: @model_name, id: record.id), class: 'btn btn-sm btn-outline-warning'
               = link_to '削除', admin_resource_record_path(model_name: @model_name, id: record.id),
                 method: :delete,
                 data: { confirm: "本当に削除しますか？" },
