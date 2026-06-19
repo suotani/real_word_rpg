@@ -4,6 +4,12 @@
   %h2= @model_name.humanize + ' 一覧'
   = link_to '+ 新規作成', admin_new_resource_record_path(model_name: @model_name), class: 'btn btn-primary'
 
+- if (pred = text_search_predicate)
+  = search_form_for @q, url: admin_resource_record_list_path(model_name: @model_name), html: { class: 'mb-4' } do |f|
+    .input-group
+      = f.search_field pred.to_sym, class: 'form-control', placeholder: '検索...'
+      = f.submit '検索', class: 'btn btn-outline-secondary'
+
 - if @records.empty?
   .alert.alert-info レコードがありません
 

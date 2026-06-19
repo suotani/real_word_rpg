@@ -20,7 +20,7 @@
     - if current_town
       .mt-3.text-white
         公共施設
-      - market = current_town.stores.find { |s| s.user_id.nil? }
+      - market = Store.central_wholesale_market
       - if market
         = link_to market_store_town_path(current_town), class: 'link-no-underline sidebar-menu mt-2' do
           .d-flex.align-items-center.text-white

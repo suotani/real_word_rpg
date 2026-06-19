@@ -109,10 +109,22 @@ StoreCategoriesImporter.import!
 
 food_cat_id = StoreCategory.find_by!(name: '飲食店').id
 
-# Town（中央卸売市場の自動生成・卸売 CSV からの市場在庫投入を行う）
+# グローバル中央卸売市場（全町共通で1つだけ作成）
+wholesale_category = StoreCategory.find_or_create_by!(name: '卸市場')
+central_market = Store.create!(
+  name:            '中央卸売市場',
+  user:            nil,
+  town:            nil,
+  store_category:  wholesale_category,
+  theme_color:     '#2c3e50',
+  theme_sub_color: '#e8d5b7'
+)
+
+# 卸売 CSV からグローバルな商品サブカテゴリを生成し、中央卸売市場へ在庫投入
+WholesaleItemsImporter.import!
+
+# Town
 town = Town.create!(name: 'サンプルタウン', user_id: user.id, password: 'abc12345')
-town.create_central_wholesale_market!
-town.populate_wholesale_items!
 town_id = town.id
 
 # UserTown
@@ -126,9 +138,9 @@ Store.insert_all([
 ])
 store_id = Store.find_by!(name: 'サンプルストア').id
 
-pumpkin_sub_id = ItemSubCategory.find_by!(name: 'かぼちゃ', town_id: town_id).id
-chicken_sub_id = ItemSubCategory.find_by!(name: '鶏肉',     town_id: town_id).id
-onion_sub_id   = ItemSubCategory.find_by!(name: 'たまねぎ', town_id: town_id).id
+pumpkin_sub_id = ItemSubCategory.find_by!(name: 'かぼちゃ', town_id: nil).id
+chicken_sub_id = ItemSubCategory.find_by!(name: '鶏肉',     town_id: nil).id
+onion_sub_id   = ItemSubCategory.find_by!(name: 'たまねぎ', town_id: nil).id
 
 # Stock
 Stock.insert_all([

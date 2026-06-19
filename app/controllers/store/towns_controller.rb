@@ -22,8 +22,6 @@ class Store::TownsController < Store::ApplicationController
 
     ActiveRecord::Base.transaction do
       @town.save!
-      @town.create_central_wholesale_market!
-      @town.populate_wholesale_items!
       UserTown.create!(user: current_user, town: @town)
       current_user.update!(town: @town)
     end
@@ -40,7 +38,12 @@ class Store::TownsController < Store::ApplicationController
   end
 
   def market
-    @market      = @town.stores.find_by!(user_id: nil, name: '中央卸売市場')
+    @market = Store.central_wholesale_market
+    unless @market
+      redirect_to store_root_path, alert: '中央卸売市場がまだ作成されていません。'
+      return
+    end
+
     @user_stores = current_user.stores.where(town: @town)
 
     stocks = @market.stocks.includes(item_sub_category: :item_category)
@@ -49,7 +52,7 @@ class Store::TownsController < Store::ApplicationController
       stocks = stocks.where(item_sub_categories: { item_category_id: params[:item_category_id] })
     end
 
-    @stocks         = stocks
+    @stocks          = stocks
     @item_categories = ItemCategory.joins(item_sub_categories: :stocks)
                                    .where(stocks: { store_id: @market.id })
                                    .distinct

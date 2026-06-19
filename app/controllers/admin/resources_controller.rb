@@ -12,7 +12,8 @@ class Admin::ResourcesController < Admin::ApplicationController
   end
 
   def index
-    @records = @model.all.order(id: :desc)
+    @q = @model.ransack(params[:q])
+    @records = @q.result.order(id: :desc)
     @records = @records.page(params[:page]).per(50) if @records.respond_to?(:page)
   end
 
@@ -57,7 +58,7 @@ class Admin::ResourcesController < Admin::ApplicationController
       .sort
   end
 
-  helper_method :editable_columns, :all_columns, :associated_name
+  helper_method :editable_columns, :all_columns, :associated_name, :text_search_predicate
 
   def editable_columns(model = @model)
     model.column_names.reject { |c| EXCLUDED_COLUMNS.include?(c) }
@@ -65,6 +66,11 @@ class Admin::ResourcesController < Admin::ApplicationController
 
   def all_columns(model = @model)
     model.column_names
+  end
+
+  def text_search_predicate
+    cols = @model.columns.select { |c| %i[string text].include?(c.type) }.map(&:name)
+    cols.any? ? "#{cols.join('_or_')}_cont" : nil
   end
 
   def associated_name(record, col)
