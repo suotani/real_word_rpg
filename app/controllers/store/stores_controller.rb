@@ -11,7 +11,7 @@ class Store::StoresController < Store::ApplicationController
   end
 
   def show
-    @listed_stocks = @store.stocks.listed.includes(:item_sub_category)
+    @listed_stocks = @store.stocks.listed
     @is_owner      = @store.user_id == current_user.id
   end
 

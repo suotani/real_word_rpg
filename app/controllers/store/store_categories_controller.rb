@@ -4,7 +4,7 @@ class Store::StoreCategoriesController < Store::ApplicationController
 
   def index
     @store_categories = StoreCategory.where.not(name: '卸市場')
-                                      .includes(:buisiness_times, item_categories: :item_sub_categories)
+                                      .includes(:buisiness_times, :item_categories)
                                       .order(:listing_fee)
   end
 

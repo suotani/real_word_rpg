@@ -29,11 +29,11 @@ class Store::StoreActionsController < Store::ApplicationController
     ActiveRecord::Base.transaction do
       quantity.times do
         destination_store.stocks.create!(
-          name: @target_stock.name,
-          item_sub_category: @target_stock.item_sub_category,
-          user: current_user,
-          cost: @target_stock.price,
-          price: @target_stock.price
+          name:       @target_stock.name,
+          user:       current_user,
+          cost:       @target_stock.price,
+          price:      @target_stock.price,
+          ingredient: true
         )
       end
       current_user.deduct!(total_cost)
@@ -71,7 +71,6 @@ class Store::StoreActionsController < Store::ApplicationController
     ActiveRecord::Base.transaction do
       destination_store.stocks.create!(
         name: @target_stock.name,
-        item_sub_category: @target_stock.item_sub_category,
         user: current_user,
         cost: price,
         price: price
@@ -94,14 +93,6 @@ class Store::StoreActionsController < Store::ApplicationController
 
   def set_user_stores
     town = current_user.town
-    base = town ? current_user.stores.where(town: town) : current_user.stores.none
-
-    # item_sub_category がある場合は store_category で絞り込む
-    store_categories = @target_stock&.item_sub_category&.item_category&.store_categories
-    if store_categories.present?
-      @user_stores = base.where(store_category: store_categories)
-    else
-      @user_stores = base
-    end
+    @user_stores = town ? current_user.stores.where(town: town) : current_user.stores.none
   end
 end

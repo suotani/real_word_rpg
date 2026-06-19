@@ -58,6 +58,7 @@ Rails.application.routes.draw do
           get  :list
           post :list
           post :unlist
+          post :toggle_ingredient
         end
       end
       resources :recipes, only: [:index, :new, :create, :destroy] do
@@ -72,10 +73,8 @@ Rails.application.routes.draw do
       post :repay
     end
     resource  :virtual_customer_batch, only: [:show, :create]
-    resources :item_sub_categories, only: [:index, :new, :create] do
-      post :import_master, on: :collection
-    end
-    resources :item_categories,     only: [:index, :new, :create, :edit, :update, :destroy]
+    resources :wholesale_market_stocks, only: [:index, :new, :create, :edit, :update, :destroy]
+    resources :item_categories, only: [:index, :new, :create, :edit, :update, :destroy]
     resources :buisiness_times,     only: [:index]
     resources :store_categories,    only: [:index, :new, :create, :edit, :update, :destroy] do
       post :assign_item_category,  on: :member

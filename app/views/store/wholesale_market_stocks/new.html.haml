@@ -1,0 +1,11 @@
+.container.py-4
+  .col-lg-6.col-md-8
+    .d-flex.align-items-center.gap-3.mb-4
+      = link_to store_wholesale_market_stocks_path, class: 'btn btn-outline-secondary btn-sm' do
+        %i.fas.fa-arrow-left
+        一覧へ戻る
+      %h1.mb-0 商品を追加
+
+    .card.shadow-sm
+      .card-body
+        = render 'form', stock: @stock, url: store_wholesale_market_stocks_path

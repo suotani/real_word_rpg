@@ -3,25 +3,27 @@ class Store::RecipesController < Store::ApplicationController
   before_action :set_recipe, only: [:destroy, :craft]
 
   def index
-    @recipes = @store.recipes.includes(:item_sub_categories, :item_category)
-    @stocked_item_sub_category_ids = @store.stocks.distinct.pluck(:item_sub_category_id).to_set
+    @recipes = @store.recipes.includes(:recipe_ingredients, :item_category)
+    @stocked_names = @store.stocks.where(ingredient: true).distinct.pluck(:name).to_set
   end
 
   def new
     @recipe = @store.recipes.build
     @item_categories = item_categories_for_store
-    @item_sub_categories = item_sub_categories_for_store
+    @ingredient_names = ingredient_names_for_store
   end
 
   def create
-    @recipe = @store.recipes.build(recipe_params)
+    @recipe = @store.recipes.build(recipe_params.except(:ingredient_names))
+    ingredient_names = (recipe_params[:ingredient_names] || []).reject(&:blank?)
 
     if @recipe.save
+      ingredient_names.each { |name| @recipe.recipe_ingredients.create!(name: name) }
       redirect_to store_store_recipes_path(@store), notice: "レシピ「#{@recipe.name}」を登録しました。"
     else
       @item_categories = item_categories_for_store
-      @item_sub_categories = item_sub_categories_for_store
-      render :new
+      @ingredient_names = ingredient_names_for_store
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -31,10 +33,8 @@ class Store::RecipesController < Store::ApplicationController
   end
 
   def craft
-    ingredient_ids = @recipe.item_sub_categories.pluck(:id)
-    ingredient_stocks = ingredient_ids.map do |sub_cat_id|
-      @store.stocks.find_by(item_sub_category_id: sub_cat_id)
-    end
+    ingredient_names = @recipe.recipe_ingredients.pluck(:name)
+    ingredient_stocks = ingredient_names.map { |name| @store.stocks.find_by(name: name, ingredient: true) }
 
     if ingredient_stocks.any?(&:nil?)
       redirect_to store_store_recipes_path(@store), alert: '素材が不足しています。'
@@ -45,10 +45,10 @@ class Store::RecipesController < Store::ApplicationController
       total_cost = ingredient_stocks.sum(&:cost)
       ingredient_stocks.each(&:destroy!)
       @store.stocks.create!(
-        name: @recipe.name,
-        cost: total_cost,
-        price: 0,
-        user: current_user,
+        name:             @recipe.name,
+        cost:             total_cost,
+        price:            0,
+        user:             current_user,
         ingredient_count: ingredient_stocks.size
       )
     end
@@ -76,12 +76,11 @@ class Store::RecipesController < Store::ApplicationController
                 .order(:name)
   end
 
-  def item_sub_categories_for_store
-    sub_category_ids = @store.stocks.distinct.pluck(:item_sub_category_id).compact
-    ItemSubCategory.where(id: sub_category_ids).order(:name)
+  def ingredient_names_for_store
+    @store.stocks.where(ingredient: true).where.not(name: nil).distinct.pluck(:name).sort
   end
 
   def recipe_params
-    params.require(:recipe).permit(:name, :item_category_id, item_sub_category_ids: [])
+    params.require(:recipe).permit(:name, :item_category_id, ingredient_names: [])
   end
 end

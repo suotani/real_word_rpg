@@ -1,0 +1,30 @@
+.container.py-4
+  .d-flex.justify-content-between.align-items-center.mb-4
+    %h1.mb-0 中央卸売市場 商品管理
+    = link_to '+ 商品を追加', new_store_wholesale_market_stock_path, class: 'btn btn-primary'
+
+  - if flash[:notice]
+    .alert.alert-success= flash[:notice]
+
+  - if @stocks.any?
+    .table-responsive
+      %table.table.table-hover.align-middle
+        %thead.table-dark
+          %tr
+            %th 商品名
+            %th 仕入れ値
+            %th 販売価格
+            %th
+        %tbody
+          - @stocks.each do |stock|
+            %tr
+              %td.fw-bold= stock.name
+              %td= "#{stock.cost}円"
+              %td= "#{stock.price}円"
+              %td.text-end.text-nowrap
+                = link_to '編集', edit_store_wholesale_market_stock_path(stock), class: 'btn btn-sm btn-outline-warning'
+                = button_to '削除', store_wholesale_market_stock_path(stock), method: :delete,
+                    form: { data: { turbo_confirm: '本当に削除しますか？' } },
+                    class: 'btn btn-sm btn-outline-danger ms-1'
+  - else
+    .alert.alert-info まだ商品が登録されていません。

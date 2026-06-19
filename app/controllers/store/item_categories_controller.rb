@@ -4,7 +4,7 @@ class Store::ItemCategoriesController < Store::ApplicationController
 
   def index
     @current_town = current_user.town
-    @item_categories = ItemCategory.includes(:store_categories, :item_sub_categories)
+    @item_categories = ItemCategory.includes(:store_categories)
                                    .order('item_categories.name')
   end
 
@@ -36,11 +36,6 @@ class Store::ItemCategoriesController < Store::ApplicationController
   end
 
   def destroy
-    if @item_category.item_sub_categories.exists?
-      redirect_back fallback_location: store_item_categories_path,
-                    alert: "「#{@item_category.name}」にはサブカテゴリが紐づいているため削除できません。"
-      return
-    end
     if @item_category.recipes.exists?
       redirect_back fallback_location: store_item_categories_path,
                     alert: "「#{@item_category.name}」にはレシピが紐づいているため削除できません。"

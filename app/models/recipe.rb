@@ -1,8 +1,7 @@
 class Recipe < ApplicationRecord
   belongs_to :store
-  belongs_to :item_category
-  has_many :recipe_item_sub_categories, dependent: :destroy
-  has_many :item_sub_categories, through: :recipe_item_sub_categories
+  belongs_to :item_category, optional: true
+  has_many :recipe_ingredients, dependent: :destroy
 
   validates :name, presence: true
 end

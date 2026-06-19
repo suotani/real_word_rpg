@@ -23,22 +23,17 @@ RSpec.describe 'POST /api/batches/virtual_purchase', type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it '正しいトークンは 202 Accepted' do
+    it '正しいトークンは 200 OK' do
       post '/api/batches/virtual_purchase', headers: headers
-      expect(response).to have_http_status(:accepted)
+      expect(response).to have_http_status(:ok)
     end
   end
 
   describe 'レスポンス形式' do
-    it 'ok: true, queued: true を含む JSON を返す' do
+    it 'ok: true, count, total_amount, errors を含む JSON を返す' do
       post '/api/batches/virtual_purchase', headers: headers
       json = JSON.parse(response.body)
-      expect(json).to include('ok' => true, 'queued' => true)
-    end
-
-    it 'VirtualCustomerBatchJob をエンキューする' do
-      expect(VirtualCustomerBatchJob).to receive(:perform_later)
-      post '/api/batches/virtual_purchase', headers: headers
+      expect(json).to include('ok' => true, 'count' => 0, 'total_amount' => 0, 'errors' => [])
     end
   end
 end

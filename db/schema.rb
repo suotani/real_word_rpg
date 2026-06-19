@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_19_100614) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -113,16 +113,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
     t.index ["store_category_id"], name: "index_item_category_store_categories_on_store_category_id"
   end
 
-  create_table "item_sub_categories", force: :cascade do |t|
-    t.integer "item_category_id", null: false
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "town_id"
-    t.index ["item_category_id"], name: "index_item_sub_categories_on_item_category_id"
-    t.index ["town_id"], name: "index_item_sub_categories_on_town_id"
-  end
-
   create_table "managed_htmls", force: :cascade do |t|
     t.string "title"
     t.integer "user_id"
@@ -141,13 +131,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "recipe_item_sub_categories", force: :cascade do |t|
+  create_table "recipe_ingredients", force: :cascade do |t|
     t.integer "recipe_id", null: false
-    t.integer "item_sub_category_id", null: false
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["item_sub_category_id"], name: "index_recipe_item_sub_categories_on_item_sub_category_id"
-    t.index ["recipe_id"], name: "index_recipe_item_sub_categories_on_recipe_id"
+    t.index ["recipe_id"], name: "index_recipe_ingredients_on_recipe_id"
   end
 
   create_table "recipes", force: :cascade do |t|
@@ -301,12 +290,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
-    t.integer "item_sub_category_id"
     t.boolean "listed", default: false, null: false
     t.integer "ingredient_count", default: 0, null: false
     t.integer "unsold_count", default: 0, null: false
     t.float "attractiveness", default: 0.0, null: false
-    t.index ["item_sub_category_id"], name: "index_stocks_on_item_sub_category_id"
+    t.boolean "ingredient", default: false, null: false
     t.index ["store_id"], name: "index_stocks_on_store_id"
     t.index ["user_id"], name: "index_stocks_on_user_id"
   end
@@ -388,10 +376,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
   add_foreign_key "buisiness_times", "store_categories"
   add_foreign_key "item_category_store_categories", "item_categories"
   add_foreign_key "item_category_store_categories", "store_categories"
-  add_foreign_key "item_sub_categories", "item_categories"
-  add_foreign_key "item_sub_categories", "towns"
-  add_foreign_key "recipe_item_sub_categories", "item_sub_categories"
-  add_foreign_key "recipe_item_sub_categories", "recipes"
+  add_foreign_key "recipe_ingredients", "recipes"
   add_foreign_key "recipes", "item_categories"
   add_foreign_key "recipes", "stores"
   add_foreign_key "sales_logs", "users"
@@ -401,7 +386,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "stocks", "item_sub_categories"
   add_foreign_key "stocks", "stores"
   add_foreign_key "stocks", "users"
   add_foreign_key "stores", "store_categories"

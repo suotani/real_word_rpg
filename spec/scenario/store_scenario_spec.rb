@@ -18,6 +18,11 @@ RSpec.describe 'Store Scenario', type: :system do
     item_cat = ItemCategory.create!(name: '食材')
     food_category.item_categories << item_cat
 
+    wholesale_category = StoreCategory.create!(name: '卸市場', listing_fee: 0)
+    central_market = Store.create!(name: '中央卸売市場', user: nil, town: nil, store_category: wholesale_category, theme_color: '#2c3e50', theme_sub_color: '#e8d5b7')
+    central_market.stocks.create!(name: 'かぼちゃ', cost: 0, price: 100, user: nil)
+    central_market.stocks.create!(name: 'たまねぎ', cost: 0, price: 100, user: nil)
+
     user = User.create!(email: 'buyer@example.com', password: 'password', name: '買い手', balance: 0)
 
     # ログイン
@@ -34,11 +39,8 @@ RSpec.describe 'Store Scenario', type: :system do
     expect(page).to have_content('町「テスト街」が作成されました')
 
     town = Town.find_by!(name: 'テスト街')
-    expect(town.stores.find_by(name: '中央卸売市場')).to be_present
+    expect(Store.central_wholesale_market).to be_present
     expect(user.reload.town).to eq(town)
-
-    # 「かぼちゃ」「たまねぎ」は WholesaleItemsImporter による初期インポートで既に登録済み
-    # （add_to_town_wholesale_market で市場在庫も自動追加されている）。
 
     # 銀行で25万円借入
     visit store_bank_path
@@ -81,6 +83,7 @@ RSpec.describe 'Store Scenario', type: :system do
     pumpkin_stock = store.stocks.find_by!(name: 'かぼちゃ')
     expect(pumpkin_stock.cost).to eq(100)
     expect(pumpkin_stock.price).to eq(100)
+    expect(pumpkin_stock.ingredient).to be true
     expect(user.reload.balance).to eq(49_900)
 
     # たまねぎを仕入れる
@@ -111,7 +114,7 @@ RSpec.describe 'Store Scenario', type: :system do
 
     recipe = store.recipes.find_by!(name: 'かぼちゃスープ')
     expect(recipe.item_category.name).to eq('食材')
-    expect(recipe.item_sub_categories.map(&:name)).to contain_exactly('かぼちゃ', 'たまねぎ')
+    expect(recipe.recipe_ingredients.map(&:name)).to contain_exactly('かぼちゃ', 'たまねぎ')
 
     # クラフト実行
     within find('.card-title', text: 'かぼちゃスープ', exact_text: true).ancestor('.card') do
@@ -121,7 +124,6 @@ RSpec.describe 'Store Scenario', type: :system do
     crafted = store.stocks.reload.find_by!(name: 'かぼちゃスープ')
     expect(crafted.cost).to eq(200)
     expect(crafted.price).to eq(0)
-    expect(crafted.item_sub_category).to be_nil
     expect(store.stocks.find_by(name: 'かぼちゃ')).to be_nil
     expect(store.stocks.find_by(name: 'たまねぎ')).to be_nil
 

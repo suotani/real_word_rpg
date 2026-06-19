@@ -45,18 +45,7 @@ class Store::TownsController < Store::ApplicationController
     end
 
     @user_stores = current_user.stores.where(town: @town)
-
-    stocks = @market.stocks.includes(item_sub_category: :item_category)
-
-    if params[:item_category_id].present?
-      stocks = stocks.where(item_sub_categories: { item_category_id: params[:item_category_id] })
-    end
-
-    @stocks          = stocks
-    @item_categories = ItemCategory.joins(item_sub_categories: :stocks)
-                                   .where(stocks: { store_id: @market.id })
-                                   .distinct
-                                   .order(:name)
+    @stocks = @market.stocks
   end
 
   def join_request

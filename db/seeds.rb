@@ -5,11 +5,10 @@ puts "データベースに初期データを投入中..."
 # 既存データを全て削除
 puts "既存データを削除中..."
 
-RecipeItemSubCategory.destroy_all
+RecipeIngredient.destroy_all
 Recipe.destroy_all
 Stock.destroy_all
 Store.destroy_all
-ItemSubCategory.destroy_all
 ItemCategory.destroy_all
 StoreCategory.destroy_all
 UserTown.destroy_all
@@ -104,7 +103,7 @@ Experience.insert_all([
 # ストアエコノミー データ
 puts "ストアデータを投入中..."
 
-# StoreCategory / ItemCategory / 商品カテゴリの紐付け / 商品サブカテゴリ階層は CSV から同期する
+# StoreCategory / ItemCategory / 商品カテゴリの紐付け
 StoreCategoriesImporter.import!
 
 food_cat_id = StoreCategory.find_by!(name: '飲食店').id
@@ -120,7 +119,7 @@ central_market = Store.create!(
   theme_sub_color: '#e8d5b7'
 )
 
-# 卸売 CSV からグローバルな商品サブカテゴリを生成し、中央卸売市場へ在庫投入
+# 卸売 CSV から中央卸売市場へ在庫投入
 WholesaleItemsImporter.import!
 
 # Town
@@ -138,28 +137,19 @@ Store.insert_all([
 ])
 store_id = Store.find_by!(name: 'サンプルストア').id
 
-pumpkin_sub_id = ItemSubCategory.find_by!(name: 'かぼちゃ', town_id: nil).id
-chicken_sub_id = ItemSubCategory.find_by!(name: '鶏肉',     town_id: nil).id
-onion_sub_id   = ItemSubCategory.find_by!(name: 'たまねぎ', town_id: nil).id
-
 # Stock
 Stock.insert_all([
-  { name: 'かぼちゃ',   store_id: store_id, user_id: user.id, item_sub_category_id: pumpkin_sub_id, cost: 50,  price: 100, created_at: now, updated_at: now },
-  { name: '鶏もも肉',   store_id: store_id, user_id: user.id, item_sub_category_id: chicken_sub_id, cost: 200, price: 350, created_at: now, updated_at: now },
-  { name: 'たまねぎ',   store_id: nil,      user_id: user.id, item_sub_category_id: onion_sub_id,   cost: 80,  price: 150, created_at: now, updated_at: now },
+  { name: 'かぼちゃ', store_id: store_id, user_id: user.id, cost: 50,  price: 100, created_at: now, updated_at: now },
+  { name: '鶏もも肉', store_id: store_id, user_id: user.id, cost: 200, price: 350, created_at: now, updated_at: now },
+  { name: 'たまねぎ', store_id: nil,      user_id: user.id, cost: 80,  price: 150, created_at: now, updated_at: now },
 ])
 
-# Recipe
+# Recipe & RecipeIngredients
 cooking_cat_id = ItemCategory.find_by!(name: '料理').id
-Recipe.insert_all([
-  { name: 'かぼちゃチキン炒め', store_id: store_id, item_category_id: cooking_cat_id, created_at: now, updated_at: now },
-])
-recipe_id = Recipe.find_by!(name: 'かぼちゃチキン炒め').id
-
-# RecipeItemSubCategory
-RecipeItemSubCategory.insert_all([
-  { recipe_id: recipe_id, item_sub_category_id: pumpkin_sub_id, created_at: now, updated_at: now },
-  { recipe_id: recipe_id, item_sub_category_id: chicken_sub_id, created_at: now, updated_at: now },
+recipe = Recipe.create!(name: 'かぼちゃチキン炒め', store_id: store_id, item_category_id: cooking_cat_id)
+RecipeIngredient.insert_all([
+  { recipe_id: recipe.id, name: 'かぼちゃ', created_at: now, updated_at: now },
+  { recipe_id: recipe.id, name: '鶏もも肉', created_at: now, updated_at: now },
 ])
 
 puts "初期データの投入が完了しました！"

@@ -1,21 +1,14 @@
 class Store::StocksController < Store::ApplicationController
   before_action :set_store
-  before_action :set_stock, only: [:show, :edit, :update, :destroy, :list, :unlist]
-  before_action :set_item_sub_categories, only: [:index, :new, :create, :edit, :update]
+  before_action :set_stock, only: [:show, :edit, :update, :destroy, :list, :unlist, :toggle_ingredient]
 
   def index
-    @stocks = @store.stocks.includes(item_sub_category: :item_category)
-
-    if params[:item_category_id].present?
-      @stocks = @stocks.where(item_sub_categories: { item_category_id: params[:item_category_id] })
-    end
+    @stocks = @store.stocks
 
     case params[:status]
     when 'listed'   then @stocks = @stocks.where(listed: true)
     when 'unlisted' then @stocks = @stocks.where(listed: false)
     end
-
-    @item_categories_for_filter = @item_sub_categories.map(&:item_category).uniq.compact.sort_by(&:name)
   end
 
   def show
@@ -32,7 +25,7 @@ class Store::StocksController < Store::ApplicationController
     if @stock.save
       redirect_to store_store_stocks_path(@store), notice: '在庫が正常に作成されました。'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -43,7 +36,7 @@ class Store::StocksController < Store::ApplicationController
     if @stock.update(stock_params)
       redirect_to store_store_stocks_path(@store), notice: '在庫が正常に更新されました。'
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -64,12 +57,16 @@ class Store::StocksController < Store::ApplicationController
         render :list
       end
     end
-    # GET: list.html.haml を暗黙レンダリング
   end
 
   def unlist
     @stock.update!(listed: false)
     redirect_to store_store_stocks_path(@store), notice: "「#{@stock.name}」の出品を取り消しました。"
+  end
+
+  def toggle_ingredient
+    @stock.update!(ingredient: !@stock.ingredient?)
+    redirect_to store_store_stocks_path(@store)
   end
 
   private
@@ -82,15 +79,7 @@ class Store::StocksController < Store::ApplicationController
     @stock = @store.stocks.find(params[:id])
   end
 
-  def set_item_sub_categories
-    @item_sub_categories = ItemSubCategory.where(town: @store.town)
-                                          .includes(:item_category)
-                                          .order('item_categories.name, item_sub_categories.name')
-    @grouped_item_sub_categories = @item_sub_categories.group_by { |s| s.item_category&.name || '未分類' }
-                                                       .transform_values { |items| items.map { |s| [s.name, s.id] } }
-  end
-
   def stock_params
-    params.require(:stock).permit(:name, :item_sub_category_id, :cost, :price)
+    params.require(:stock).permit(:name, :cost, :price)
   end
 end

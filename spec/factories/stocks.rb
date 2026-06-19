@@ -6,7 +6,6 @@ FactoryBot.define do
     listed { false }
     association :store
     association :user
-    association :item_sub_category
 
     trait :listed do
       listed { true }
