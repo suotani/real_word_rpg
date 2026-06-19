@@ -1,0 +1,55 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h2 中央卸売市場 商品一覧
+  = link_to '+ 商品登録', new_admin_wholesale_stock_path, class: 'btn btn-primary'
+
+.card.mb-4
+  .card-body.py-2
+    = form_with url: admin_wholesale_stocks_path, method: :get, local: true do |f|
+      .row.g-2.align-items-end
+        .col-sm-5
+          = f.label :item_category_id, '商品カテゴリ', class: 'form-label form-label-sm mb-1'
+          = f.select :item_category_id,
+              options_from_collection_for_select(@item_categories, :id, :name, params[:item_category_id]),
+              { prompt: 'すべてのカテゴリ' },
+              { class: 'form-select form-select-sm' }
+        .col-sm-auto
+          = f.submit '絞り込む', class: 'btn btn-outline-secondary btn-sm'
+        - if params[:item_category_id].present?
+          .col-sm-auto
+            = link_to 'リセット', admin_wholesale_stocks_path, class: 'btn btn-outline-secondary btn-sm'
+
+- if @stocks.any?
+  .table-responsive
+    %table.table.table-bordered.table-hover.table-sm
+      %thead.table-dark
+        %tr
+          %th ID
+          %th 商品名
+          %th カテゴリ
+          %th サブカテゴリ
+          %th 仕入れ値
+          %th 販売価格
+          %th 状態
+          %th 操作
+      %tbody
+        - @stocks.each do |stock|
+          %tr
+            %td= stock.id
+            %td.fw-bold= stock.name
+            %td= stock.item_sub_category&.item_category&.name
+            %td= stock.item_sub_category&.name
+            %td= "#{stock.cost}円"
+            %td= "#{stock.price}円"
+            %td
+              - if stock.listed?
+                %span.badge.bg-warning.text-dark 出品中
+              - else
+                %span.badge.bg-secondary 未出品
+            %td.text-nowrap
+              = link_to '編集', edit_admin_wholesale_stock_path(stock), class: 'btn btn-sm btn-outline-warning'
+              = link_to '削除', admin_wholesale_stock_path(stock),
+                  method: :delete,
+                  data: { confirm: "「#{stock.name}」を削除しますか？" },
+                  class: 'btn btn-sm btn-outline-danger ms-1'
+- else
+  .alert.alert-info 商品が登録されていません。

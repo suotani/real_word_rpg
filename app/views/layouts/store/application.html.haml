@@ -21,6 +21,11 @@
         #navbarSupportedContent.collapse.navbar-collapse
           %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
     = render 'layouts/store/aside_left'
+    - if impersonating?
+      .fixed-top.text-center.py-1.text-white.small{ style: "background: #c0392b; z-index: 9999;" }
+        %i.fas.fa-user-secret.me-1
+        = "管理者 (#{impersonating_admin&.name}) として #{current_user.name} にログイン中"
+        = button_to '管理者に戻る', admin_impersonation_path, method: :delete, class: 'btn btn-light btn-sm ms-3 py-0'
     .page.page-main.ml-270.mt-navbar{ data: { locale: :ja } }
       = render 'layouts/messages'
       .container

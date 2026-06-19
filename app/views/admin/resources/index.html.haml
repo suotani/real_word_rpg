@@ -47,6 +47,11 @@
                 method: :delete,
                 data: { confirm: "本当に削除しますか？" },
                 class: 'btn btn-sm btn-outline-danger ms-1'
+              - if @model_name == 'user' && !record.admin? && record.id != current_user.id
+                = button_to 'ログイン', admin_impersonation_path(user_id: record.id),
+                    method: :post,
+                    data: { confirm: "#{record.name} としてログインしますか？" },
+                    class: 'btn btn-sm btn-outline-info ms-1'
 
   - if @records.respond_to?(:total_pages)
     = paginate @records

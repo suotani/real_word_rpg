@@ -20,6 +20,7 @@ class StoreCategory < ApplicationRecord
   private
 
   def sales_hours_format
+    return unless self.class.column_names.include?('sales_hours')
     return if sales_hours.blank?
     invalid = sales_hours.split(',').map(&:strip).reject { |t| t.match?(/\A\d{1,2}\z/) && (0..23).include?(t.to_i) }
     errors.add(:sales_hours, "に無効な値があります（#{invalid.join(', ')}）。0〜23 の整数をカンマ区切りで入力してください") if invalid.any?

@@ -1,0 +1,32 @@
+.d-flex.align-items-center.gap-3.mb-4
+  = link_to '← 一覧へ戻る', admin_wholesale_stocks_path, class: 'btn btn-outline-secondary btn-sm'
+  %h2.mb-0 商品登録
+
+- if flash[:alert]
+  .alert.alert-danger= flash[:alert]
+
+= form_with url: admin_wholesale_stocks_path, method: :post, local: true, scope: :stock do |f|
+  .card
+    .card-body
+      .mb-3
+        %label.form-label.fw-bold{for: 'item_category_id'} 商品カテゴリ
+        = select_tag :item_category_id,
+            options_from_collection_for_select(@item_categories, :id, :name),
+            prompt: '選択してください',
+            class: 'form-select',
+            required: true
+      .mb-3
+        = f.label :name, '商品名（サブカテゴリ名）', class: 'form-label fw-bold'
+        = f.text_field :name, class: 'form-control', required: true, placeholder: '例: コシヒカリ'
+      .row.mb-3
+        .col-sm-6
+          = f.label :cost, '仕入れ値（円）', class: 'form-label fw-bold'
+          = f.number_field :cost, value: 0, min: 0, class: 'form-control'
+        .col-sm-6
+          = f.label :price, '販売価格（円）', class: 'form-label fw-bold'
+          = f.number_field :price, value: 100, min: 1, class: 'form-control', required: true
+      .text-muted.small.mb-3
+        ※ 同名のサブカテゴリが既にある場合は既存のものを利用します。
+    .card-footer
+      = f.submit '登録する', class: 'btn btn-primary'
+      = link_to 'キャンセル', admin_wholesale_stocks_path, class: 'btn btn-outline-secondary ms-2'

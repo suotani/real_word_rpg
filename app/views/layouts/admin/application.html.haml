@@ -14,6 +14,7 @@
         = link_to '管理画面', admin_root_path, class: 'navbar-brand'
         .navbar-nav.ms-auto
           = link_to current_user.name, '#', class: 'nav-link text-white'
+          = link_to 'ストアへ戻る', store_root_path, class: 'nav-link text-white'
           = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'nav-link text-white'
     .container-fluid
       .row
@@ -24,6 +25,10 @@
                 = link_to admin_root_path, class: 'nav-link' do
                   %i.fas.fa-database.me-2
                   モデル一覧
+              %li.nav-item
+                = link_to admin_wholesale_stocks_path, class: 'nav-link' do
+                  %i.fas.fa-store.me-2
+                  中央卸売市場
         %main.col-md-10.ms-sm-auto.px-md-4{style: "padding-top: 1.5rem;"}
           - flash.each do |type, msg|
             - alert_class = type.to_s == 'notice' ? 'alert-success' : 'alert-danger'
