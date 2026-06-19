@@ -39,7 +39,7 @@ class Store::StoreActionsController < Store::ApplicationController
       current_user.deduct!(total_cost)
     end
 
-    redirect_to market_store_town_path(@target_stock.store.town),
+    redirect_to market_store_town_path(current_user.town),
                 notice: "#{@target_stock.name}を#{quantity}個仕入れました。（残高: #{current_user.reload.balance}円）"
   end
 

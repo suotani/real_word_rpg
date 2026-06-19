@@ -1,11 +1,8 @@
 class Store::ItemSubCategoriesController < Store::ApplicationController
   def index
-    @current_town = current_user.town
-    @item_sub_categories = @current_town \
-      ? ItemSubCategory.where(town: @current_town)
-                       .includes(item_category: :store_categories)
-                       .order('item_categories.name, item_sub_categories.name')
-      : ItemSubCategory.none
+    @item_sub_categories = ItemSubCategory.where(town_id: nil)
+                                          .includes(item_category: :store_categories)
+                                          .order('item_categories.name, item_sub_categories.name')
   end
 
   def new
@@ -15,7 +12,6 @@ class Store::ItemSubCategoriesController < Store::ApplicationController
 
   def create
     @item_sub_category = ItemSubCategory.new(item_sub_category_params)
-    @item_sub_category.town = current_user.town
 
     if @item_sub_category.save
       redirect_back fallback_location: store_root_path,
@@ -27,14 +23,7 @@ class Store::ItemSubCategoriesController < Store::ApplicationController
   end
 
   def import_master
-    town = current_user.town
-
-    if town.nil?
-      redirect_to store_item_sub_categories_path, alert: '町が選択されていません。'
-      return
-    end
-
-    count = town.populate_wholesale_items!
+    count = WholesaleItemsImporter.import!
 
     if count.positive?
       redirect_to store_item_sub_categories_path, notice: "商品マスタから#{count}件の商品の種類を追加しました。"

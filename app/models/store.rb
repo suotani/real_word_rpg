@@ -1,5 +1,5 @@
 class Store < ApplicationRecord
-  belongs_to :town
+  belongs_to :town, optional: true
   belongs_to :user, optional: true
   belongs_to :store_category
   has_many :stocks, dependent: :destroy
@@ -12,6 +12,12 @@ class Store < ApplicationRecord
 
   # 名前の一意性（同じ町内で同じ名前の店舗は作成不可）
   validates :name, uniqueness: { scope: :town_id, message: "は既にこの町で使用されています" }
+
+  def self.central_wholesale_market
+    wholesale_category = StoreCategory.find_by(name: '卸市場')
+    return nil unless wholesale_category
+    find_by(user_id: nil, store_category: wholesale_category, town_id: nil)
+  end
 
   # カスタムバリデーション
   validate :theme_colors_must_be_different
