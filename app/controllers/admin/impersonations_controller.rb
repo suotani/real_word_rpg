@@ -1,4 +1,6 @@
 class Admin::ImpersonationsController < Admin::ApplicationController
+  skip_before_action :require_admin!, only: [:destroy]
+
   def create
     target = User.find(params[:user_id])
     raise ActionController::Forbidden if target.admin?
