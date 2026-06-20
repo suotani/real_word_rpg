@@ -14,17 +14,13 @@
       .mb-3
         = f.label :name, '商品名', class: 'form-label fw-bold'
         = f.text_field :name, class: 'form-control', required: true
-      .row.mb-3
-        .col-sm-6
-          = f.label :cost, '仕入れ値（円）', class: 'form-label fw-bold'
-          = f.number_field :cost, min: 0, class: 'form-control'
-        .col-sm-6
-          = f.label :price, '販売価格（円）', class: 'form-label fw-bold'
-          = f.number_field :price, min: 1, class: 'form-control', required: true
       .mb-3
-        .form-check
-          = f.check_box :listed, class: 'form-check-input', id: 'stock_listed'
-          = f.label :listed, '出品中', class: 'form-check-label', for: 'stock_listed'
+        = f.label :price, '販売価格（円）', class: 'form-label fw-bold'
+        = f.number_field :price, min: 1, class: 'form-control', required: true
+      .mb-3
+        = f.label :sort_key, '並べ替えキー', class: 'form-label fw-bold'
+        = f.text_field :sort_key, class: 'form-control'
+
     .card-footer
       = f.submit '更新する', class: 'btn btn-primary'
       = link_to 'キャンセル', admin_wholesale_stocks_path, class: 'btn btn-outline-secondary ms-2'

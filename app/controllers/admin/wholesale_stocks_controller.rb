@@ -74,6 +74,6 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
   end
 
   def stock_params
-    params.require(:stock).permit(:name, :cost, :price, :listed)
+    params.require(:stock).permit(:name, :price, :sort_key)
   end
 end
