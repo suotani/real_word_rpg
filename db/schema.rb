@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_20_095235) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -306,6 +306,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_000000) do
     t.integer "ingredient_count", default: 0, null: false
     t.integer "unsold_count", default: 0, null: false
     t.float "attractiveness", default: 0.0, null: false
+    t.string "sort_key"
     t.index ["item_sub_category_id"], name: "index_stocks_on_item_sub_category_id"
     t.index ["store_id"], name: "index_stocks_on_store_id"
     t.index ["user_id"], name: "index_stocks_on_user_id"
