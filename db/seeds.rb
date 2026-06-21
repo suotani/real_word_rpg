@@ -121,7 +121,7 @@ central_market = Store.create!(
 )
 
 # 卸売 CSV からグローバルな商品サブカテゴリを生成し、中央卸売市場へ在庫投入
-WholesaleItemsImporter.import!
+WholesaleItemsImporter.import_global!
 
 # Town
 town = Town.create!(name: 'サンプルタウン', user_id: user.id, password: 'abc12345')

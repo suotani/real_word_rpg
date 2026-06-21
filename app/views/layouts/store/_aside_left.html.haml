@@ -20,7 +20,8 @@
     - if current_town
       .mt-3.text-white
         公共施設
-      - market = Store.central_wholesale_market
+      - wholesale_cat = StoreCategory.find_by(name: '卸市場')
+      - market = (wholesale_cat && current_town.stores.find_by(store_category: wholesale_cat, name: '中央卸売市場')) || Store.central_wholesale_market
       - if market
         = link_to market_store_town_path(current_town), class: 'link-no-underline sidebar-menu mt-2' do
           .d-flex.align-items-center.text-white

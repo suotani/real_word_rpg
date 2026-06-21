@@ -13,9 +13,13 @@ class ItemSubCategory < ApplicationRecord
   private
 
   def add_to_town_wholesale_market
-    return if town
-
-    market = Store.central_wholesale_market
+    market = if town
+      wholesale_cat = StoreCategory.find_by(name: '卸市場')
+      return unless wholesale_cat
+      town.stores.find_by(store_category: wholesale_cat, name: '中央卸売市場')
+    else
+      Store.central_wholesale_market
+    end
     return unless market
 
     market.stocks.create!(

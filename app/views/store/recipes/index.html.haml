@@ -49,10 +49,16 @@
                       %span.badge.bg-secondary= sub_cat.name
               - else
                 %p.text-muted.small 素材なし
-            .card-footer.bg-transparent.d-flex.justify-content-between
-              = button_to craft_store_store_recipe_path(@store, recipe), method: :post, class: "btn btn-success btn-sm", disabled: !craftable do
-                %i.fas.fa-hammer
-                クラフト
+            .card-footer.bg-transparent.d-flex.justify-content-between.align-items-center
+              - if craftable
+                - max_qty = @max_craft_quantities[recipe.id].to_i
+                = form_with url: craft_store_store_recipe_path(@store, recipe), method: :post, local: true, class: "d-flex gap-2 align-items-center" do |f|
+                  = f.number_field :quantity, value: 1, min: 1, max: max_qty, class: "form-control form-control-sm", style: "width: 70px"
+                  = f.submit 'クラフト', class: "btn btn-success btn-sm"
+              - else
+                %button.btn.btn-success.btn-sm{disabled: true}
+                  %i.fas.fa-hammer
+                  クラフト
               = button_to store_store_recipe_path(@store, recipe), method: :delete, class: "btn btn-outline-danger btn-sm", data: { turbo_confirm: "「#{recipe.name}」を削除しますか？" } do
                 %i.fas.fa-trash
                 削除

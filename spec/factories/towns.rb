@@ -9,6 +9,7 @@ FactoryBot.define do
 
     after(:build) do |town, evaluator|
       town.user_id ||= evaluator.owner.id
+      town.skip_wholesale_market_setup = true
     end
   end
 end
