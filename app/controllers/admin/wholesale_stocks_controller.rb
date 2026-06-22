@@ -1,6 +1,10 @@
+require 'csv'
+
 class Admin::WholesaleStocksController < Admin::ApplicationController
   before_action :set_market
   before_action :set_stock, only: [:edit, :update, :destroy]
+
+  CSV_HEADERS = %w[id 商品名 販売価格 並べ替えキー サブカテゴリ カテゴリ].freeze
 
   def index
     @stocks = @market.stocks.includes(item_sub_category: :item_category).order(:name)
@@ -10,6 +14,73 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
     end
 
     @item_categories = ItemCategory.order(:name)
+  end
+
+  def export
+    stocks = @market.stocks.includes(item_sub_category: :item_category).order(:sort_key, :name)
+
+    csv_data = CSV.generate(encoding: 'UTF-8') do |csv|
+      csv << CSV_HEADERS
+      stocks.each do |stock|
+        csv << [
+          stock.id,
+          stock.name,
+          stock.price,
+          stock.sort_key,
+          stock.item_sub_category&.name,
+          stock.item_sub_category&.item_category&.name
+        ]
+      end
+    end
+
+    send_data "﻿#{csv_data}",
+              filename: "wholesale_stocks_#{Date.today}.csv",
+              type: 'text/csv; charset=UTF-8'
+  end
+
+  def import
+    file = params[:csv_file]
+    unless file
+      redirect_to admin_wholesale_stocks_path, alert: 'CSVファイルを選択してください'
+      return
+    end
+
+    errors  = []
+    updated = 0
+
+    ActiveRecord::Base.transaction do
+      content = file.read.force_encoding('UTF-8').scrub
+      content.delete_prefix!("\xEF\xBB\xBF")
+      CSV.parse(content, headers: true) do |row|
+        id    = row['id'].to_i
+        stock = @market.stocks.find_by(id: id)
+
+        unless stock
+          errors << "ID #{id}: 見つかりません（スキップ）"
+          next
+        end
+
+        unless stock.update(
+          name:     row['商品名'].presence || stock.name,
+          price:    row['販売価格'].to_i,
+          sort_key: row['並べ替えキー']
+        )
+          errors << "ID #{id}: #{stock.errors.full_messages.join(', ')}"
+        else
+          updated += 1
+        end
+      end
+
+      raise ActiveRecord::Rollback if errors.any?
+    end
+
+    if errors.any?
+      redirect_to admin_wholesale_stocks_path, alert: "更新に失敗しました: #{errors.join(' / ')}"
+    else
+      redirect_to admin_wholesale_stocks_path, notice: "#{updated}件を更新しました"
+    end
+  rescue CSV::MalformedCSVError => e
+    redirect_to admin_wholesale_stocks_path, alert: "CSVの形式が不正です: #{e.message}"
   end
 
   def new

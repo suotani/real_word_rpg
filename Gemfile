@@ -15,6 +15,7 @@ gem 'sassc-rails', '~> 2.1'
 gem 'uglifier', '>= 1.3.0'
 
 gem 'devise'
+gem 'activerecord-session_store'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 #gem 'turbolinks', '~> 5'

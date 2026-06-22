@@ -1,6 +1,22 @@
 .d-flex.justify-content-between.align-items-center.mb-4
   %h2 中央卸売市場 商品一覧
-  = link_to '+ 商品登録', new_admin_wholesale_stock_path, class: 'btn btn-primary'
+  .d-flex.gap-2
+    = link_to export_admin_wholesale_stocks_path, class: 'btn btn-outline-success' do
+      %i.fas.fa-download.me-1
+      CSVダウンロード
+    = link_to '+ 商品登録', new_admin_wholesale_stock_path, class: 'btn btn-primary'
+
+.card.mb-3
+  .card-header.fw-bold CSVで一括更新
+  .card-body
+    = form_with url: import_admin_wholesale_stocks_path, method: :post, local: true, multipart: true do |f|
+      .row.g-2.align-items-end
+        .col-sm-8
+          = f.file_field :csv_file, class: 'form-control form-control-sm', accept: '.csv'
+        .col-sm-auto
+          = f.submit 'アップロードして更新', class: 'btn btn-warning btn-sm'
+    %p.text-muted.small.mb-0.mt-2
+      ※ id列で対象レコードを特定し、商品名・販売価格・並べ替えキーを更新します。登録・削除は行いません。
 
 .card.mb-4
   .card-body.py-2
@@ -27,9 +43,8 @@
           %th 商品名
           %th カテゴリ
           %th サブカテゴリ
-          %th 仕入れ値
           %th 販売価格
-          %th 状態
+          %th 並べ替えキー
           %th 操作
       %tbody
         - @stocks.each do |stock|
@@ -38,13 +53,8 @@
             %td.fw-bold= stock.name
             %td= stock.item_sub_category&.item_category&.name
             %td= stock.item_sub_category&.name
-            %td= "#{stock.cost}円"
             %td= "#{stock.price}円"
-            %td
-              - if stock.listed?
-                %span.badge.bg-warning.text-dark 出品中
-              - else
-                %span.badge.bg-secondary 未出品
+            %td= stock.sort_key
             %td.text-nowrap
               = link_to '編集', edit_admin_wholesale_stock_path(stock), class: 'btn btn-sm btn-outline-warning'
               = link_to '削除', admin_wholesale_stock_path(stock),

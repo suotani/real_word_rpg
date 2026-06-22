@@ -32,7 +32,12 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: 'resources#models'
-    resources :wholesale_stocks, only: [:index, :new, :create, :edit, :update, :destroy]
+    resources :wholesale_stocks, only: [:index, :new, :create, :edit, :update, :destroy] do
+      collection do
+        get  :export
+        post :import
+      end
+    end
     resource  :impersonation,    only: [:create, :destroy]
     get    'resources/:model_name/new',      to: 'resources#new',     as: :new_resource_record
     post   'resources/:model_name',          to: 'resources#create',  as: :resource_records
