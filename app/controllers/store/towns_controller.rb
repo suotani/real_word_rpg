@@ -54,7 +54,7 @@ class Store::TownsController < Store::ApplicationController
       stocks = stocks.where(item_sub_categories: { item_category_id: params[:item_category_id] })
     end
 
-    @stocks          = stocks
+    @stocks          = stocks.order(:sort_key)
     @item_categories = ItemCategory.joins(item_sub_categories: :stocks)
                                    .where(stocks: { store_id: @market.id })
                                    .distinct
