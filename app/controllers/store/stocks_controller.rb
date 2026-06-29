@@ -1,21 +1,15 @@
 class Store::StocksController < Store::ApplicationController
   before_action :set_store
   before_action :set_stock, only: [:show, :edit, :update, :destroy, :list, :unlist]
-  before_action :set_item_sub_categories, only: [:index, :new, :create, :edit, :update]
+  before_action :set_item_sub_categories, only: [:new, :create, :edit, :update]
 
   def index
     @stocks = @store.stocks.includes(item_sub_category: :item_category)
-
-    if params[:item_category_id].present?
-      @stocks = @stocks.where(item_sub_categories: { item_category_id: params[:item_category_id] })
-    end
 
     case params[:status]
     when 'listed'   then @stocks = @stocks.where(listed: true)
     when 'unlisted' then @stocks = @stocks.where(listed: false)
     end
-
-    @item_categories_for_filter = @item_sub_categories.map(&:item_category).uniq.compact.sort_by(&:name)
   end
 
   def show
@@ -70,6 +64,36 @@ class Store::StocksController < Store::ApplicationController
   def unlist
     @stock.update!(listed: false)
     redirect_to store_store_stocks_path(@store), notice: "「#{@stock.name}」の出品を取り消しました。"
+  end
+
+  def bulk_new
+    @unlisted_names = @store.stocks.where(listed: false).pluck(:name).uniq.sort
+  end
+
+  def bulk_confirm
+    @name = params[:name]
+    @unlisted_stocks = @store.stocks.where(listed: false, name: @name)
+    @avg_cost = @unlisted_stocks.average(:cost).to_f.round(1)
+  end
+
+  def bulk_create
+    @name = params[:name]
+    price = params[:price].to_i
+    @unlisted_stocks = @store.stocks.where(listed: false, name: @name)
+    @avg_cost = @unlisted_stocks.average(:cost).to_f.round(1)
+
+    if price <= 0
+      flash.now[:alert] = '販売価格を1円以上で入力してください。'
+      render :bulk_confirm
+      return
+    end
+
+    count = @unlisted_stocks.count
+    @unlisted_stocks.each do |stock|
+      stock.update!(price: price, listed: true)
+      stock.recalculate_attractiveness!
+    end
+    redirect_to store_store_stocks_path(@store), notice: "「#{@name}」を#{count}件まとめて出品しました。"
   end
 
   private

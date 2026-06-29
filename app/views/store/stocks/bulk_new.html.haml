@@ -1,0 +1,21 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-6.col-md-8
+
+      .d-flex.align-items-center.gap-3.mb-4
+        = link_to store_store_stocks_path(@store), class: "btn btn-outline-secondary btn-sm" do
+          %i.fas.fa-arrow-left
+          在庫一覧へ
+        %h1.mb-0 まとめて出品
+
+      - if @unlisted_names.any?
+        %p.text-muted 出品する商品名を選んでください。
+        .list-group
+          - @unlisted_names.each do |name|
+            = link_to bulk_confirm_store_store_stocks_path(@store, name: name),
+                class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do
+              = name
+              %i.fas.fa-chevron-right.text-muted
+      - else
+        .alert.alert-info
+          未出品の在庫がありません。

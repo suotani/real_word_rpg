@@ -66,6 +66,11 @@ Rails.application.routes.draw do
           post :list
           post :unlist
         end
+        collection do
+          get  :bulk_new
+          get  :bulk_confirm
+          post :bulk_create
+        end
       end
       resources :recipes, only: [:index, :new, :create, :destroy] do
         post 'craft', on: :member
