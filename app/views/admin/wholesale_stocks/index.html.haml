@@ -1,6 +1,9 @@
 .d-flex.justify-content-between.align-items-center.mb-4
   %h2 中央卸売市場 商品一覧
   .d-flex.gap-2
+    = button_to admin_batch_market_price_fluctuation_path, method: :post, class: 'btn btn-outline-warning', data: { confirm: '価格変動バッチを実行しますか？' } do
+      %i.fas.fa-random.me-1
+      価格変動バッチ実行
     = link_to export_admin_wholesale_stocks_path, class: 'btn btn-outline-success' do
       %i.fas.fa-download.me-1
       CSVダウンロード
