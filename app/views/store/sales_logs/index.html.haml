@@ -1,6 +1,16 @@
 .container.py-4
   %h1.mb-1 売上記録
-  %p.text-muted.mb-4 1日ごとの売り上げ件数と金額の記録です。
+  %p.text-muted.mb-2 1日ごとの売り上げ件数と金額の記録です。
+
+  = form_with url: store_sales_logs_path, method: :get, local: true, class: "row g-2 align-items-end mb-4" do |f|
+    .col-auto
+      = f.label :year, "年", class: "form-label"
+      = f.select :year, (Date.current.year - 2..Date.current.year).map { |y| [y, y] }, { selected: @year }, class: "form-select"
+    .col-auto
+      = f.label :month, "月", class: "form-label"
+      = f.select :month, (1..12).map { |m| ["#{m}月", m] }, { selected: @month }, class: "form-select"
+    .col-auto.d-flex.align-items-end
+      = f.submit "表示", class: "btn btn-primary"
 
   - if @sales_logs.any?
     .card.shadow-sm
@@ -20,5 +30,16 @@
               %td.text-end= "#{log.sales_amount}円"
               %td.text-end= "#{log.cost_amount}円"
               %td.text-end= "#{log.profit_amount}円"
+        %tfoot.table-secondary
+          - total_count  = @sales_logs.sum(&:sales_count)
+          - total_sales  = @sales_logs.sum(&:sales_amount)
+          - total_cost   = @sales_logs.sum(&:cost_amount)
+          - total_profit = @sales_logs.sum(&:profit_amount)
+          %tr.fw-bold
+            %td 合計
+            %td.text-end= "#{total_count}件"
+            %td.text-end= "#{total_sales}円"
+            %td.text-end= "#{total_cost}円"
+            %td.text-end= "#{total_profit}円"
   - else
-    .alert.alert-info まだ売上の記録がありません。
+    .alert.alert-info= "#{@year}年#{@month}月の売上記録はありません。"
