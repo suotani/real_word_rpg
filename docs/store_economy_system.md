@@ -55,12 +55,12 @@
 仮想顧客が購入対象を選ぶ際の指標。高いほど先に購入される。
 
 ```
-魅力度 = (cost ÷ price) + ingredient_count × 0.1 - unsold_count × 0.05
+魅力度 = (cost ÷ price) + ingredient_count × 0.1
 ```
 
 - `cost / price` が高い（＝安売り）ほど魅力度が上がる
 - レシピで素材を多く使って作った商品ほどボーナスが付く
-- 売れ残るたびにペナルティが蓄積する
+- `unsold_count`（売れ残り回数）は記録されるが魅力度には影響しない
 - 閾値 `MIN_ATTRACTIVENESS = 0.5` を下回ると購入対象から外れる
 
 ## ユーザーフロー
@@ -204,13 +204,12 @@ price                integer  - 販売価格（出品時は 1円以上必須）
 listed               boolean  - 出品中フラグ（true のとき他ユーザーが購入可能）
 attractiveness       float    - 魅力度（バッチ実行時に再計算）
 ingredient_count     integer  - レシピで使用した素材数（魅力度ボーナス算出用）
-unsold_count         integer  - 売れ残り回数（魅力度ペナルティ算出用）
+unsold_count         integer  - 売れ残り回数（記録のみ、魅力度には影響しない）
 sort_key             string   - 管理画面での並べ替えキー（卸市場の在庫管理用）
 ```
 
 定数:
 - `INGREDIENT_WEIGHT = 0.1` — 素材1個あたりの魅力度ボーナス
-- `UNSOLD_PENALTY = 0.05` — 売れ残り1回あたりのペナルティ
 
 ### SalesLog（売上記録）
 
