@@ -41,7 +41,7 @@
   → タウンごとに独立した仮想購入者 20人（所持金 500〜3000円 ランダム）が購入を試みる
   → 購入優先順位は「魅力度」（高い順）。魅力度 < 0.5 の商品は購入対象外
   → 売れたら出品者の balance を increment! + SalesLog に記録 → Stock を destroy
-  → 売れ残った在庫は unsold_count をインクリメントし、魅力度を再計算
+  → 売れ残った在庫は unsold_count をインクリメント（魅力度には影響しない）
 
 [市場価格変動バッチ] MarketPriceFluctuationService
   → 毎日1時30分、POST /api/batches/market_price_fluctuation（X-Batch-Token 認証）で起動
