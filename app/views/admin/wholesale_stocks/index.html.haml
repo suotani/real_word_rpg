@@ -19,7 +19,7 @@
         .col-sm-auto
           = f.submit 'アップロードして更新', class: 'btn btn-warning btn-sm'
     %p.text-muted.small.mb-0.mt-2
-      ※ id列で対象レコードを特定し、商品名・販売価格・並べ替えキーを更新します。登録・削除は行いません。
+      ※ id列で対象レコードを特定し、商品名・基準価格・並べ替えキーを更新します。登録・削除は行いません。
 
 .card.mb-4
   .card-body.py-2
@@ -46,7 +46,8 @@
           %th 商品名
           %th カテゴリ
           %th サブカテゴリ
-          %th 販売価格
+          %th 基準価格
+          %th 現在価格
           %th 並べ替えキー
           %th 操作
       %tbody
@@ -56,6 +57,7 @@
             %td.fw-bold= stock.name
             %td= stock.item_sub_category&.item_category&.name
             %td= stock.item_sub_category&.name
+            %td= "#{stock.base_price}円"
             %td= "#{stock.price}円"
             %td= stock.sort_key
             %td.text-nowrap

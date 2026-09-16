@@ -4,7 +4,7 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
   before_action :set_market
   before_action :set_stock, only: [:edit, :update, :destroy]
 
-  CSV_HEADERS = %w[id 商品名 販売価格 並べ替えキー サブカテゴリ カテゴリ].freeze
+  CSV_HEADERS = %w[id 商品名 基準価格 現在価格 並べ替えキー サブカテゴリ カテゴリ].freeze
 
   def index
     @stocks = @market.stocks.includes(item_sub_category: :item_category).order(:name)
@@ -25,6 +25,7 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
         csv << [
           stock.id,
           stock.name,
+          stock.base_price,
           stock.price,
           stock.sort_key,
           stock.item_sub_category&.name,
@@ -60,10 +61,13 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
           next
         end
 
+        base_price = row['基準価格'].to_i
+
         unless stock.update(
-          name:     row['商品名'].presence || stock.name,
-          price:    row['販売価格'].to_i,
-          sort_key: row['並べ替えキー']
+          name:       row['商品名'].presence || stock.name,
+          base_price: base_price,
+          price:      base_price,
+          sort_key:   row['並べ替えキー']
         )
           errors << "ID #{id}: #{stock.errors.full_messages.join(', ')}"
         else
@@ -91,7 +95,7 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
     item_category = ItemCategory.find_by(id: params[:item_category_id])
     name          = params.dig(:stock, :name).to_s.strip
     cost          = params.dig(:stock, :cost).to_i
-    price         = params.dig(:stock, :price).to_i
+    base_price    = params.dig(:stock, :base_price).to_i
 
     if item_category.nil? || name.blank?
       @item_categories = ItemCategory.order(:name)
@@ -105,9 +109,10 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
 
       stock = @market.stocks.find_by(item_sub_category: sub_cat)
       if stock
-        stock.update!(cost: cost, price: price)
+        stock.update!(cost: cost, base_price: base_price, price: base_price)
       else
-        @market.stocks.create!(name: name, item_sub_category: sub_cat, user: nil, cost: cost, price: price)
+        @market.stocks.create!(name: name, item_sub_category: sub_cat, user: nil, cost: cost,
+                                base_price: base_price, price: base_price)
       end
     end
 
@@ -121,7 +126,7 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
   def edit; end
 
   def update
-    if @stock.update(stock_params)
+    if @stock.update(stock_params.merge(price: stock_params[:base_price]))
       redirect_to admin_wholesale_stocks_path, notice: '商品を更新しました'
     else
       render :edit, status: :unprocessable_entity
@@ -145,6 +150,6 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
   end
 
   def stock_params
-    params.require(:stock).permit(:name, :price, :sort_key)
+    params.require(:stock).permit(:name, :base_price, :sort_key)
   end
 end

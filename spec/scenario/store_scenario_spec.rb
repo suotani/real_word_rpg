@@ -126,7 +126,7 @@ RSpec.describe 'Store Scenario', type: :system do
     expect(store.stocks.find_by(name: 'たまねぎ')).to be_nil
 
     # バッチ実行（クラフト品を出品して仮想購入者が購入することを確認）
-    crafted.update!(price: 500, listed: true)
+    crafted.update!(price: 500, base_price: 500, listed: true)
     BuisinessTime.create!(store_category: food_category, sales_at: 12)
     result = VirtualCustomerBatchService.new.run(hour: 12)
     expect(result[:count]).to be >= 1

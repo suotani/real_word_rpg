@@ -7,6 +7,7 @@ class Stock < ApplicationRecord
 
   validates :name, presence: true
   validates :price, numericality: { greater_than: 0 }, if: :listed?
+  validates :base_price, presence: true
 
   scope :listed, -> { where(listed: true) }
 

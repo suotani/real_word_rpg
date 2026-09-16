@@ -15,8 +15,12 @@
         = f.label :name, '商品名', class: 'form-label fw-bold'
         = f.text_field :name, class: 'form-control', required: true
       .mb-3
-        = f.label :price, '販売価格（円）', class: 'form-label fw-bold'
-        = f.number_field :price, min: 1, class: 'form-control', required: true
+        = f.label :base_price, '基準価格（円）', class: 'form-label fw-bold'
+        = f.number_field :base_price, min: 1, class: 'form-control', required: true
+        .form-text.text-muted 毎日のバッチでこの価格を基準に正規分布で変動した価格が設定されます。
+      .mb-3
+        %label.form-label.fw-bold 現在価格
+        .form-control-plaintext= "#{@stock.price}円"
       .mb-3
         = f.label :sort_key, '並べ替えキー', class: 'form-label fw-bold'
         = f.text_field :sort_key, class: 'form-control'

@@ -33,6 +33,7 @@ class Store::StoreActionsController < Store::ApplicationController
           item_sub_category: @target_stock.item_sub_category,
           user: current_user,
           cost: @target_stock.price,
+          base_price: @target_stock.price,
           price: @target_stock.price
         )
       end
@@ -74,6 +75,7 @@ class Store::StoreActionsController < Store::ApplicationController
         item_sub_category: @target_stock.item_sub_category,
         user: current_user,
         cost: price,
+        base_price: price,
         price: price
       )
       current_user.deduct!(price)

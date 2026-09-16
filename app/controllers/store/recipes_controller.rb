@@ -66,6 +66,7 @@ class Store::RecipesController < Store::ApplicationController
         @store.stocks.create!(
           name: @recipe.name,
           cost: total_cost,
+          base_price: 0,
           price: 0,
           user: current_user,
           ingredient_count: batch_stocks.size
