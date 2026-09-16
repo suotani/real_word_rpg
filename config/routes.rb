@@ -99,8 +99,6 @@ Rails.application.routes.draw do
     resources :store_actions, only: [] do
       get  'buy',      on: :collection
       post 'buy',      on: :collection
-      get  'purchase', on: :collection
-      post 'purchase', on: :collection
       post 'sell',     on: :collection
     end
   end
