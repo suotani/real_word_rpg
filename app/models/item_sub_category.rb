@@ -27,6 +27,7 @@ class ItemSubCategory < ApplicationRecord
       user: nil,
       item_sub_category: self,
       cost: 0,
+      base_price: 100,
       price: 100
     )
   end

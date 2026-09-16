@@ -23,8 +23,8 @@
           = f.label :cost, '仕入れ値（円）', class: 'form-label fw-bold'
           = f.number_field :cost, value: 0, min: 0, class: 'form-control'
         .col-sm-6
-          = f.label :price, '販売価格（円）', class: 'form-label fw-bold'
-          = f.number_field :price, value: 100, min: 1, class: 'form-control', required: true
+          = f.label :base_price, '基準価格（円）', class: 'form-label fw-bold'
+          = f.number_field :base_price, value: 100, min: 1, class: 'form-control', required: true
       .text-muted.small.mb-3
         ※ 同名のサブカテゴリが既にある場合は既存のものを利用します。
     .card-footer

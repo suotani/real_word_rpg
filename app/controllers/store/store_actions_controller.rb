@@ -33,6 +33,7 @@ class Store::StoreActionsController < Store::ApplicationController
           item_sub_category: @target_stock.item_sub_category,
           user: current_user,
           cost: @target_stock.price,
+          base_price: @target_stock.price,
           price: @target_stock.price
         )
       end
@@ -41,49 +42,6 @@ class Store::StoreActionsController < Store::ApplicationController
 
     redirect_to market_store_town_path(current_user.town),
                 notice: "#{@target_stock.name}を#{quantity}個仕入れました。（残高: #{current_user.reload.balance}円）"
-  end
-
-  def purchase
-    return unless request.post?
-
-    unless @target_stock.listed?
-      redirect_back fallback_location: store_root_path, alert: 'この商品は出品されていません。'
-      return
-    end
-
-    if params[:store_id].blank?
-      redirect_to purchase_store_store_actions_path(stock_id: @target_stock.id),
-                  alert: '受け取り先の店舗を選択してください。'
-      return
-    end
-
-    destination_store = @user_stores.find(params[:store_id])
-    price = @target_stock.price
-    cost = @target_stock.cost
-    seller = @target_stock.user
-
-    unless current_user.afford?(price)
-      redirect_to purchase_store_store_actions_path(stock_id: @target_stock.id),
-                  alert: "所持金が不足しています。（必要: #{price}円 / 所持: #{current_user.balance}円）"
-      return
-    end
-
-    ActiveRecord::Base.transaction do
-      destination_store.stocks.create!(
-        name: @target_stock.name,
-        item_sub_category: @target_stock.item_sub_category,
-        user: current_user,
-        cost: price,
-        price: price
-      )
-      current_user.deduct!(price)
-      seller&.increment!(:balance, price)
-      SalesLog.record_sale!(seller, price, cost)
-      @target_stock.destroy!
-    end
-
-    redirect_to store_root_path,
-                notice: "「#{@target_stock.name}」を#{price}円で購入しました。（残高: #{current_user.reload.balance}円）"
   end
 
   private

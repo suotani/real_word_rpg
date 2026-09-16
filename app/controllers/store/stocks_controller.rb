@@ -20,7 +20,7 @@ class Store::StocksController < Store::ApplicationController
   end
 
   def create
-    @stock = @store.stocks.build(stock_params)
+    @stock = @store.stocks.build(stock_params.merge(base_price: stock_params[:price]))
     @stock.user = current_user
 
     if @stock.save
@@ -50,7 +50,7 @@ class Store::StocksController < Store::ApplicationController
     if request.post?
       price = params[:price].to_i
       if price > 0
-        @stock.update!(price: price, listed: true)
+        @stock.update!(price: price, base_price: price, listed: true)
         @stock.recalculate_attractiveness!
         redirect_to store_store_stocks_path(@store), notice: "「#{@stock.name}」を出品しました。"
       else
@@ -90,7 +90,7 @@ class Store::StocksController < Store::ApplicationController
 
     count = @unlisted_stocks.count
     @unlisted_stocks.each do |stock|
-      stock.update!(price: price, listed: true)
+      stock.update!(price: price, base_price: price, listed: true)
       stock.recalculate_attractiveness!
     end
     redirect_to store_store_stocks_path(@store), notice: "「#{@name}」を#{count}件まとめて出品しました。"

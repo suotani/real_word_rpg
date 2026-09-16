@@ -18,8 +18,14 @@ RSpec.describe MarketPriceFluctuationService do
         create(:store, name: '中央卸売市場', user: nil, town: nil,
                        store_category: wholesale_category)
       end
-      let!(:stock1) { create(:stock, store: market, user: nil, item_sub_category: nil, price: 100, listed: true) }
-      let!(:stock2) { create(:stock, store: market, user: nil, item_sub_category: nil, price:  50, listed: true) }
+      let!(:stock1) do
+        create(:stock, store: market, user: nil, item_sub_category: nil,
+                       base_price: 100, price: 999, listed: true)
+      end
+      let!(:stock2) do
+        create(:stock, store: market, user: nil, item_sub_category: nil,
+                       base_price: 50, price: 1, listed: true)
+      end
 
       it '全stockの更新件数を返す' do
         result = service.run
@@ -27,20 +33,25 @@ RSpec.describe MarketPriceFluctuationService do
         expect(result[:errors]).to be_empty
       end
 
-      it 'それぞれのstockの価格が -5〜+5 の範囲内で変動する' do
-        originals = { stock1.id => stock1.price, stock2.id => stock2.price }
+      it '前回の価格に関わらず、基準価格を中心に価格が再計算される' do
+        allow_any_instance_of(described_class).to receive(:standard_normal).and_return(0.0)
         service.run
-        [stock1, stock2].each do |stock|
-          old_price = originals[stock.id]
-          new_price = stock.reload.price
-          expect(new_price).to be_between([old_price - 5, 1].max, old_price + 5)
-        end
+        expect(stock1.reload.price).to eq(stock1.base_price)
+        expect(stock2.reload.price).to eq(stock2.base_price)
+      end
+
+      it '基準価格の10%を標準偏差として価格が変動する' do
+        allow_any_instance_of(described_class).to receive(:standard_normal).and_return(1.0)
+        service.run
+        expect(stock1.reload.price).to eq(110) # 100 + 100 * 0.1 * 1.0
+        expect(stock2.reload.price).to eq(55)  # 50 + 50 * 0.1 * 1.0
       end
 
       it '価格が1円を下回らない' do
-        stock1.update!(price: 1)
+        allow_any_instance_of(described_class).to receive(:standard_normal).and_return(-100.0)
         service.run
-        expect(stock1.reload.price).to be >= 1
+        expect(stock1.reload.price).to eq(1)
+        expect(stock2.reload.price).to eq(1)
       end
     end
   end

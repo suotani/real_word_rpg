@@ -35,3 +35,6 @@ heroku.txt
 
 # Ignore SimpleCov coverage reports
 /coverage/
+
+# Ignore macOS Finder metadata
+.DS_Store
