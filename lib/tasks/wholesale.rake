@@ -36,7 +36,7 @@ namespace :wholesale do
           next
         end
 
-        base_price = row['販売価格'].to_i
+        base_price = row['基準価格'].to_i
 
         stock.update!(base_price: base_price, price: base_price, sort_key: row['並べ替えキー'])
         updated += 1
