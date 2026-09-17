@@ -124,8 +124,37 @@ end
 
 ## 影響範囲・既知の制約
 
-- **既存データへの影響**：本対応より前に出品された在庫は、出品時点で `base_price` が販売価格に上書きされてしまっている。過去の「本来の仕入れ値」は失われているため復元はできない。コード修正後は自然に新しい仕入れ・出品分から正しく積み上がっていく想定とし、既存レコードに対する特別なマイグレーション（データ補正）は行わない。
 - **スキーマ変更なし**：`base_price` カラムは既に存在する（`db/migrate/20260915033954_add_base_price_to_stocks.rb`）ため、マイグレーションは不要。
+
+## 既存レコードへの対応（データ補正）
+
+既存の `Stock` レコードには、以下2パターンの「壊れた `base_price`」が存在する。
+
+1. **出品済み在庫**：`base_price` を追加した `20260915033954_add_base_price_to_stocks.rb` が `UPDATE stocks SET base_price = price` で初期値を入れており、かつ旧 `list` / `bulk_create` が出品のたびに `base_price` を販売価格で上書きし続けていたため、これまでに一度でも出品された在庫は `base_price == price` になっている（＝仕入れ値の情報が失われている）。
+2. **クラフト済み・未出品の在庫**：旧 `craft` アクションが `base_price: 0` を固定で入れていたため、`base_price == 0` のまま止まっている。
+
+どちらのケースも、`cost`（買値・材料費合計）フィールドは一切上書きされずに正しい値を保持し続けている。したがって、**`cost` を「その在庫が仕入れられた時点の基本料金」の代替値として `base_price` に補正する**のが最も安全で一貫した復旧方法である。
+
+- 中央卸売市場などの卸売在庫（`user_id: nil`）は対象外とする。市場側の `base_price` は「価格変動の基準値」という別の意味を持ち、`cost` とは無関係のフィールドのため、誤って書き換えないよう明示的に除外する。
+- 対象は「プレイヤー在庫（`user_id` が設定されている）かつ `base_price != cost`」の行のみ。すでに正しい状態（仕入れ直後で未出品など）の行は `base_price == cost` のため対象にならず、何度実行しても副作用がない（冪等）。
+- 出品済み在庫を補正すると、補正直後の魅力度は旧計算式（`cost / price`）の値と完全に一致する。つまりこの移行では、既存の出品中在庫の魅力度は変化せず、以後の新しい仕入れ・出品・クラフトから新しい仕様が効いてくる。
+
+補正用スクリプトを `lib/tasks/stocks.rake`（`stocks:backfill_base_price`）として用意した。
+
+```bash
+# 対象件数と補正内容を確認するだけ（更新はしない）
+DRY_RUN=1 bin/rails stocks:backfill_base_price
+
+# 実際に補正する
+bin/rails stocks:backfill_base_price
+```
+
+処理内容：
+1. `Stock.where.not(user_id: nil).where.not('base_price = cost')` で対象を抽出
+2. 各レコードの `base_price` を `cost` に更新
+3. `listed: true` のレコードは合わせて `recalculate_attractiveness!` で `attractiveness` カラムも再計算
+
+本番適用時はコードのデプロイ後、1回だけ実行すればよい（Render 環境であれば `bin/render-build.sh` 経由の自動マイグレーションとは別に、デプロイ後に手動で1度実行する想定）。
 
 ## 実装ステップ
 
@@ -134,6 +163,7 @@ end
 3. `app/controllers/store/recipes_controller.rb`：`craft` で材料の `base_price` 合計を計算し、生成する在庫に設定
 4. `app/services/virtual_customer_batch_service.rb`：コメントの記述を実態に合わせて修正
 5. 関連テスト（Stock の魅力度計算、出品フロー、クラフトフロー）を確認・追加
+6. `lib/tasks/stocks.rake`（`stocks:backfill_base_price`）を追加し、デプロイ後に既存レコードの `base_price` を補正する
 
 ## テスト観点
 
