@@ -44,7 +44,6 @@ class VirtualCustomerBatchService
               .sort_by { |s| -s.calculate_attractiveness }
 
     if stocks.empty?
-      mark_unsold!(all_listed)
       return { count: 0, total_amount: 0, errors: [] }
     end
 

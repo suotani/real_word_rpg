@@ -128,17 +128,6 @@ RSpec.describe VirtualCustomerBatchService do
       end
     end
 
-    context '売れ残った在庫の場合' do
-      let!(:expensive_stock) do
-        create(:stock, :listed, name: '高額商品', price: 3001, cost: 100, store: store, user: seller)
-      end
-
-      it 'unsold_count がインクリメントされ attractiveness が再計算される' do
-        expect { service.run(hour: 12) }.to change { expensive_stock.reload.unsold_count }.from(0).to(1)
-        expect(expensive_stock.attractiveness).to eq(expensive_stock.calculate_attractiveness)
-      end
-    end
-
     context '素材数（ingredient_count）が魅力度に加算される場合' do
       # 基本魅力度 = base_price/price = 1/500 = 0.002
       let!(:high_ingredient_stock) do
