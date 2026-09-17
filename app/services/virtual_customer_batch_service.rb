@@ -90,17 +90,6 @@ class VirtualCustomerBatchService
       end
     end
 
-    # バッチ終了時：売れ残った在庫の売れ残り回数を加算し、魅力度を再計算
-    mark_unsold!(all_listed.reject { |s| sold_ids.include?(s.id) })
-
     { count: count, total_amount: total, errors: errors }
-  end
-
-  # 売れ残った出品中在庫の unsold_count をインクリメントし、魅力度を再計算する
-  def mark_unsold!(unsold_stocks)
-    unsold_stocks.each do |stock|
-      stock.unsold_count += 1
-      stock.recalculate_attractiveness!
-    end
   end
 end
