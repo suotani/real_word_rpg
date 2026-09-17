@@ -62,11 +62,12 @@ class Store::RecipesController < Store::ApplicationController
       quantity.times do |i|
         batch_stocks = ingredient_ids.map { |id| stocks_by_ingredient[id][i] }
         total_cost = batch_stocks.sum(&:cost)
+        total_base_price = batch_stocks.sum(&:base_price)
         batch_stocks.each(&:destroy!)
         @store.stocks.create!(
           name: @recipe.name,
           cost: total_cost,
-          base_price: 0,
+          base_price: total_base_price,
           price: 0,
           user: current_user,
           ingredient_count: batch_stocks.size

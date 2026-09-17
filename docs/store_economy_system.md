@@ -20,7 +20,7 @@
 [仕入れ] StoreActions#buy
   → 市場の Stock を選択 → 自分の Store（store_category が一致する）を選択 → 数量を入力
   → User.balance から price × quantity を deduct!
-  → 自 Store に Stock を create!（cost = 市場の price）
+  → 自 Store に Stock を create!（cost = base_price = 市場の price）
 
 [まとめて仕入れ] Stocks#bulk_new / bulk_confirm / bulk_create
   → 自店舗の在庫を複数まとめて追加する一括登録フロー
@@ -55,10 +55,10 @@
 仮想顧客が購入対象を選ぶ際の指標。高いほど先に購入される。
 
 ```
-魅力度 = (cost ÷ price) + ingredient_count × 0.1
+魅力度 = (base_price ÷ price) + ingredient_count × 0.1
 ```
 
-- `cost / price` が高い（＝安売り）ほど魅力度が上がる
+- `base_price / price` が高い（＝仕入れ値に対して安売り）ほど魅力度が上がる
 - レシピで素材を多く使って作った商品ほどボーナスが付く
 - `unsold_count`（売れ残り回数）は記録されるが魅力度には影響しない
 - 閾値 `MIN_ATTRACTIVENESS = 0.5` を下回ると購入対象から外れる
@@ -126,7 +126,7 @@
    - レシピ名・生成する在庫の出力 `ItemSubCategory`（複数）を指定
 2. `recipes#craft` でレシピを実行
    - `item_sub_category_id` が一致する Stock を各1個消費
-   - 素材の cost 合計を cost とした新 Stock を生成（price: 0 で未出品状態）
+   - 素材の cost 合計を cost、base_price 合計を base_price とした新 Stock を生成（price: 0 で未出品状態）
 
 > edit / update は first リリース対象外。変更したい場合は削除して再登録で対応。
 

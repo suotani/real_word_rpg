@@ -74,6 +74,11 @@ RSpec.describe 'Store::Stocks まとめて出品', type: :request do
         expect(stock2.reload.price).to eq(200)
       end
 
+      it '基本料金（base_price）は上書きしない' do
+        expect { post bulk_create_store_store_stocks_path(store), params: { name: 'りんご', price: 200 } }
+          .not_to(change { stock1.reload.base_price })
+      end
+
       it '別名のstockは変更しない' do
         post bulk_create_store_store_stocks_path(store), params: { name: 'りんご', price: 200 }
         expect(other.reload.listed).to be false

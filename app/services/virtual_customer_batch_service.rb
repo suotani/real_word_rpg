@@ -37,14 +37,13 @@ class VirtualCustomerBatchService
     store_ids = town_stores.map(&:id)
 
     # 出品中在庫を魅力度の高い順に並べ、閾値未満は除外
-    # 魅力度 = (仕入れ値 ÷ 販売価格) + 素材数 × 0.1 - 売れ残り回数 × 0.05。高いほど購入者にとって魅力的
+    # 魅力度 = (基本料金 ÷ 販売価格) + 素材数 × 0.1。高いほど購入者にとって魅力的
     all_listed = Stock.listed.where(store_id: store_ids).includes(:user).to_a
     stocks = all_listed
               .select { |s| s.price > 0 && s.calculate_attractiveness >= MIN_ATTRACTIVENESS }
               .sort_by { |s| -s.calculate_attractiveness }
 
     if stocks.empty?
-      mark_unsold!(all_listed)
       return { count: 0, total_amount: 0, errors: [] }
     end
 
@@ -90,17 +89,6 @@ class VirtualCustomerBatchService
       end
     end
 
-    # バッチ終了時：売れ残った在庫の売れ残り回数を加算し、魅力度を再計算
-    mark_unsold!(all_listed.reject { |s| sold_ids.include?(s.id) })
-
     { count: count, total_amount: total, errors: errors }
-  end
-
-  # 売れ残った出品中在庫の unsold_count をインクリメントし、魅力度を再計算する
-  def mark_unsold!(unsold_stocks)
-    unsold_stocks.each do |stock|
-      stock.unsold_count += 1
-      stock.recalculate_attractiveness!
-    end
   end
 end
