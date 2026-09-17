@@ -36,9 +36,13 @@ RSpec.describe 'POST /api/batches/virtual_purchase', type: :request do
       expect(json).to include('ok' => true, 'queued' => true)
     end
 
-    it 'VirtualCustomerBatchJob をエンキューする' do
-      expect(VirtualCustomerBatchJob).to receive(:perform_later)
+    it 'VirtualCustomerBatchService を同期実行する' do
+      service = instance_double(VirtualCustomerBatchService, run: { count: 0, total_amount: 0, errors: [] })
+      allow(VirtualCustomerBatchService).to receive(:new).and_return(service)
+
       post '/api/batches/virtual_purchase', headers: headers
+
+      expect(service).to have_received(:run)
     end
   end
 end
