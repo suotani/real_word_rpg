@@ -37,7 +37,7 @@ class VirtualCustomerBatchService
     store_ids = town_stores.map(&:id)
 
     # 出品中在庫を魅力度の高い順に並べ、閾値未満は除外
-    # 魅力度 = (仕入れ値 ÷ 販売価格) + 素材数 × 0.1 - 売れ残り回数 × 0.05。高いほど購入者にとって魅力的
+    # 魅力度 = (基本料金 ÷ 販売価格) + 素材数 × 0.1。高いほど購入者にとって魅力的
     all_listed = Stock.listed.where(store_id: store_ids).includes(:user).to_a
     stocks = all_listed
               .select { |s| s.price > 0 && s.calculate_attractiveness >= MIN_ATTRACTIVENESS }

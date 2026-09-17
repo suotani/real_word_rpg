@@ -120,6 +120,7 @@ RSpec.describe 'Store Scenario', type: :system do
     expect(page).to have_content('「かぼちゃスープ」をクラフトしました')
     crafted = store.stocks.reload.find_by!(name: 'かぼちゃスープ')
     expect(crafted.cost).to eq(200)
+    expect(crafted.base_price).to eq(200) # 材料（かぼちゃ・たまねぎ、各基本料金100）の合計
     expect(crafted.price).to eq(0)
     expect(crafted.item_sub_category).to be_nil
     expect(store.stocks.find_by(name: 'かぼちゃ')).to be_nil

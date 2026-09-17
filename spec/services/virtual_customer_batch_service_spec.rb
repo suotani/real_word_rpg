@@ -76,11 +76,11 @@ RSpec.describe VirtualCustomerBatchService do
       end
     end
 
-    context '魅力度（cost/price 降順）でソートされる場合' do
+    context '魅力度（base_price/price 降順）でソートされる場合' do
       # BALANCE_RANGE: 500..3000, price: 500 → 全員が必ず購入できる
       # 在庫30件（高魅力5 + 低魅力25）> 購入者20人 → 売れ残りが生じる
-      let!(:high_values) { 5.times.map  { create(:stock, :listed, price: 500, cost: 499, store: store, user: seller) } }
-      let!(:low_values)  { 25.times.map { create(:stock, :listed, price: 500, cost:   1, store: store, user: seller) } }
+      let!(:high_values) { 5.times.map  { create(:stock, :listed, price: 500, base_price: 499, store: store, user: seller) } }
+      let!(:low_values)  { 25.times.map { create(:stock, :listed, price: 500, base_price:   1, store: store, user: seller) } }
 
       it '高魅力の在庫が全て優先して購入される' do
         service.run(hour: 12)
@@ -93,8 +93,8 @@ RSpec.describe VirtualCustomerBatchService do
 
     context '魅力度が MIN_ATTRACTIVENESS を下回る場合' do
       let!(:low_attractiveness_stock) do
-        # cost/price = 100/300 ≒ 0.33 < 0.5
-        create(:stock, :listed, price: 300, cost: 100, store: store, user: seller)
+        # base_price/price = 100/300 ≒ 0.33 < 0.5
+        create(:stock, :listed, price: 300, base_price: 100, store: store, user: seller)
       end
 
       it '購入されない' do
@@ -106,7 +106,8 @@ RSpec.describe VirtualCustomerBatchService do
 
     context '仮想購入者の残高が不足している場合' do
       let!(:expensive_stock) do
-        create(:stock, :listed, name: '高額商品', price: 3001, cost: 100, store: store, user: seller)
+        # base_price/price = 3000/3001 ≒ 1.0 で魅力度は十分高く、購入されないのは残高不足のため
+        create(:stock, :listed, name: '高額商品', price: 3001, base_price: 3000, store: store, user: seller)
       end
 
       it '残高上限（3000円）を超える商品は購入されない' do
@@ -139,14 +140,14 @@ RSpec.describe VirtualCustomerBatchService do
     end
 
     context '素材数（ingredient_count）が魅力度に加算される場合' do
-      # 基本魅力度 = cost/price = 1/500 = 0.002
+      # 基本魅力度 = base_price/price = 1/500 = 0.002
       let!(:high_ingredient_stock) do
         # 0.002 + 5 * 0.1 = 0.502 >= MIN_ATTRACTIVENESS(0.5) → 購入対象
-        create(:stock, :listed, price: 500, cost: 1, ingredient_count: 5, store: store, user: seller)
+        create(:stock, :listed, price: 500, base_price: 1, ingredient_count: 5, store: store, user: seller)
       end
       let!(:low_ingredient_stock) do
         # 0.002 + 0 = 0.002 < MIN_ATTRACTIVENESS(0.5) → 購入対象外
-        create(:stock, :listed, price: 500, cost: 1, ingredient_count: 0, store: store, user: seller)
+        create(:stock, :listed, price: 500, base_price: 1, ingredient_count: 0, store: store, user: seller)
       end
 
       it '素材数が多い在庫が優先して購入される' do

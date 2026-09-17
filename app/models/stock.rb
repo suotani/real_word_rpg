@@ -11,11 +11,11 @@ class Stock < ApplicationRecord
 
   scope :listed, -> { where(listed: true) }
 
-  # 魅力度 = (仕入れ値 ÷ 販売価格) + 素材数 × 0.1
+  # 魅力度 = (基本料金 ÷ 販売価格) + 素材数 × 0.1
   def calculate_attractiveness
     return 0.0 if price.to_i <= 0
 
-    (cost.to_f / price) + ingredient_count.to_i * INGREDIENT_WEIGHT
+    (base_price.to_f / price) + ingredient_count.to_i * INGREDIENT_WEIGHT
   end
 
   def recalculate_attractiveness!
