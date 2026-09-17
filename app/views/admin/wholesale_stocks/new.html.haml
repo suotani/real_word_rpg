@@ -1,30 +1,33 @@
 .d-flex.align-items-center.gap-3.mb-4
   = link_to '← 一覧へ戻る', admin_wholesale_stocks_path, class: 'btn btn-outline-secondary btn-sm'
   %h2.mb-0 商品登録
+  - if @wholesale_item_request
+    %span.badge.bg-info.text-dark= "#{@wholesale_item_request.user.name}さんのリクエストから登録"
 
 - if flash[:alert]
   .alert.alert-danger= flash[:alert]
 
 = form_with url: admin_wholesale_stocks_path, method: :post, local: true, scope: :stock do |f|
+  = hidden_field_tag :wholesale_item_request_id, params[:wholesale_item_request_id] || @wholesale_item_request&.id
   .card
     .card-body
       .mb-3
         %label.form-label.fw-bold{for: 'item_category_id'} 商品カテゴリ
         = select_tag :item_category_id,
-            options_from_collection_for_select(@item_categories, :id, :name),
+            options_from_collection_for_select(@item_categories, :id, :name, params[:item_category_id] || @wholesale_item_request&.item_category_id),
             prompt: '選択してください',
             class: 'form-select',
             required: true
       .mb-3
         = f.label :name, '商品名（サブカテゴリ名）', class: 'form-label fw-bold'
-        = f.text_field :name, class: 'form-control', required: true, placeholder: '例: コシヒカリ'
+        = f.text_field :name, value: params.dig(:stock, :name) || @wholesale_item_request&.name, class: 'form-control', required: true, placeholder: '例: コシヒカリ'
       .row.mb-3
         .col-sm-6
           = f.label :cost, '仕入れ値（円）', class: 'form-label fw-bold'
-          = f.number_field :cost, value: 0, min: 0, class: 'form-control'
+          = f.number_field :cost, value: params.dig(:stock, :cost) || 0, min: 0, class: 'form-control'
         .col-sm-6
           = f.label :base_price, '基準価格（円）', class: 'form-label fw-bold'
-          = f.number_field :base_price, value: 100, min: 1, class: 'form-control', required: true
+          = f.number_field :base_price, value: params.dig(:stock, :base_price) || @wholesale_item_request&.base_price || 100, min: 1, class: 'form-control', required: true
       .text-muted.small.mb-3
         ※ 同名のサブカテゴリが既にある場合は既存のものを利用します。
     .card-footer

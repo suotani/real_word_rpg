@@ -110,6 +110,14 @@
 3. 受け取り先の自店舗を選択 → 数量を指定 → 購入（1〜99個）
 4. `bulk_new` / `bulk_confirm` / `bulk_create` でまとめて仕入れることも可能
 
+### 商品登録リクエスト
+
+- 中央卸売市場画面右上の「商品リクエスト」ボタンから、管理者に登録してほしい商品をリクエストできる（`store/wholesale_item_requests#new` / `#create`）
+- 入力項目は商品カテゴリ・商品名・基本料金の3つ
+- ユーザーごとに `pending`（未対応）のリクエストは常に3件まで。承認・却下されると枠が空き、新たにリクエストできる
+- 管理者は `/admin/wholesale_item_requests` で一覧を確認し、「承認」を押すと `admin/wholesale_stocks#new` にリクエスト内容が入力された状態で遷移する（値段だけ調整して登録、が可能）。実際に商品登録（`wholesale_stocks#create`）が成功した時点でリクエストが `approved` になる
+- 「却下」を押すとその場で `rejected` になり、ユーザーの保留枠が空く
+
 ### 在庫の出品と購入
 
 1. 自店舗の在庫一覧（`stocks#index`）から「出品する」→ 価格設定（`stocks#list`）
@@ -264,6 +272,19 @@ recipe_id            integer
 item_sub_category_id integer
 ```
 
+### WholesaleItemRequest（商品登録リクエスト）
+
+```
+user_id           integer  - リクエストしたユーザー
+item_category_id  integer  - 希望する商品カテゴリ
+name              string   - 商品名
+base_price        integer  - 希望する基本料金
+status            string   - pending / approved / rejected（デフォルト pending）
+```
+
+- `WholesaleItemRequest::MAX_PENDING_PER_USER = 3`。ユーザーごとに `pending` 件数が3件以上ある状態では新規作成をバリデーションで拒否する
+- `#approve!` / `#reject!`（`enum :status` が生成する `approved!` / `rejected!` のエイリアス）
+
 ### BuisinessTime（営業時間）
 
 ```
@@ -293,9 +314,11 @@ sales_at           integer  - 営業している時刻（hour、0〜23）
 | `store/ItemSubCategoriesController` | index, new, create, import_master(POST) |
 | `store/ItemCategoriesController` | index, new, create, edit, update, destroy |
 | `store/StoreCategoriesController` | index, new, create, edit, update, destroy, assign_item_category(POST), unlink_item_category(POST) |
+| `store/WholesaleItemRequestsController` | new, create（商品登録リクエスト） |
 | `api/batches/VirtualPurchasesController` | create（`X-Batch-Token` 認証） |
 | `api/batches/MarketPriceFluctuationsController` | create（`X-Batch-Token` 認証） |
 | `admin/WholesaleStocksController` | index, new, create, edit, update, destroy, export(CSV), import(CSV) |
+| `admin/WholesaleItemRequestsController` | index, reject(POST) |
 | `admin/BatchesController` | market_price_fluctuation（管理者UIから手動実行） |
 
 ## ルーティング

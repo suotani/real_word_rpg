@@ -1,0 +1,32 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to market_store_town_path(current_user.town), class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      市場に戻る
+    %h1.mb-0 商品登録リクエスト
+
+  - if @wholesale_item_request.errors.any?
+    .alert.alert-danger
+      %ul.mb-0
+        - @wholesale_item_request.errors.full_messages.each do |message|
+          %li= message
+
+  %p.text-muted
+    中央卸売市場に登録してほしい商品を管理者にリクエストできます。承認・却下待ちのリクエストは同時に#{WholesaleItemRequest::MAX_PENDING_PER_USER}件までです（現在: #{current_user.wholesale_item_requests.pending.count}/#{WholesaleItemRequest::MAX_PENDING_PER_USER}件）。
+
+  = form_with model: @wholesale_item_request, url: store_wholesale_item_requests_path, local: true do |f|
+    .card
+      .card-body
+        .mb-3
+          = f.label :item_category_id, '商品カテゴリ', class: 'form-label fw-bold'
+          = f.collection_select :item_category_id, @item_categories, :id, :name,
+              { prompt: '選択してください' }, { class: 'form-select', required: true }
+        .mb-3
+          = f.label :name, '商品名', class: 'form-label fw-bold'
+          = f.text_field :name, class: 'form-control', required: true, placeholder: '例: コシヒカリ'
+        .mb-3
+          = f.label :base_price, '基本料金（円）', class: 'form-label fw-bold'
+          = f.number_field :base_price, min: 1, class: 'form-control', required: true
+      .card-footer
+        = f.submit 'リクエストする', class: 'btn btn-primary'
+        = link_to 'キャンセル', market_store_town_path(current_user.town), class: 'btn btn-outline-secondary ms-2'

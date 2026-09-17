@@ -17,6 +17,7 @@ class User < ApplicationRecord
   has_many :stores
   has_many :stocks
   has_many :sales_logs
+  has_many :wholesale_item_requests
 
   MAX_LOAN = 300_000
 

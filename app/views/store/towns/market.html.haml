@@ -4,10 +4,15 @@
       %i.fas.fa-arrow-left
       ダッシュボード
     %h1.mb-0 中央卸売市場
-    - if current_user&.admin?
-      = link_to admin_wholesale_stocks_path, class: 'btn btn-warning btn-sm ms-auto' do
-        %i.fas.fa-cog.me-1
-        商品管理
+    .ms-auto.d-flex.gap-2
+      = link_to new_store_wholesale_item_request_path, class: 'btn btn-outline-primary btn-sm' do
+        %i.fas.fa-plus.me-1
+        商品リクエスト
+        %span.badge.bg-secondary.ms-1= "#{current_user.wholesale_item_requests.pending.count}/#{WholesaleItemRequest::MAX_PENDING_PER_USER}"
+      - if current_user&.admin?
+        = link_to admin_wholesale_stocks_path, class: 'btn btn-warning btn-sm' do
+          %i.fas.fa-cog.me-1
+          商品管理
 
   - if flash[:notice]
     .alert.alert-success= flash[:notice]

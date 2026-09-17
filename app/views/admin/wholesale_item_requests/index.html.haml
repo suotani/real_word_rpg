@@ -1,0 +1,36 @@
+%h2.mb-4 商品登録リクエスト一覧
+
+- if @requests.any?
+  .table-responsive
+    %table.table.table-bordered.table-hover.table-sm.align-middle
+      %thead.table-dark
+        %tr
+          %th 申請者
+          %th カテゴリ
+          %th 商品名
+          %th 基本料金
+          %th 状態
+          %th 申請日時
+          %th 操作
+      %tbody
+        - @requests.each do |req|
+          %tr
+            %td= req.user.name
+            %td= req.item_category.name
+            %td.fw-bold= req.name
+            %td= "#{req.base_price}円"
+            %td
+              - if req.pending?
+                %span.badge.bg-warning.text-dark 未対応
+              - elsif req.approved?
+                %span.badge.bg-success 承認済み
+              - else
+                %span.badge.bg-secondary 却下
+            %td= req.created_at.strftime('%Y-%m-%d %H:%M')
+            %td
+              - if req.pending?
+                .d-flex.gap-2
+                  = link_to '承認', new_admin_wholesale_stock_path(wholesale_item_request_id: req.id), class: 'btn btn-primary btn-sm'
+                  = button_to '却下', reject_admin_wholesale_item_request_path(req), method: :post, class: 'btn btn-outline-danger btn-sm', data: { confirm: '却下しますか？' }
+- else
+  .alert.alert-info リクエストはまだありません。

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_15_033954) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_17_160000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -395,6 +395,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_15_033954) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "wholesale_item_requests", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "item_category_id", null: false
+    t.string "name", null: false
+    t.integer "base_price", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_category_id"], name: "index_wholesale_item_requests_on_item_category_id"
+    t.index ["user_id", "status"], name: "index_wholesale_item_requests_on_user_id_and_status"
+    t.index ["user_id"], name: "index_wholesale_item_requests_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "buisiness_times", "store_categories"
   add_foreign_key "item_category_store_categories", "item_categories"
@@ -421,4 +434,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_15_033954) do
   add_foreign_key "user_towns", "towns"
   add_foreign_key "user_towns", "users"
   add_foreign_key "users", "towns"
+  add_foreign_key "wholesale_item_requests", "item_categories"
+  add_foreign_key "wholesale_item_requests", "users"
 end

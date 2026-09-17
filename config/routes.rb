@@ -40,6 +40,9 @@ Rails.application.routes.draw do
         post :import
       end
     end
+    resources :wholesale_item_requests, only: [:index] do
+      post :reject, on: :member
+    end
     resource  :impersonation,    only: [:create, :destroy]
     get    'resources/:model_name/new',      to: 'resources#new',     as: :new_resource_record
     post   'resources/:model_name',          to: 'resources#create',  as: :resource_records
@@ -61,6 +64,7 @@ Rails.application.routes.draw do
       post 'switch',       on: :collection
       get  'market',       on: :member
     end
+    resources :wholesale_item_requests, only: [:new, :create]
     resources :stores, only: [:index, :show, :new, :create, :edit, :update] do
       resources :stocks, only: [:index, :create, :show, :edit, :update, :destroy] do
         member do
