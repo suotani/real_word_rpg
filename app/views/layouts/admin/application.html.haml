@@ -29,6 +29,13 @@
                 = link_to admin_wholesale_stocks_path, class: 'nav-link' do
                   %i.fas.fa-store.me-2
                   中央卸売市場
+              %li.nav-item
+                = link_to admin_wholesale_item_requests_path, class: 'nav-link' do
+                  %i.fas.fa-inbox.me-2
+                  商品登録リクエスト
+                  - pending_count = WholesaleItemRequest.pending.count
+                  - if pending_count.positive?
+                    %span.badge.bg-danger.ms-1= pending_count
         %main.col-md-10.ms-sm-auto.px-md-4{style: "padding-top: 1.5rem;"}
           - flash.each do |type, msg|
             - alert_class = type.to_s == 'notice' ? 'alert-success' : 'alert-danger'

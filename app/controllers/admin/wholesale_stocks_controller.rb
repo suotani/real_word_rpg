@@ -89,6 +89,7 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
 
   def new
     @item_categories = ItemCategory.order(:name)
+    @wholesale_item_request = WholesaleItemRequest.pending.find_by(id: params[:wholesale_item_request_id])
   end
 
   def create
@@ -96,9 +97,11 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
     name          = params.dig(:stock, :name).to_s.strip
     cost          = params.dig(:stock, :cost).to_i
     base_price    = params.dig(:stock, :base_price).to_i
+    sort_key      = params.dig(:stock, :sort_key)
 
     if item_category.nil? || name.blank?
       @item_categories = ItemCategory.order(:name)
+      @wholesale_item_request = WholesaleItemRequest.pending.find_by(id: params[:wholesale_item_request_id])
       flash.now[:alert] = '商品カテゴリと商品名を入力してください'
       return render :new, status: :unprocessable_entity
     end
@@ -109,16 +112,19 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
 
       stock = @market.stocks.find_by(item_sub_category: sub_cat)
       if stock
-        stock.update!(cost: cost, base_price: base_price, price: base_price)
+        stock.update!(cost: cost, base_price: base_price, price: base_price, sort_key: sort_key)
       else
         @market.stocks.create!(name: name, item_sub_category: sub_cat, user: nil, cost: cost,
-                                base_price: base_price, price: base_price)
+                                base_price: base_price, price: base_price, sort_key: sort_key)
       end
+
+      WholesaleItemRequest.pending.find_by(id: params[:wholesale_item_request_id])&.approve!
     end
 
     redirect_to admin_wholesale_stocks_path, notice: '商品を登録しました'
   rescue ActiveRecord::RecordInvalid => e
     @item_categories = ItemCategory.order(:name)
+    @wholesale_item_request = WholesaleItemRequest.pending.find_by(id: params[:wholesale_item_request_id])
     flash.now[:alert] = e.record.errors.full_messages.join(', ')
     render :new, status: :unprocessable_entity
   end
