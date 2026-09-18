@@ -28,6 +28,9 @@
         .col-sm-6
           = f.label :base_price, '基準価格（円）', class: 'form-label fw-bold'
           = f.number_field :base_price, value: params.dig(:stock, :base_price) || @wholesale_item_request&.base_price || 100, min: 1, class: 'form-control', required: true
+      .mb-3
+        = f.label :sort_key, '並べ替えキー', class: 'form-label fw-bold'
+        = f.text_field :sort_key, value: params.dig(:stock, :sort_key), class: 'form-control'
       .text-muted.small.mb-3
         ※ 同名のサブカテゴリが既にある場合は既存のものを利用します。
     .card-footer

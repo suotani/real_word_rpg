@@ -97,6 +97,7 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
     name          = params.dig(:stock, :name).to_s.strip
     cost          = params.dig(:stock, :cost).to_i
     base_price    = params.dig(:stock, :base_price).to_i
+    sort_key      = params.dig(:stock, :sort_key)
 
     if item_category.nil? || name.blank?
       @item_categories = ItemCategory.order(:name)
@@ -111,10 +112,10 @@ class Admin::WholesaleStocksController < Admin::ApplicationController
 
       stock = @market.stocks.find_by(item_sub_category: sub_cat)
       if stock
-        stock.update!(cost: cost, base_price: base_price, price: base_price)
+        stock.update!(cost: cost, base_price: base_price, price: base_price, sort_key: sort_key)
       else
         @market.stocks.create!(name: name, item_sub_category: sub_cat, user: nil, cost: cost,
-                                base_price: base_price, price: base_price)
+                                base_price: base_price, price: base_price, sort_key: sort_key)
       end
 
       WholesaleItemRequest.pending.find_by(id: params[:wholesale_item_request_id])&.approve!
