@@ -37,6 +37,7 @@
           %thead.table-dark
             %tr
               %th 商品名
+              %th 基本料金
               %th 仕入れ値
               %th
           %tbody
@@ -44,6 +45,7 @@
               %tr
                 %td
                   %span.fw-bold= stock.name
+                %td= "#{stock.base_price}円"
                 %td= "#{stock.price}円"
                 %td.text-end
                   = link_to '仕入れる', buy_store_store_actions_path(stock_id: stock.id), class: 'btn btn-success btn-sm'
