@@ -46,7 +46,8 @@
                 %td
                   %span.fw-bold= stock.name
                 %td= "#{stock.base_price}円"
-                %td= "#{stock.price}円"
+                %td{class: stock.price > stock.base_price ? 'text-danger fw-bold' : (stock.price < stock.base_price ? 'text-success fw-bold' : nil)}
+                  = "#{stock.price}円"
                 %td.text-end
                   = link_to '仕入れる', buy_store_store_actions_path(stock_id: stock.id), class: 'btn btn-success btn-sm'
     - else
