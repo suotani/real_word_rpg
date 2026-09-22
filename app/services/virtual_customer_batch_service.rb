@@ -8,21 +8,21 @@ class VirtualCustomerBatchService
     store_category_ids = BuisinessTime.where(sales_at: hour).pluck(:store_category_id)
     return { count: 0, total_amount: 0, errors: [] } if store_category_ids.empty?
 
-    # 対象カテゴリの店舗を town ごとにグループ化
-    # town_id: nil（中央卸売市場など）は購入対象外
-    stores_by_town = Store.where(store_category_id: store_category_ids)
-                          .where.not(town_id: nil)
-                          .group_by(&:town_id)
+    # 対象カテゴリの店舗を店舗オーナー（ユーザー）ごとにグループ化
+    # user_id: nil（中央卸売市場など）は購入対象外
+    stores_by_user = Store.where(store_category_id: store_category_ids)
+                          .where.not(user_id: nil)
+                          .group_by(&:user_id)
 
-    return { count: 0, total_amount: 0, errors: [] } if stores_by_town.empty?
+    return { count: 0, total_amount: 0, errors: [] } if stores_by_user.empty?
 
     total_count  = 0
     total_amount = 0
     total_errors = []
 
-    # town ごとに独立した20人の仮想購入者を走らせる
-    stores_by_town.each do |_town_id, town_stores|
-      result = purchase_for_town(town_stores)
+    # ユーザーごとに独立した20人の仮想購入者を走らせる
+    stores_by_user.each do |_user_id, user_stores|
+      result = purchase_for_user(user_stores)
       total_count  += result[:count]
       total_amount += result[:total_amount]
       total_errors.concat(result[:errors])
@@ -33,8 +33,8 @@ class VirtualCustomerBatchService
 
   private
 
-  def purchase_for_town(town_stores)
-    store_ids = town_stores.map(&:id)
+  def purchase_for_user(user_stores)
+    store_ids = user_stores.map(&:id)
 
     # 出品中在庫を魅力度の高い順に並べ、閾値未満は除外
     # 魅力度 = (基本料金 ÷ 販売価格) + 素材数 × 0.1。高いほど購入者にとって魅力的
