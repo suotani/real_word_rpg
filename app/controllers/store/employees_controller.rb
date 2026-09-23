@@ -1,7 +1,7 @@
 class Store::EmployeesController < Store::ApplicationController
   before_action :set_store
 
-  def show
+  def index
     @employee_types = EmployeeType.order(:hire_cost)
   end
 

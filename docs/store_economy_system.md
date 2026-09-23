@@ -331,7 +331,7 @@ sales_at           integer  - 営業している時刻（hour、0〜23）
 | `store/StoresController` | index, show, new, create, edit, update |
 | `store/StocksController` | index, show, create, edit, update, destroy, list(GET/POST), unlist(POST), bulk_new, bulk_confirm, bulk_create |
 | `store/RecipesController` | index, new, create, destroy, craft |
-| `store/EmployeesController` | show, create, destroy（店舗ごとに単数リソース） |
+| `store/EmployeesController` | index, create, destroy（店舗ごとに雇用は常に1件） |
 | `store/StoreActionsController` | buy(GET/POST), purchase(GET/POST), sell(POST・未実装) |
 | `store/OtherStoresController` | index（同タウンの他ユーザー店舗一覧） |
 | `store/ShoppingStreetController` | index（同タウン全店舗・出品商品一覧） |
@@ -398,7 +398,9 @@ namespace :store do
     resources :recipes, only: [:index, :new, :create, :destroy] do
       post 'craft', on: :member
     end
-    resource :employee, only: [:show, :create, :destroy]
+    get    'employee', to: 'employees#index', as: :employee
+    post   'employee', to: 'employees#create'
+    delete 'employee', to: 'employees#destroy'
   end
 
   resources :sales_logs,        only: [:index]
