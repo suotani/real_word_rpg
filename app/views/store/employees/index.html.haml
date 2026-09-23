@@ -37,6 +37,7 @@
             %thead.table-dark
               %tr
                 %th 名前
+                %th 説明
                 %th 効果
                 %th 雇用費
                 %th
@@ -44,6 +45,7 @@
               - @employee_types.each do |type|
                 %tr
                   %td.fw-bold= type.name
+                  %td.text-muted= type.description
                   %td
                     - effects = []
                     - effects << "魅力度+#{type.attractiveness_bonus}" if type.attractiveness_bonus.positive?

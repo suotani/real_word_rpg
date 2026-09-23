@@ -17,6 +17,12 @@ RSpec.describe 'Store::Employees', type: :request do
       get store_store_employee_path(store)
       expect(response.body).to include('看板娘')
     end
+
+    it '従業員種別の説明が表示される' do
+      create(:employee_type, name: '看板娘', description: '明るい接客でお店の魅力と客足を伸ばしてくれる人気者。')
+      get store_store_employee_path(store)
+      expect(response.body).to include('明るい接客でお店の魅力と客足を伸ばしてくれる人気者。')
+    end
   end
 
   describe 'POST /store/stores/:store_id/employee' do
