@@ -1,0 +1,65 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_store_path(@store), class: 'btn btn-outline-secondary btn-sm' do
+      %i.fas.fa-arrow-left
+      店舗に戻る
+    %h1.mb-0= "#{@store.name} の従業員"
+
+  .card.mb-4
+    .card-header.fw-bold 現在の従業員
+    .card-body
+      - if @store.employee_type
+        - type = @store.employee_type
+        %h5.fw-bold= type.name
+        %p.text-muted= type.description if type.description.present?
+        %ul.mb-3
+          - if type.attractiveness_bonus.positive?
+            %li= "魅力度 +#{type.attractiveness_bonus}"
+          - if type.purchase_discount_rate.positive?
+            %li= "仕入れ値 #{(type.purchase_discount_rate * 100).round}%off"
+          - if type.extra_customer_count.positive?
+            %li= "バッチごとの来客数 +#{type.extra_customer_count}人"
+          - if type.bonus_customer_balance_multiplier != 1.0
+            %li= "追加来客の所持金 ×#{type.bonus_customer_balance_multiplier}"
+          - if type.virtual_sale_bonus_rate.positive?
+            %li= "仮想顧客への売上 +#{(type.virtual_sale_bonus_rate * 100).round}%"
+        = button_to '解雇する', store_store_employee_path(@store), method: :delete,
+            class: 'btn btn-outline-danger btn-sm', data: { confirm: '解雇しますか？' }
+      - else
+        %p.text-muted.mb-0 現在従業員はいません。
+
+  .card
+    .card-header.fw-bold 雇える従業員
+    .card-body.p-0
+      - if @employee_types.any?
+        .table-responsive
+          %table.table.table-hover.align-middle.mb-0
+            %thead.table-dark
+              %tr
+                %th 名前
+                %th 説明
+                %th 効果
+                %th 雇用費
+                %th
+            %tbody
+              - @employee_types.each do |type|
+                %tr
+                  %td.fw-bold= type.name
+                  %td.text-muted= type.description
+                  %td
+                    - effects = []
+                    - effects << "魅力度+#{type.attractiveness_bonus}" if type.attractiveness_bonus.positive?
+                    - effects << "仕入れ#{(type.purchase_discount_rate * 100).round}%off" if type.purchase_discount_rate.positive?
+                    - effects << "来客+#{type.extra_customer_count}人" if type.extra_customer_count.positive?
+                    - effects << "客の予算×#{type.bonus_customer_balance_multiplier}" if type.bonus_customer_balance_multiplier != 1.0
+                    - effects << "仮想売上+#{(type.virtual_sale_bonus_rate * 100).round}%" if type.virtual_sale_bonus_rate.positive?
+                    = effects.join(' / ').presence || '-'
+                  %td= "#{type.hire_cost}円"
+                  %td.text-end
+                    - if @store.employee_type_id == type.id
+                      %span.badge.bg-secondary 雇用中
+                    - else
+                      = button_to '雇う', store_store_employee_path(@store), method: :post,
+                          params: { employee_type_id: type.id }, class: 'btn btn-primary btn-sm'
+      - else
+        .p-4.text-muted 従業員種別が登録されていません。

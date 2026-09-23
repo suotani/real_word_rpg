@@ -2,6 +2,7 @@ class Store < ApplicationRecord
   belongs_to :town, optional: true
   belongs_to :user, optional: true
   belongs_to :store_category
+  belongs_to :employee_type, optional: true
   has_many :stocks, dependent: :destroy
   has_many :recipes, dependent: :destroy
 
@@ -21,6 +22,21 @@ class Store < ApplicationRecord
 
   # カスタムバリデーション
   validate :theme_colors_must_be_different
+
+  def hire_employee!(user, new_employee_type)
+    unless user.afford?(new_employee_type.hire_cost)
+      raise ArgumentError, "所持金が不足しています（必要: #{new_employee_type.hire_cost}円 / 所持: #{user.balance}円）"
+    end
+
+    ActiveRecord::Base.transaction do
+      update!(employee_type: new_employee_type)
+      user.deduct!(new_employee_type.hire_cost)
+    end
+  end
+
+  def dismiss_employee!
+    update!(employee_type: nil)
+  end
 
   private
 

@@ -38,7 +38,7 @@
 [仮想顧客バッチ] VirtualCustomerBatchService
   → 毎時0分、POST /api/batches/virtual_purchase（X-Batch-Token 認証）でキューに投入
   → BuisinessTime.sales_at が現在時刻の hour に一致する StoreCategory の店舗のみ対象
-  → タウンごとに独立した仮想購入者 20人（所持金 500〜3000円 ランダム）が購入を試みる
+  → 店舗オーナー（ユーザー）ごとに独立した仮想購入者 20人（所持金 500〜3000円 ランダム）が購入を試みる
   → 購入優先順位は「魅力度」（高い順）。魅力度 < 0.5 の商品は購入対象外
   → 売れたら出品者の balance を increment! + SalesLog に記録 → Stock を destroy
   → 売れ残った在庫は unsold_count をインクリメント（魅力度には影響しない）
@@ -102,6 +102,14 @@
 1. `current_user.town` が設定済みであること（`stores#new` でチェック、なければ select へリダイレクト）
 2. `/store/stores/new` で店舗名・カテゴリ（`卸市場` 以外）・テーマカラー2色を設定
 3. `current_user.town` に紐づいて作成される
+
+### 従業員の雇用
+
+- 店舗ごとに従業員は常に1人まで（`stores.employee_type_id`）。雇用中に別の種別を雇うと置き換わる
+- `/store/stores/:store_id/employee` で現在の従業員・雇用可能な `EmployeeType` 一覧を確認し、雇用（`create`）・解雇（`destroy`、無料）ができる
+- 雇用費用（`EmployeeType#hire_cost`）はユーザーの残高から一括で差し引かれる（`Store#hire_employee!`。残高不足なら `ArgumentError`）
+- `EmployeeType` は効果カラム（魅力度アップ、仕入れ値の割引、仮想顧客バッチの追加来客・その来客の予算アップ、仮想顧客への売上ブースト）を持つが、現時点ではまだゲームロジックには反映されていない（雇用の仕組みのみが先行実装された状態。効果の適用は別途対応予定）
+- 種別マスタ（`EmployeeType`）専用の管理画面は作らず、既存の汎用 `/admin/resources/EmployeeType` を利用する
 
 ### 在庫の仕入れ（市場から）
 
@@ -192,13 +200,32 @@ name              string  - 店舗名（街内でユニーク）
 town_id           integer  optional  - NULLの場合はシステム店舗（中央卸売市場）
 user_id           integer  optional  - NULLの場合はシステム所有
 store_category_id integer
+employee_type_id  integer  optional  - 現在雇用中の従業員種別（未雇用なら NULL）
 theme_color       string  - メインカラー (#RRGGBB)
 theme_sub_color   string  - サブカラー (#RRGGBB、メインと異なる値が必要)
 ```
 
 - `has_many :stocks`
 - `has_many :recipes`
+- `belongs_to :employee_type, optional: true`
 - `Store.central_wholesale_market` — `user_id: nil` かつ `store_category.name: '卸市場'` の Store を返す
+- `#hire_employee!(user, employee_type)` / `#dismiss_employee!` — 従業員の雇用・解雇（雇用費用は `user.balance` から差し引き）
+
+### EmployeeType（従業員種別マスタ）
+
+```
+name                               string   一意。例: 看板娘、せり人
+hire_cost                          integer  雇用時に一度だけ支払う金額
+attractiveness_bonus               float    Stock#calculate_attractiveness に加算（未反映、後日対応）
+purchase_discount_rate             float    仕入れ値の割引率（未反映、後日対応）
+extra_customer_count               integer  バッチごとの追加来客数（未反映、後日対応）
+bonus_customer_balance_multiplier  float    追加来客の所持金レンジ倍率（未反映、後日対応）
+virtual_sale_bonus_rate            float    仮想顧客への売上ブースト率（未反映、後日対応）
+description                        text     管理画面用の説明（任意）
+```
+
+- `has_many :stores, dependent: :restrict_with_error`（雇用中の店舗がある種別は削除不可）
+- 専用の管理画面は作らず、汎用の `/admin/resources/EmployeeType` でCRUDする
 
 ### Stock（在庫）
 
@@ -304,6 +331,7 @@ sales_at           integer  - 営業している時刻（hour、0〜23）
 | `store/StoresController` | index, show, new, create, edit, update |
 | `store/StocksController` | index, show, create, edit, update, destroy, list(GET/POST), unlist(POST), bulk_new, bulk_confirm, bulk_create |
 | `store/RecipesController` | index, new, create, destroy, craft |
+| `store/EmployeesController` | index, create, destroy（店舗ごとに雇用は常に1件） |
 | `store/StoreActionsController` | buy(GET/POST), purchase(GET/POST), sell(POST・未実装) |
 | `store/OtherStoresController` | index（同タウンの他ユーザー店舗一覧） |
 | `store/ShoppingStreetController` | index（同タウン全店舗・出品商品一覧） |
@@ -370,6 +398,9 @@ namespace :store do
     resources :recipes, only: [:index, :new, :create, :destroy] do
       post 'craft', on: :member
     end
+    get    'employee', to: 'employees#index', as: :employee
+    post   'employee', to: 'employees#create'
+    delete 'employee', to: 'employees#destroy'
   end
 
   resources :sales_logs,        only: [:index]
