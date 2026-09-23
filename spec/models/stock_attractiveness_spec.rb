@@ -27,6 +27,21 @@ RSpec.describe Stock, '魅力度' do
       stock = build(:stock, base_price: 100, price: 0)
       expect(stock.calculate_attractiveness).to eq(0.0)
     end
+
+    it '店舗の従業員（例: 看板娘）の魅力度ボーナスが加算される' do
+      employee_type = create(:employee_type, attractiveness_bonus: 0.3)
+      store = create(:store, employee_type: employee_type)
+      stock = build(:stock, store: store, base_price: 100, price: 200, ingredient_count: 0)
+
+      expect(stock.calculate_attractiveness).to eq(0.5 + 0.3)
+    end
+
+    it '従業員がいない店舗ではボーナスが加算されない' do
+      store = create(:store, employee_type: nil)
+      stock = build(:stock, store: store, base_price: 100, price: 200, ingredient_count: 0)
+
+      expect(stock.calculate_attractiveness).to eq(0.5)
+    end
   end
 
   describe '#recalculate_attractiveness!' do

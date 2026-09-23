@@ -19,8 +19,9 @@
 
 [仕入れ] StoreActions#buy
   → 市場の Stock を選択 → 自分の Store（store_category が一致する）を選択 → 数量を入力
-  → User.balance から price × quantity を deduct!
-  → 自 Store に Stock を create!（cost = base_price = 市場の price）
+  → 仕入れ先 Store が従業員（例: せり人）を雇っていれば purchase_discount_rate 分だけ単価を割引
+  → User.balance から 単価（割引後）× quantity を deduct!
+  → 自 Store に Stock を create!（cost = base_price = 割引後の単価）
 
 [まとめて仕入れ] Stocks#bulk_new / bulk_confirm / bulk_create
   → 自店舗の在庫を複数まとめて追加する一括登録フロー
@@ -40,8 +41,8 @@
   → BuisinessTime.sales_at が現在時刻の hour に一致する StoreCategory の店舗のみ対象
   → 店舗オーナー（ユーザー）ごとに独立した仮想購入者 20人（所持金 500〜3000円 ランダム）が購入を試みる
   → 購入優先順位は「魅力度」（高い順）。魅力度 < 0.5 の商品は購入対象外
-  → 売れたら出品者の balance を increment! + SalesLog に記録 → Stock を destroy
-  → 売れ残った在庫は unsold_count をインクリメント（魅力度には影響しない）
+  → 売れたら出品者の balance を increment!（従業員が virtual_sale_bonus_rate を持てば売却額に上乗せ） + SalesLog に記録 → Stock を destroy
+  → 共有プールの購入処理後、従業員（例: 看板娘）が extra_customer_count を持つ店舗ごとに、その店舗の残り在庫だけを対象にした追加ウェーブを実行（所持金レンジは bonus_customer_balance_multiplier 倍）
 
 [市場価格変動バッチ] MarketPriceFluctuationService
   → 毎日1時30分、POST /api/batches/market_price_fluctuation（X-Batch-Token 認証）で起動
@@ -55,11 +56,12 @@
 仮想顧客が購入対象を選ぶ際の指標。高いほど先に購入される。
 
 ```
-魅力度 = (base_price ÷ price) + ingredient_count × 0.1
+魅力度 = (base_price ÷ price) + ingredient_count × 0.1 + 店舗の従業員の attractiveness_bonus
 ```
 
 - `base_price / price` が高い（＝仕入れ値に対して安売り）ほど魅力度が上がる
 - レシピで素材を多く使って作った商品ほどボーナスが付く
+- 店舗が従業員（例: 看板娘）を雇っていると `attractiveness_bonus` がそのまま加算される
 - `unsold_count`（売れ残り回数）は記録されるが魅力度には影響しない
 - 閾値 `MIN_ATTRACTIVENESS = 0.5` を下回ると購入対象から外れる
 
@@ -108,7 +110,7 @@
 - 店舗ごとに従業員は常に1人まで（`stores.employee_type_id`）。雇用中に別の種別を雇うと置き換わる
 - `/store/stores/:store_id/employee` で現在の従業員・雇用可能な `EmployeeType` 一覧を確認し、雇用（`create`）・解雇（`destroy`、無料）ができる
 - 雇用費用（`EmployeeType#hire_cost`）はユーザーの残高から一括で差し引かれる（`Store#hire_employee!`。残高不足なら `ArgumentError`）
-- `EmployeeType` は効果カラム（魅力度アップ、仕入れ値の割引、仮想顧客バッチの追加来客・その来客の予算アップ、仮想顧客への売上ブースト）を持つが、現時点ではまだゲームロジックには反映されていない（雇用の仕組みのみが先行実装された状態。効果の適用は別途対応予定）
+- `EmployeeType` の効果カラム（魅力度アップ、仕入れ値の割引、仮想顧客バッチの追加来客・その来客の予算アップ、仮想顧客への売上ブースト）は、それぞれ `Stock#calculate_attractiveness`・`StoreActionsController#buy`・`VirtualCustomerBatchService` に反映済み
 - 種別マスタ（`EmployeeType`）専用の管理画面は作らず、既存の汎用 `/admin/resources/EmployeeType` を利用する
 
 ### 在庫の仕入れ（市場から）
@@ -216,11 +218,11 @@ theme_sub_color   string  - サブカラー (#RRGGBB、メインと異なる値�
 ```
 name                               string   一意。例: 看板娘、せり人
 hire_cost                          integer  雇用時に一度だけ支払う金額
-attractiveness_bonus               float    Stock#calculate_attractiveness に加算（未反映、後日対応）
-purchase_discount_rate             float    仕入れ値の割引率（未反映、後日対応）
-extra_customer_count               integer  バッチごとの追加来客数（未反映、後日対応）
-bonus_customer_balance_multiplier  float    追加来客の所持金レンジ倍率（未反映、後日対応）
-virtual_sale_bonus_rate            float    仮想顧客への売上ブースト率（未反映、後日対応）
+attractiveness_bonus               float    Stock#calculate_attractiveness に加算
+purchase_discount_rate             float    仕入れ値の割引率（StoreActionsController#buy で適用）
+extra_customer_count               integer  バッチごとの追加来客数（その店舗専用の追加ウェーブ）
+bonus_customer_balance_multiplier  float    追加来客の所持金レンジ倍率（BALANCE_RANGE に乗算）
+virtual_sale_bonus_rate            float    仮想顧客への売上ブースト率（売却額に上乗せ）
 description                        text     管理画面用の説明（任意）
 ```
 
