@@ -81,6 +81,7 @@ Rails.application.routes.draw do
       resources :recipes, only: [:index, :new, :create, :destroy] do
         post 'craft', on: :member
       end
+      resource :employee, only: [:show, :create, :destroy]
     end
     get 'guide',           to: 'guide#index'
     get 'shopping_street', to: 'shopping_street#index'

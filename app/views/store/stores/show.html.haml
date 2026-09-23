@@ -39,3 +39,18 @@
                   %td.text-end.fw-bold= "#{number_with_delimiter(stock.price)}円"
       - else
         .p-4.text-muted 現在出品中の商品はありません。
+
+  - if @is_owner
+    / 従業員
+    .card.border-0.shadow-sm.overflow-hidden.mt-4
+      .card-header.fw-bold.py-3{style: "background: linear-gradient(90deg, #{color}22 0%, transparent 100%); border-left: 4px solid #{color};"}
+        %i.fas.fa-user-tie.me-2{style: "color: #{color};"}
+        従業員
+      .card-body
+        - if @store.employee_type
+          %p.mb-2
+            現在雇用中:
+            %span.fw-bold= @store.employee_type.name
+        - else
+          %p.text-muted.mb-2 現在従業員はいません。
+        = link_to '従業員を雇う・解雇する', store_store_employee_path(@store), class: 'btn btn-outline-primary btn-sm'

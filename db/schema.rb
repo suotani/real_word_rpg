@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_17_160000) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_23_090001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -74,6 +74,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_17_160000) do
     t.integer "communication_exp", default: 0
     t.integer "total_exp", default: 0
     t.integer "shop_point", default: 0
+  end
+
+  create_table "employee_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "hire_cost", default: 0, null: false
+    t.float "attractiveness_bonus", default: 0.0, null: false
+    t.float "purchase_discount_rate", default: 0.0, null: false
+    t.integer "extra_customer_count", default: 0, null: false
+    t.float "bonus_customer_balance_multiplier", default: 1.0, null: false
+    t.float "virtual_sale_bonus_rate", default: 0.0, null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_employee_types_on_name", unique: true
   end
 
   create_table "experiences", force: :cascade do |t|
@@ -339,6 +353,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_17_160000) do
     t.integer "store_category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "employee_type_id"
+    t.index ["employee_type_id"], name: "index_stores_on_employee_type_id"
     t.index ["store_category_id"], name: "index_stores_on_store_category_id"
     t.index ["town_id"], name: "index_stores_on_town_id"
     t.index ["user_id"], name: "index_stores_on_user_id"
@@ -428,6 +444,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_17_160000) do
   add_foreign_key "stocks", "item_sub_categories"
   add_foreign_key "stocks", "stores"
   add_foreign_key "stocks", "users"
+  add_foreign_key "stores", "employee_types"
   add_foreign_key "stores", "store_categories"
   add_foreign_key "stores", "towns"
   add_foreign_key "stores", "users"
