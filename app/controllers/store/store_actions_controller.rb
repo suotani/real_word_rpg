@@ -18,7 +18,11 @@ class Store::StoreActionsController < Store::ApplicationController
       return
     end
     quantity = [[params[:quantity].to_i, 1].max, 99].min
-    total_cost = @target_stock.price * quantity
+
+    # せり人などの従業員による仕入れ割引
+    discount_rate = destination_store.employee_type&.purchase_discount_rate.to_f
+    unit_price    = (@target_stock.price * (1 - discount_rate)).round
+    total_cost    = unit_price * quantity
 
     unless current_user.afford?(total_cost)
       redirect_to buy_store_store_actions_path(stock_id: @target_stock.id),
@@ -32,9 +36,9 @@ class Store::StoreActionsController < Store::ApplicationController
           name: @target_stock.name,
           item_sub_category: @target_stock.item_sub_category,
           user: current_user,
-          cost: @target_stock.price,
-          base_price: @target_stock.price,
-          price: @target_stock.price
+          cost: unit_price,
+          base_price: unit_price,
+          price: unit_price
         )
       end
       current_user.deduct!(total_cost)

@@ -57,6 +57,9 @@
                         = link_to store_store_stocks_path(store), class: "btn btn-outline-primary btn-sm" do
                           %i.fas.fa-box
                           在庫
+                        = link_to store_store_employee_path(store), class: "btn btn-outline-primary btn-sm" do
+                          %i.fas.fa-user-tie
+                          従業員
       - else
         .card.shadow-sm.border-0
           .card-body.text-center.py-5

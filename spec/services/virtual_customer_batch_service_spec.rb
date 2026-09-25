@@ -145,5 +145,53 @@ RSpec.describe VirtualCustomerBatchService do
         expect(Stock.exists?(low_ingredient_stock.id)).to be true
       end
     end
+
+    context '客数アップ従業員（例: 看板娘）がいる場合' do
+      # BALANCE_RANGE(500〜3000)では誰も買えない価格。
+      # bonus_customer_balance_multiplier: 10.0 により追加客の予算は 5000〜30000 になり、
+      # price: 5000 は追加客なら必ず購入できる（通常の20人では絶対に売れない）
+      let!(:premium_stock) do
+        create(:stock, :listed, name: '高級品', price: 5000, base_price: 5000, store: store, user: seller)
+      end
+
+      context '従業員を雇っている場合' do
+        before do
+          employee_type = create(:employee_type, extra_customer_count: 1, bonus_customer_balance_multiplier: 10.0)
+          store.update!(employee_type: employee_type)
+        end
+
+        it '追加ウェーブの客に購入される' do
+          result = service.run(hour: 12)
+          expect(Stock.exists?(premium_stock.id)).to be false
+          expect(result[:count]).to eq(1)
+        end
+      end
+
+      context '従業員がいない場合' do
+        it '通常の仮想購入者では購入されない' do
+          service.run(hour: 12)
+          expect(Stock.exists?(premium_stock.id)).to be true
+        end
+      end
+    end
+
+    context '仮想売上ブースト従業員（例: 敏腕バイヤー）がいる場合' do
+      let(:employee_type) { create(:employee_type, virtual_sale_bonus_rate: 0.5) }
+      # price: 500 は BALANCE_RANGE の下限と同額なので必ず購入される
+      let!(:target_stock) { create(:stock, :listed, price: 500, base_price: 500, store: store, user: seller) }
+
+      before { store.update!(employee_type: employee_type) }
+
+      it '売り手の残高に上乗せ率が反映される（500円 × 1.5 = 750円）' do
+        service.run(hour: 12)
+        expect(seller.reload.balance).to eq(750)
+      end
+
+      it 'SalesLogの売上金額にも上乗せ率が反映される' do
+        service.run(hour: 12)
+        log = SalesLog.find_by(user: seller, target_date: Date.current)
+        expect(log.sales_amount).to eq(750)
+      end
+    end
   end
 end
