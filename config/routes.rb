@@ -97,6 +97,7 @@ Rails.application.routes.draw do
       post :repay
     end
     resource  :virtual_customer_batch, only: [:show, :create]
+    resource  :baito_batch, only: [:show, :create]
     resources :item_sub_categories, only: [:index, :new, :create] do
       post :import_master, on: :collection
     end

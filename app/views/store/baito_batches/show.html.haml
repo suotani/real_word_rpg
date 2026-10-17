@@ -1,0 +1,38 @@
+.container.py-4
+  .row.justify-content-center
+    .col-lg-7.col-md-9
+
+      %h1.mb-4 バイトバッチ（手動実行）
+
+      .card.shadow-sm.mb-4
+        .card-body
+          %p.text-muted.mb-3
+            稼働中の全バイト設定について、仕入れ・作成・出品を即時実行します。
+            本番では毎日0時に自動実行されます（店舗ごとの在庫数上限: #{BaitoBatchService::STOCK_CAP}件）。
+          = form_with url: store_baito_batch_path, method: :post, local: true do |f|
+            = f.submit '実行', class: 'btn btn-primary'
+
+      - if @result
+        .card.shadow-sm
+          .card-header.fw-bold
+            実行結果
+          .card-body
+            %dl.row.mb-0
+              %dt.col-sm-4 処理件数
+              %dd.col-sm-8= "#{@result[:processed]}件"
+              %dt.col-sm-4 スキップ件数
+              %dd.col-sm-8= "#{@result[:skipped]}件"
+              %dt.col-sm-4 エラー件数
+              %dd.col-sm-8= "#{@result[:errors].size}件"
+
+            - if @result[:errors].any?
+              %table.table.table-sm.table-bordered.mt-3.mb-0
+                %thead
+                  %tr
+                    %th Baito ID
+                    %th エラー内容
+                %tbody
+                  - @result[:errors].each do |err|
+                    %tr
+                      %td= err[:baito_id]
+                      %td= err[:message]
