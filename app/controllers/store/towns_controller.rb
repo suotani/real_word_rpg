@@ -38,9 +38,7 @@ class Store::TownsController < Store::ApplicationController
   end
 
   def market
-    wholesale_cat = StoreCategory.find_by(name: '卸市場')
-    @market = (wholesale_cat && @town.stores.find_by(store_category: wholesale_cat, name: '中央卸売市場')) ||
-              Store.central_wholesale_market
+    @market = Store.wholesale_market_for(@town)
     unless @market
       redirect_to store_root_path, alert: '中央卸売市場がまだ作成されていません。'
       return

@@ -5,6 +5,7 @@ class Store < ApplicationRecord
   belongs_to :employee_type, optional: true
   has_many :stocks, dependent: :destroy
   has_many :recipes, dependent: :destroy
+  has_many :baitos, dependent: :destroy
 
   # バリデーション
   validates :name, presence: true, length: { maximum: 255 }
@@ -18,6 +19,14 @@ class Store < ApplicationRecord
     wholesale_category = StoreCategory.find_by(name: '卸市場')
     return nil unless wholesale_category
     find_by(user_id: nil, store_category: wholesale_category, town_id: nil)
+  end
+
+  # town専用の中央卸売市場があればそれを、なければグローバルな市場をフォールバックとして返す
+  def self.wholesale_market_for(town)
+    wholesale_category = StoreCategory.find_by(name: '卸市場')
+    return central_wholesale_market unless wholesale_category
+
+    town&.stores&.find_by(store_category: wholesale_category, name: '中央卸売市場') || central_wholesale_market
   end
 
   # カスタムバリデーション

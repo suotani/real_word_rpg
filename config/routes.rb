@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :batches do
       post 'virtual_purchase',          to: 'virtual_purchases#create'
       post 'market_price_fluctuation',  to: 'market_price_fluctuations#create'
+      post 'baito_batch',               to: 'baito_batches#create'
     end
   end
 
@@ -81,6 +82,7 @@ Rails.application.routes.draw do
       resources :recipes, only: [:index, :new, :create, :destroy] do
         post 'craft', on: :member
       end
+      resources :baitos, only: [:index, :new, :create, :edit, :update, :destroy]
       get    'employee', to: 'employees#index',   as: :employee
       post   'employee', to: 'employees#create'
       delete 'employee', to: 'employees#destroy'

@@ -1,0 +1,54 @@
+.container.py-4
+  .d-flex.align-items-center.gap-3.mb-4
+    = link_to store_store_path(@store), class: "btn btn-outline-secondary btn-sm" do
+      %i.fas.fa-arrow-left
+      店舗に戻る
+    %h1.mb-0= "#{@store.name} のバイト"
+
+  - if flash[:notice]
+    .alert.alert-success= flash[:notice]
+  - if flash[:alert]
+    .alert.alert-danger= flash[:alert]
+
+  .alert.alert-info
+    %i.fas.fa-circle-info.me-1
+    バイトは毎日0時に、設定したレシピの仕入れ・作成・出品を自動で行います（起動時刻の変更はできません）。
+    店舗の在庫数が
+    %strong= BaitoBatchService::STOCK_CAP
+    件を超える分は自動的にスキップされます。
+
+  .mb-3
+    = link_to new_store_store_baito_path(@store), class: "btn btn-primary" do
+      %i.fas.fa-plus
+      バイトを設定
+
+  - if @baitos.any?
+    .table-responsive
+      %table.table.table-hover.align-middle
+        %thead.table-dark
+          %tr
+            %th レシピ
+            %th 数量/日
+            %th 出品価格
+            %th
+        %tbody
+          - @baitos.each do |baito|
+            %tr
+              %td.fw-bold= baito.recipe.name
+              %td= "#{baito.quantity}個"
+              %td
+                - if baito.pricing_mode == 'fixed'
+                  = "固定 #{baito.fixed_price}円"
+                - else
+                  = "原価 × #{baito.price_multiplier}"
+              %td.text-end
+                = link_to edit_store_store_baito_path(@store, baito), class: "btn btn-outline-secondary btn-sm" do
+                  %i.fas.fa-edit
+                  編集
+                = button_to store_store_baito_path(@store, baito), method: :delete,
+                    class: "btn btn-outline-danger btn-sm", data: { confirm: "「#{baito.recipe.name}」のバイトを削除しますか？" } do
+                  %i.fas.fa-trash
+                  削除
+  - else
+    .alert.alert-light
+      まだバイトが設定されていません。

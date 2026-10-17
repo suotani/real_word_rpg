@@ -26,3 +26,17 @@ services:
     envVars:
       - key: BATCH_SECRET_TOKEN
         sync: false
+
+  - type: cron
+    name: baito-batch
+    env: ruby
+    region: singapore
+    schedule: "0 0 * * *"   # 毎日0時
+    buildCommand: "echo 'no build'"
+    startCommand: >
+      curl -s -o /dev/null -w "%{http_code}"
+      -X POST https://real-word-rpg.onrender.com/api/batches/baito_batch
+      -H "X-Batch-Token: $BATCH_SECRET_TOKEN"
+    envVars:
+      - key: BATCH_SECRET_TOKEN
+        sync: false

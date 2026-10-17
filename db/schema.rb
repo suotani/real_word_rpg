@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_23_090001) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_17_065954) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -30,6 +30,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_23_090001) do
     t.string "checksum", null: false
     t.datetime "created_at", precision: nil, null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "baitos", force: :cascade do |t|
+    t.integer "store_id", null: false
+    t.integer "recipe_id", null: false
+    t.integer "quantity", null: false
+    t.string "pricing_mode", default: "fixed", null: false
+    t.integer "fixed_price"
+    t.float "price_multiplier"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id"], name: "index_baitos_on_recipe_id"
+    t.index ["store_id", "recipe_id"], name: "index_baitos_on_store_id_and_recipe_id", unique: true
+    t.index ["store_id"], name: "index_baitos_on_store_id"
   end
 
   create_table "batch_logs", force: :cascade do |t|
@@ -425,6 +439,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_23_090001) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "baitos", "recipes"
+  add_foreign_key "baitos", "stores"
   add_foreign_key "buisiness_times", "store_categories"
   add_foreign_key "item_category_store_categories", "item_categories"
   add_foreign_key "item_category_store_categories", "store_categories"

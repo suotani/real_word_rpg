@@ -58,26 +58,11 @@ class Store::RecipesController < Store::ApplicationController
 
     quantity = [[params[:quantity].to_i, 1].max, max_quantity].min
 
-    ActiveRecord::Base.transaction do
-      quantity.times do |i|
-        batch_stocks = ingredient_ids.map { |id| stocks_by_ingredient[id][i] }
-        total_cost = batch_stocks.sum(&:cost)
-        total_base_price = batch_stocks.sum(&:base_price)
-        batch_stocks.each(&:destroy!)
-        @store.stocks.create!(
-          name: @recipe.name,
-          cost: total_cost,
-          base_price: total_base_price,
-          price: 0,
-          user: current_user,
-          ingredient_count: batch_stocks.size
-        )
-      end
-    end
+    @recipe.craft!(store: @store, user: current_user, quantity: quantity)
 
     crafted_count = @store.stocks.where(name: @recipe.name).count
     redirect_to store_store_recipes_path(@store), notice: "「#{@recipe.name}」をクラフトしました（#{crafted_count}個）。"
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid, Recipe::InsufficientIngredientsError
     redirect_to store_store_recipes_path(@store), alert: 'クラフトに失敗しました。'
   end
 

@@ -1,0 +1,36 @@
+- form_url = @baito.persisted? ? store_store_baito_path(@store, @baito) : store_store_baitos_path(@store)
+= form_with model: [@store, @baito], url: form_url, local: true do |f|
+  - if @baito.errors.any?
+    .alert.alert-danger
+      %ul.mb-0
+        - @baito.errors.full_messages.each do |msg|
+          %li= msg
+
+  .mb-3
+    = f.label :recipe_id, '対象レシピ', class: 'form-label fw-bold'
+    = f.select :recipe_id,
+        options_from_collection_for_select(@recipes, :id, :name, @baito.recipe_id),
+        { prompt: '選択してください' },
+        { class: 'form-select' }
+
+  .mb-3
+    = f.label :quantity, '1日に仕入れ・作成・出品する数量', class: 'form-label fw-bold'
+    = f.number_field :quantity, min: 1, class: 'form-control'
+
+  %hr
+  .mb-3
+    %label.form-label.fw-bold 出品価格の決め方
+
+    .form-check
+      = f.radio_button :pricing_mode, 'fixed', class: 'form-check-input'
+      = f.label :pricing_mode, '固定価格', value: 'fixed', class: 'form-check-label'
+    .mb-3.ps-4
+      = f.number_field :fixed_price, min: 1, class: 'form-control', placeholder: '例: 300（円）'
+
+    .form-check
+      = f.radio_button :pricing_mode, 'multiplier', class: 'form-check-input'
+      = f.label :pricing_mode, '原価（仕入れ値合計）への倍率', value: 'multiplier', class: 'form-check-label'
+    .mb-3.ps-4
+      = f.number_field :price_multiplier, min: 0.1, step: 0.1, class: 'form-control', placeholder: '例: 1.5（原価の1.5倍で出品）'
+
+  = f.submit '保存する', class: 'btn btn-primary w-100'
