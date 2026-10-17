@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :batches do
       post 'virtual_purchase',          to: 'virtual_purchases#create'
       post 'market_price_fluctuation',  to: 'market_price_fluctuations#create'
+      post 'baito_batch',               to: 'baito_batches#create'
     end
   end
 
@@ -81,6 +82,9 @@ Rails.application.routes.draw do
       resources :recipes, only: [:index, :new, :create, :destroy] do
         post 'craft', on: :member
       end
+      resources :baitos, only: [:index, :new, :create, :edit, :update, :destroy] do
+        post 'toggle', on: :member
+      end
       get    'employee', to: 'employees#index',   as: :employee
       post   'employee', to: 'employees#create'
       delete 'employee', to: 'employees#destroy'
@@ -93,6 +97,7 @@ Rails.application.routes.draw do
       post :repay
     end
     resource  :virtual_customer_batch, only: [:show, :create]
+    resource  :baito_batch, only: [:show, :create]
     resources :item_sub_categories, only: [:index, :new, :create] do
       post :import_master, on: :collection
     end

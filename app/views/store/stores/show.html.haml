@@ -54,3 +54,16 @@
         - else
           %p.text-muted.mb-2 現在従業員はいません。
         = link_to '従業員を雇う・解雇する', store_store_employee_path(@store), class: 'btn btn-outline-primary btn-sm'
+
+    / バイト
+    .card.border-0.shadow-sm.overflow-hidden.mt-4
+      .card-header.fw-bold.py-3{style: "background: linear-gradient(90deg, #{color}22 0%, transparent 100%); border-left: 4px solid #{color};"}
+        %i.fas.fa-clock.me-2{style: "color: #{color};"}
+        バイト
+      .card-body
+        - if @store.baitos.any?
+          %p.mb-2
+            = "#{@store.baitos.count}件のレシピで自動仕入れ・作成・出品を設定中"
+        - else
+          %p.text-muted.mb-2 現在バイトは設定されていません。
+        = link_to 'バイトを設定する', store_store_baitos_path(@store), class: 'btn btn-outline-primary btn-sm'
