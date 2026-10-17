@@ -82,7 +82,9 @@ Rails.application.routes.draw do
       resources :recipes, only: [:index, :new, :create, :destroy] do
         post 'craft', on: :member
       end
-      resources :baitos, only: [:index, :new, :create, :edit, :update, :destroy]
+      resources :baitos, only: [:index, :new, :create, :edit, :update, :destroy] do
+        post 'toggle', on: :member
+      end
       get    'employee', to: 'employees#index',   as: :employee
       post   'employee', to: 'employees#create'
       delete 'employee', to: 'employees#destroy'

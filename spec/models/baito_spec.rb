@@ -44,6 +44,24 @@ RSpec.describe Baito, type: :model do
     end
   end
 
+  describe 'デフォルト値' do
+    it '作成時はactiveがtrueになる' do
+      baito = create(:baito, store: store, recipe: recipe)
+      expect(baito.active?).to be true
+    end
+  end
+
+  describe '.active スコープ' do
+    it '稼働中のバイトのみを返す' do
+      active_baito   = create(:baito, store: store, recipe: recipe)
+      other_recipe   = create(:recipe, store: store)
+      inactive_baito = create(:baito, store: store, recipe: other_recipe, active: false)
+
+      expect(Baito.active).to include(active_baito)
+      expect(Baito.active).not_to include(inactive_baito)
+    end
+  end
+
   describe '#listing_price_for' do
     let(:stock) { build(:stock, base_price: 200) }
 

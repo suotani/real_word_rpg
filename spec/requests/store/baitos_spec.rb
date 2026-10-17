@@ -73,6 +73,26 @@ RSpec.describe 'Store::Baitos', type: :request do
     end
   end
 
+  describe 'POST /store/stores/:store_id/baitos/:id/toggle' do
+    let!(:baito) { create(:baito, store: store, recipe: recipe) }
+
+    it '稼働中のバイトを停止できる' do
+      post toggle_store_store_baito_path(store, baito)
+      expect(baito.reload.active?).to be false
+    end
+
+    it '停止中のバイトを再開できる' do
+      baito.update!(active: false)
+      post toggle_store_store_baito_path(store, baito)
+      expect(baito.reload.active?).to be true
+    end
+
+    it '一覧画面にリダイレクトする' do
+      post toggle_store_store_baito_path(store, baito)
+      expect(response).to redirect_to(store_store_baitos_path(store))
+    end
+  end
+
   describe 'DELETE /store/stores/:store_id/baitos/:id' do
     let!(:baito) { create(:baito, store: store, recipe: recipe) }
 

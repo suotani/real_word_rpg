@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_17_065954) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_17_071916) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -41,6 +41,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_17_065954) do
     t.float "price_multiplier"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["recipe_id"], name: "index_baitos_on_recipe_id"
     t.index ["store_id", "recipe_id"], name: "index_baitos_on_store_id_and_recipe_id", unique: true
     t.index ["store_id"], name: "index_baitos_on_store_id"

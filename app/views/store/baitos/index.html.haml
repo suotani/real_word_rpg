@@ -27,13 +27,19 @@
       %table.table.table-hover.align-middle
         %thead.table-dark
           %tr
+            %th 状態
             %th レシピ
             %th 数量/日
             %th 出品価格
             %th
         %tbody
           - @baitos.each do |baito|
-            %tr
+            %tr{class: baito.active? ? nil : 'text-muted'}
+              %td
+                - if baito.active?
+                  %span.badge.bg-success 稼働中
+                - else
+                  %span.badge.bg-secondary 停止中
               %td.fw-bold= baito.recipe.name
               %td= "#{baito.quantity}個"
               %td
@@ -42,6 +48,14 @@
                 - else
                   = "原価 × #{baito.price_multiplier}"
               %td.text-end
+                = button_to toggle_store_store_baito_path(@store, baito), method: :post,
+                    class: "btn btn-sm #{baito.active? ? 'btn-outline-warning' : 'btn-outline-success'}" do
+                  - if baito.active?
+                    %i.fas.fa-pause
+                    停止
+                  - else
+                    %i.fas.fa-play
+                    再開
                 = link_to edit_store_store_baito_path(@store, baito), class: "btn btn-outline-secondary btn-sm" do
                   %i.fas.fa-edit
                   編集

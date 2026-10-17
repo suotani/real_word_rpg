@@ -4,6 +4,8 @@ class Baito < ApplicationRecord
   belongs_to :store
   belongs_to :recipe
 
+  scope :active, -> { where(active: true) }
+
   validates :quantity, presence: true, numericality: { greater_than: 0, only_integer: true }
   validates :pricing_mode, inclusion: { in: PRICING_MODES }
   validates :fixed_price, presence: true, numericality: { greater_than: 0 }, if: -> { pricing_mode == 'fixed' }

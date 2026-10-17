@@ -1,6 +1,6 @@
 class Store::BaitosController < Store::ApplicationController
   before_action :set_store
-  before_action :set_baito, only: [:edit, :update, :destroy]
+  before_action :set_baito, only: [:edit, :update, :destroy, :toggle]
 
   def index
     @baitos = @store.baitos.includes(:recipe)
@@ -38,6 +38,12 @@ class Store::BaitosController < Store::ApplicationController
   def destroy
     @baito.destroy
     redirect_to store_store_baitos_path(@store), notice: 'バイト設定を削除しました。'
+  end
+
+  def toggle
+    @baito.update!(active: !@baito.active)
+    status = @baito.active? ? '再開' : '停止'
+    redirect_to store_store_baitos_path(@store), notice: "「#{@baito.recipe.name}」のバイトを#{status}しました。"
   end
 
   private

@@ -109,6 +109,20 @@ RSpec.describe BaitoBatchService do
       end
     end
 
+    context 'バイトが停止中(active: false)の場合' do
+      before { baito.update!(active: false) }
+
+      it '仕入れ・クラフト・出品が行われない' do
+        expect { service.run }.not_to change { store.stocks.count }
+      end
+
+      it '処理件数・スキップ件数ともに0になる' do
+        result = service.run
+        expect(result[:processed]).to eq(0)
+        expect(result[:skipped]).to eq(0)
+      end
+    end
+
     context 'バイト設定が複数の店舗にある場合' do
       let(:other_owner) { create(:user, balance: 10_000) }
       let(:other_store) { create(:store, user: other_owner, town: town, store_category: store_category) }

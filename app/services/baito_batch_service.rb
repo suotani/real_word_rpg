@@ -7,7 +7,7 @@ class BaitoBatchService
     skipped   = 0
     errors    = []
 
-    Baito.includes(:store, recipe: :item_sub_categories).find_each do |baito|
+    Baito.active.includes(:store, recipe: :item_sub_categories).find_each do |baito|
       status, message = process_baito(baito)
 
       case status
