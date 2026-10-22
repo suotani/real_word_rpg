@@ -40,3 +40,17 @@ services:
     envVars:
       - key: BATCH_SECRET_TOKEN
         sync: false
+
+  - type: cron
+    name: fx-trade-batch
+    env: ruby
+    region: singapore
+    schedule: "* * * * *"   # 毎分(エントリー/決済の時刻判定・損切り監視を取りこぼさないため)
+    buildCommand: "echo 'no build'"
+    startCommand: >
+      curl -s -o /dev/null -w "%{http_code}"
+      -X POST https://real-word-rpg.onrender.com/api/batches/fx_trade
+      -H "X-Batch-Token: $BATCH_SECRET_TOKEN"
+    envVars:
+      - key: BATCH_SECRET_TOKEN
+        sync: false

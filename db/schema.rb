@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_17_071916) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_22_120001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -116,6 +116,32 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_17_071916) do
     t.integer "category_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+  end
+
+  create_table "fx_bot_settings", force: :cascade do |t|
+    t.boolean "enabled", default: false, null: false
+    t.integer "size", default: 1000, null: false
+    t.decimal "stop_loss_yen", precision: 10, scale: 3, default: "0.15", null: false
+    t.integer "entry_hour", default: 6, null: false
+    t.integer "entry_min", default: 50, null: false
+    t.integer "exit_hour", default: 7, null: false
+    t.integer "exit_min", default: 5, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "fx_trade_logs", force: :cascade do |t|
+    t.date "trade_date", null: false
+    t.string "event", null: false
+    t.string "reason"
+    t.string "side"
+    t.integer "size"
+    t.decimal "price", precision: 10, scale: 3
+    t.decimal "loss_gain", precision: 12, scale: 3
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trade_date", "event"], name: "idx_fx_trade_logs_claim", unique: true, where: "event IN ('entry','close')"
   end
 
   create_table "import_htmls", force: :cascade do |t|

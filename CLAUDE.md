@@ -72,3 +72,10 @@ bin/rails assets:precompile
 - **Active Hash:** `Category` はインメモリハッシュ（DBテーブルなし）— マイグレーションを生成しないこと
 - **HAML:** 全ビューは `.haml`（`.erb` ではない）
 - **デプロイ:** `render.yaml` がRender.comの設定；`bin/render-build.sh` がデプロイ時に bundle/assets/migrate を実行
+
+### FXトレードボット(実資金を扱う機能)
+
+`FxBotSetting` / `FxTradeLog` / `GmoCoinApi` / `FxTradeBatchService`(詳細は `docs/fx_trade_bot.md`)。
+GMOコインAPIで実際の口座に発注する機能なので、他のゲーム内バッチと違い**実際の金銭的損失が
+起こり得る**。このあたりを変更するときは`docs/fx_trade_bot.md`の注意点(時刻前提が未検証、
+スワップ費用未考慮等)を必ず読んでから着手すること。

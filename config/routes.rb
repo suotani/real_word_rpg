@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       post 'virtual_purchase',          to: 'virtual_purchases#create'
       post 'market_price_fluctuation',  to: 'market_price_fluctuations#create'
       post 'baito_batch',               to: 'baito_batches#create'
+      post 'fx_trade',                  to: 'fx_trades#create'
     end
   end
 
