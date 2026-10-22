@@ -64,6 +64,21 @@
           %span アプリをを開く
           %span.arrow →
 
+    - if @user.admin?
+      / FXトレードボット設定カード（管理者専用）
+      .service-card
+        .card-icon 💹
+        .card-content
+          %h3 FXトレードボット設定
+          %p 実資金を扱うFX自動売買の各種パラメータを管理します（管理者専用）
+          .card-features
+            %span.feature-tag 管理者専用
+            %span.feature-tag 実資金
+        = link_to admin_fx_bot_setting_path, class: "card-link" do
+          .card-action
+            %span 設定を開く
+            %span.arrow →
+
 :css
   .dashboard-container {
     max-width: 1200px;

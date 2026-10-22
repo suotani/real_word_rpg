@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       post 'virtual_purchase',          to: 'virtual_purchases#create'
       post 'market_price_fluctuation',  to: 'market_price_fluctuations#create'
       post 'baito_batch',               to: 'baito_batches#create'
+      post 'fx_trade',                  to: 'fx_trades#create'
     end
   end
 
@@ -34,6 +35,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: 'resources#models'
+    resource :fx_bot_setting, only: [:show, :edit, :update]
     post 'batches/market_price_fluctuation', to: 'batches#market_price_fluctuation', as: :batch_market_price_fluctuation
     resources :wholesale_stocks, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
