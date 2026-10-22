@@ -42,7 +42,12 @@ class FxTradeBatchService
       claim.destroy # 発注失敗時は予約を取り消し、次回のcronで再試行できるようにする
       raise
     end
-    { closed: true, reason: }
+
+    # 決済は成功している(=実際に発注済み)ので、ここで余力取得が失敗しても
+    # claimは取り消さない(取得失敗時はnilのまま記録される)
+    margin = GmoCoinApi.get_margin
+    claim.update!(margin:)
+    { closed: true, reason:, margin: }
   end
 
   def handle_no_position(setting, now)

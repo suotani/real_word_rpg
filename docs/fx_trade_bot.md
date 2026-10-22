@@ -11,7 +11,9 @@ GMOコインAPIを使い、USD/JPYを毎日決まった時刻にショート→�
 
 - `FxBotSetting`(シングルトン、`/admin/resources/fx_bot_setting`で編集): `enabled`・`size`(発注サイズ)・
   `stop_loss_yen`・`entry_hour`/`entry_min`・`exit_hour`/`exit_min`
-- `FxTradeLog`(`/admin/resources/fx_trade_log`で閲覧): 発注・決済・損切り・エラーの記録
+- `FxTradeLog`(`/admin/resources/fx_trade_log`で閲覧): 発注・決済・損切り・エラーの記録。
+  決済(`close`)時にはGMOコインの取引余力(`availableAmount`)も`margin`列に記録し、
+  管理者専用画面(`/admin/fx_bot_setting`)に最新値と履歴を表示する
 - `GmoCoinApi`(`app/services/gmo_coin_api.rb`): GMOコインFX APIラッパー
 - `FxTradeBatchService`(`app/services/fx_trade_batch_service.rb`): 1回呼ばれるごとに
   現在時刻・建玉状況を見て「何もしない/エントリー/決済」を1つだけ判断するワンショット処理

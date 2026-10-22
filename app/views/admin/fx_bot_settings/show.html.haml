@@ -1,0 +1,68 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h2.mb-0 FXトレードボット設定
+  = link_to '設定を編集', edit_admin_fx_bot_setting_path, class: 'btn btn-primary'
+
+.alert.alert-danger
+  %strong ⚠ 実資金を扱う機能です。
+  GMOコインの実際の口座に発注します。緊急停止したい場合は「稼働状況」を「停止」にしてください。
+
+.card.mb-4
+  .card-body
+    %h5.card-title 稼働状況
+    - if @fx_bot_setting.enabled?
+      %span.badge.bg-success.fs-6 稼働中
+    - else
+      %span.badge.bg-secondary.fs-6 停止中
+
+    %table.table.table-sm.mt-3.mb-0
+      %tbody
+        %tr
+          %th 発注サイズ
+          %td= "#{@fx_bot_setting.size} 通貨"
+        %tr
+          %th 損切り(円)
+          %td= @fx_bot_setting.stop_loss_yen
+        %tr
+          %th エントリー時刻
+          %td= format('%02d:%02d', @fx_bot_setting.entry_hour, @fx_bot_setting.entry_min)
+        %tr
+          %th 決済時刻
+          %td= format('%02d:%02d', @fx_bot_setting.exit_hour, @fx_bot_setting.exit_min)
+
+.card.mb-4
+  .card-body
+    %h5.card-title FX取引余力
+    - if @latest_margin_log
+      %p.fs-4.mb-1= "#{number_with_delimiter(@latest_margin_log.margin)} 円"
+      %p.text-muted.small.mb-0= "#{@latest_margin_log.trade_date} 決済時点"
+    - else
+      %p.text-muted.mb-0 まだ記録がありません（決済が発生すると記録されます）
+
+.card
+  .card-body
+    .d-flex.justify-content-between.align-items-center.mb-3
+      %h5.card-title.mb-0 直近の取引ログ
+      = link_to '全件を見る', admin_resource_record_list_path(model_name: 'fx_trade_log'), class: 'btn btn-outline-secondary btn-sm'
+    - if @recent_logs.empty?
+      %p.text-muted.mb-0 ログがありません
+    - else
+      %table.table.table-sm.mb-0
+        %thead
+          %tr
+            %th 日付
+            %th イベント
+            %th 理由
+            %th サイズ
+            %th 価格
+            %th 損益
+            %th 取引余力
+        %tbody
+          - @recent_logs.each do |log|
+            %tr
+              %td= log.trade_date
+              %td= log.event
+              %td= log.reason
+              %td= log.size
+              %td= log.price
+              %td= log.loss_gain
+              %td= log.margin

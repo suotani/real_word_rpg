@@ -49,6 +49,24 @@ module GmoCoinApi
     data.nil? ? [nil, nil, nil] : [data['side'], data['size'].to_i, data['lossGain'].to_f]
   end
 
+  # FX取引余力(発注に使える金額)を取得する。取得失敗時はnil
+  def get_margin
+    timestamp = DateTime.now.strftime('%Q')
+    method = 'GET'
+    path = '/v1/account/margin'
+
+    uri = URI.parse(PRIVATE_ENDPOINT + path)
+    req = Net::HTTP::Get.new(uri.request_uri)
+    req['API-KEY'] = api_key
+    req['API-TIMESTAMP'] = timestamp
+    req['API-SIGN'] = build_sign(timestamp + method + path)
+
+    res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
+    JSON.parse(res.body).dig('data', 'availableAmount')&.to_f
+  rescue StandardError
+    nil
+  end
+
   def send_sell(size)
     send_order('SELL', size)
   end
