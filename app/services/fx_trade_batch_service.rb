@@ -44,9 +44,9 @@ class FxTradeBatchService
     end
 
     # 決済は成功している(=実際に発注済み)ので、ここで余力取得が失敗しても
-    # claimは取り消さない(取得失敗時はnilのまま記録される)
+    # claimは取り消さない(取得失敗時はnilのまま記録され、原因はRails.loggerに出る)
     margin = GmoCoinApi.get_margin
-    claim.update!(margin:)
+    claim.update!(margin:) if margin
     { closed: true, reason:, margin: }
   end
 

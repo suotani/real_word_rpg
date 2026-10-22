@@ -63,7 +63,8 @@ module GmoCoinApi
 
     res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
     JSON.parse(res.body).dig('data', 'availableAmount')&.to_f
-  rescue StandardError
+  rescue StandardError => e
+    Rails.logger.error("GmoCoinApi.get_margin failed: #{e.class}: #{e.message}")
     nil
   end
 
