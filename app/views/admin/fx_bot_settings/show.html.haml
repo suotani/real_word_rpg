@@ -2,35 +2,27 @@
 
 .alert.alert-danger
   %strong ⚠ 実資金を扱う機能です。
-  GMOコインの実際の口座に発注します。緊急停止したい場合は各戦略の「稼働状況」をオフにしてください。
-  時刻・パラメータについては
-  = link_to '設定一覧', admin_resource_record_list_path(model_name: 'fx_bot_setting')
-  で編集できます。
+  GMOコインの実際の口座に発注します。緊急停止したい場合は各戦略の「稼働状況」のチェックを外して更新してください。
 
 .card.mb-4
   .card-body
-    %h5.card-title 戦略ごとの稼働状況
-    %table.table.table-sm.mb-0
-      %thead
-        %tr
-          %th 戦略
-          %th 稼働状況
-          %th 発注サイズ
-          %th 損切り(円)
-          %th
-      %tbody
-        - @settings.each do |setting|
-          %tr
-            %td= setting.strategy
-            %td
-              - if setting.enabled?
-                %span.badge.bg-success 稼働中
-              - else
-                %span.badge.bg-secondary 停止中
-            %td= "#{setting.size} 通貨"
-            %td= setting.stop_loss_yen
-            %td= link_to '編集', admin_edit_resource_record_path(model_name: 'fx_bot_setting', id: setting.id), class: 'btn btn-outline-primary btn-sm'
-    .text-muted.small.mt-3.mb-0
+    %h5.card-title 戦略ごとの設定
+    - @settings.each do |setting|
+      = form_with model: setting, url: admin_update_fx_bot_setting_path(setting.id), method: :patch, scope: :fx_bot_setting, local: true, html: { class: 'row gx-3 align-items-end mb-3 pb-3 border-bottom' } do |f|
+        .col-sm-3
+          %label.form-label.fw-bold.mb-1= setting.strategy
+          .form-check
+            = f.check_box :enabled, class: 'form-check-input'
+            = f.label :enabled, '稼働中', class: 'form-check-label'
+        .col-sm-3
+          = f.label :size, '発注サイズ（通貨単位。最小100）', class: 'form-label small mb-1'
+          = f.number_field :size, min: 1, step: 1, class: 'form-control'
+        .col-sm-3
+          = f.label :stop_loss_yen, '損切り（円）', class: 'form-label small mb-1'
+          = f.number_field :stop_loss_yen, min: 0, step: 'any', class: 'form-control'
+        .col-sm-3
+          = f.submit '更新する', class: 'btn btn-primary'
+    .text-muted.small.mb-0
       ※ エントリー/決済時刻は戦略ごとに固定で、コード(app/services/fx_strategies/)で決め打ちにしています。
       優先度は ny_rollover_dip > goto_bi_fixing > dip_bounce の順(dip_bounceは上位2戦略の稼働時間帯に明け渡すため強制決済します)。
 
