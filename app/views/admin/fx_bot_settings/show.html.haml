@@ -46,7 +46,7 @@
       %table.table.table-sm.mb-0
         %thead
           %tr
-            %th 日付
+            %th 日時
             %th 戦略
             %th イベント
             %th 理由
@@ -56,7 +56,7 @@
         %tbody
           - @recent_logs.each do |log|
             %tr
-              %td= log.trade_date
+              %td= log.created_at.strftime('%Y-%m-%d %H:%M')
               %td= log.strategy
               %td= log.event
               %td= log.reason
