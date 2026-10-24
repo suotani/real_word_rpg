@@ -103,11 +103,14 @@ class FxTradeBatchService
     claim = claim_once(strategy: strategy::KEY, event: 'close', reason:)
     return { skipped: true, reason: 'already_closed' } unless claim
 
+    price = nil
     begin
       position, = GmoCoinApi.get_position
       raise "no open position at broker to close (expected #{strategy::ENTRY_SIDE})" unless position
 
+      price = GmoCoinApi.get_price
       send_order(opposite_side(strategy::ENTRY_SIDE), setting.size)
+      claim.update!(price:) if price
     rescue StandardError
       claim.destroy
       raise
@@ -115,7 +118,7 @@ class FxTradeBatchService
 
     margin = GmoCoinApi.get_margin
     claim.update!(margin:) if margin
-    { closed: true, reason:, margin: }
+    { closed: true, reason:, margin:, price: }
   end
 
   # --- エントリー判断 ---
