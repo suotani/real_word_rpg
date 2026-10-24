@@ -35,7 +35,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: 'resources#models'
-    resource :fx_bot_setting, only: [:show, :edit, :update]
+    resource :fx_bot_setting, only: [:show]
     post 'batches/market_price_fluctuation', to: 'batches#market_price_fluctuation', as: :batch_market_price_fluctuation
     resources :wholesale_stocks, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do

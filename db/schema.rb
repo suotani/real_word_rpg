@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_23_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_24_010001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -122,12 +122,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_23_000000) do
     t.boolean "enabled", default: false, null: false
     t.integer "size", default: 1000, null: false
     t.decimal "stop_loss_yen", precision: 10, scale: 3, default: "0.15", null: false
-    t.integer "entry_hour", default: 6, null: false
-    t.integer "entry_min", default: 50, null: false
-    t.integer "exit_hour", default: 7, null: false
-    t.integer "exit_min", default: 5, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "strategy", null: false
+    t.index ["strategy"], name: "index_fx_bot_settings_on_strategy", unique: true
   end
 
   create_table "fx_trade_logs", force: :cascade do |t|
@@ -142,7 +140,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_23_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "margin", precision: 14, scale: 3
-    t.index ["trade_date", "event"], name: "idx_fx_trade_logs_claim", unique: true, where: "event IN ('entry','close')"
+    t.string "strategy", null: false
+    t.index ["trade_date", "strategy", "event"], name: "idx_fx_trade_logs_claim", unique: true, where: "event IN ('entry','close','daily_open')"
   end
 
   create_table "import_htmls", force: :cascade do |t|

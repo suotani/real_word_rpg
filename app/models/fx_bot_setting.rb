@@ -1,14 +1,17 @@
-# FXロールオーバー・ディップ戦略の実行パラメータ(常に1行だけ使うシングルトン)。
+# FX戦略ごとの実行パラメータ(戦略につき1行)。
 # admin画面(/admin/resources/fx_bot_setting)から値を編集できる。
-# enabled を false にすると FxTradeBatchService が即座に何もせず終了する
+# enabled を false にするとその戦略だけ FxTradeBatchService が即座に何もせず終了する
 # (「cronを止める」のではなく、cronは動いたままアプリ側で無効化するキルスイッチ)。
+# エントリー/決済時刻は戦略ごとに固定のため、ここでは持たない
+# (app/services/fx_strategies/ 配下のコードを参照)。
 class FxBotSetting < ApplicationRecord
+  STRATEGIES = %w[ny_rollover_dip goto_bi_fixing dip_bounce].freeze
+
+  validates :strategy, presence: true, inclusion: { in: STRATEGIES }, uniqueness: true
   validates :size, numericality: { greater_than: 0 }
   validates :stop_loss_yen, numericality: { greater_than: 0 }
-  validates :entry_hour, :exit_hour, inclusion: 0..23
-  validates :entry_min, :exit_min, inclusion: 0..59
 
-  def self.instance
-    first_or_create!
+  def self.for(strategy)
+    find_by!(strategy: strategy)
   end
 end
