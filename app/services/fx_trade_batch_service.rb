@@ -83,7 +83,7 @@ class FxTradeBatchService
     time_hit = strategy.time_exit?(now)
     return { noop: true, reason: 'holding' } unless stop_hit || time_hit
 
-    close_position(strategy, setting, stop_hit ? 'stop_loss' : 'time_exit')
+    close_position(strategy, setting, stop_hit ? 'stop_loss' : 'time_exit', entry)
   end
 
   def check_dip_bounce_exit(setting, now, entry)
@@ -96,10 +96,10 @@ class FxTradeBatchService
     return { noop: true, reason: 'holding' } unless stop_hit || timeout_hit || handoff_hit
 
     reason = stop_hit ? 'stop_loss' : (handoff_hit ? 'handoff' : 'time_exit')
-    close_position(FxStrategies::DipBounce, setting, reason)
+    close_position(FxStrategies::DipBounce, setting, reason, entry)
   end
 
-  def close_position(strategy, setting, reason)
+  def close_position(strategy, setting, reason, entry)
     claim = claim_once(strategy: strategy::KEY, event: 'close', reason:)
     return { skipped: true, reason: 'already_closed' } unless claim
 
@@ -117,8 +117,19 @@ class FxTradeBatchService
     end
 
     margin = GmoCoinApi.get_margin
-    claim.update!(margin:) if margin
-    { closed: true, reason:, margin:, price: }
+    loss_gain = calc_loss_gain(entry, price)
+    claim.update!(margin:, loss_gain:)
+    { closed: true, reason:, margin:, price:, loss_gain: }
+  end
+
+  # entryのside(BUY/SELL)から見た値幅 x sizeで決済損益(円)を出す。
+  # 値がどちらか欠けている(API取得失敗等)場合は記録しない(nil)。
+  def calc_loss_gain(entry, close_price)
+    return nil unless entry&.price && close_price && entry.size
+
+    entry_price = entry.price.to_f
+    diff = entry.side == 'SELL' ? entry_price - close_price : close_price - entry_price
+    diff * entry.size
   end
 
   # --- エントリー判断 ---

@@ -52,14 +52,20 @@
             %th 理由
             %th サイズ
             %th 価格
+            %th 決済損益
             %th 取引余力
         %tbody
           - @recent_logs.each do |log|
             %tr
               %td= log.created_at.strftime('%Y-%m-%d %H:%M')
               %td= log.strategy
-              %td= log.event
-              %td= log.reason
+              %td= log.event_label
+              %td= log.reason_label
               %td= log.size
               %td= log.price
+              %td
+                - if log.loss_gain
+                  - value = log.loss_gain.round
+                  %span{class: value >= 0 ? 'text-success' : 'text-danger'}
+                    = "#{value >= 0 ? '+' : ''}#{number_with_delimiter(value)}円"
               %td= log.margin
