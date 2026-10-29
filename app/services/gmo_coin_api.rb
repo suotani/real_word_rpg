@@ -30,6 +30,21 @@ module GmoCoinApi
     nil
   end
 
+  # 直近days日分の1時間足(ASK)終値を時刻昇順で返す(取得失敗した日はスキップして結合する)。
+  # klines APIは1時間足でも「1日分(最大24本)」しか返さないため、日ごとに個別リクエストして
+  # 結合する必要がある(FxTrendRegimeServiceのSMA200判定には約210本=9日弱分が必要)。
+  def get_hourly_closes(days:)
+    (days - 1).downto(0).flat_map { |offset| fetch_hourly_closes_for_date(Date.current - offset) }
+  end
+
+  def fetch_hourly_closes_for_date(date)
+    uri = URI("#{ENDPOINT}/public/v1/klines?symbol=USD_JPY&priceType=ASK&interval=1hour&date=#{date.strftime('%Y%m%d')}")
+    res = Net::HTTP.get(uri)
+    (JSON.parse(res)['data'] || []).map { |d| d['close'].to_f }
+  rescue StandardError
+    []
+  end
+
   # 現在の建玉を1件取得し、[side, size, lossGain]を返す(建玉なしは[nil,nil,nil])
   def get_position
     timestamp = DateTime.now.strftime('%Q')

@@ -19,6 +19,10 @@
 # 実際にGMO APIへ発注する。DBの一意制約(戦略ごとに1日1回まで)が先に通った場合だけ
 # 発注するので、cronが同じ分に重複して呼ばれても二重発注にならない。発注自体が失敗した
 # 場合は予約行を削除し、次回のcron呼び出しで再試行できるようにする。
+#
+# ③DipBounceのみ、エントリー前に1時間足のトレンドレジーム(FxTrendRegimeService)を
+# 確認する。「上昇トレンドに乗っているだけ」という懸念がfxリポジトリでの検証で確定した
+# ためで、down(またはレジーム未取得)の間は新規エントリーしない(docs/fx_trade_bot.md参照)。
 class FxTradeBatchService
   STRATEGIES = [
     FxStrategies::NyRolloverDip,
@@ -117,19 +121,9 @@ class FxTradeBatchService
     end
 
     margin = GmoCoinApi.get_margin
-    loss_gain = calc_loss_gain(entry, price)
+    loss_gain = FxTradeLog.calc_loss_gain(entry, price)
     claim.update!(margin:, loss_gain:)
     { closed: true, reason:, margin:, price:, loss_gain: }
-  end
-
-  # entryのside(BUY/SELL)から見た値幅 x sizeで決済損益(円)を出す。
-  # 値がどちらか欠けている(API取得失敗等)場合は記録しない(nil)。
-  def calc_loss_gain(entry, close_price)
-    return nil unless entry&.price && close_price && entry.size
-
-    entry_price = entry.price.to_f
-    diff = entry.side == 'SELL' ? entry_price - close_price : close_price - entry_price
-    diff * entry.size
   end
 
   # --- エントリー判断 ---
@@ -152,9 +146,13 @@ class FxTradeBatchService
     day_open = dip_bounce_day_open
     return { noop: true, reason: 'no_day_open' } unless day_open
 
+    trend = FxTrendRegimeService.current
+    return { noop: true, reason: 'regime_unknown' } if trend.nil?
+    return { noop: true, reason: 'downtrend_regime' } if trend != FxStrategies::DipBounce::REQUIRED_TREND
+
     current_price = GmoCoinApi.get_price
     return { noop: true, reason: 'no_price' } unless current_price
-    unless FxStrategies::DipBounce.entry_signal?(now, day_open, current_price)
+    unless FxStrategies::DipBounce.entry_signal?(now, day_open, current_price, trend)
       return { noop: true, reason: 'not_entry_time' }
     end
 

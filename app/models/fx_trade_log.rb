@@ -23,7 +23,9 @@ class FxTradeLog < ApplicationRecord
     'already_entered' => '発注済み(重複)',
     'not_entry_time' => 'エントリー時刻外',
     'no_day_open' => '始値未取得',
-    'no_price' => '価格取得失敗'
+    'no_price' => '価格取得失敗',
+    'downtrend_regime' => 'トレンドレジームdown(見送り)',
+    'regime_unknown' => 'トレンドレジーム未取得'
   }.freeze
 
   # 当日・その戦略の「決済が済んでいないentry」を返す(=現在保有中とみなす)
@@ -32,6 +34,16 @@ class FxTradeLog < ApplicationRecord
     return nil unless entry
 
     exists?(trade_date:, strategy:, event: 'close') ? nil : entry
+  end
+
+  # entryのside(BUY/SELL)から見た値幅 x sizeで決済損益(円)を出す。
+  # 値がどちらか欠けている(API取得失敗等)場合は記録しない(nil)。
+  def self.calc_loss_gain(entry, close_price)
+    return nil unless entry&.price && close_price && entry.size
+
+    entry_price = entry.price.to_f
+    diff = entry.side == 'SELL' ? entry_price - close_price.to_f : close_price.to_f - entry_price
+    diff * entry.size
   end
 
   def event_label

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_24_010001) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_29_000000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -126,6 +126,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_24_010001) do
     t.datetime "updated_at", null: false
     t.string "strategy", null: false
     t.index ["strategy"], name: "index_fx_bot_settings_on_strategy", unique: true
+  end
+
+  create_table "fx_market_regimes", force: :cascade do |t|
+    t.string "trend", null: false
+    t.datetime "computed_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["computed_at"], name: "index_fx_market_regimes_on_computed_at"
   end
 
   create_table "fx_trade_logs", force: :cascade do |t|

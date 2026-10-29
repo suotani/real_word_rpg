@@ -7,6 +7,7 @@ class Admin::FxBotSettingsController < Admin::ApplicationController
     @settings = FxBotSetting.order(:strategy)
     @recent_logs = FxTradeLog.order(created_at: :desc).limit(20)
     @latest_margin_log = FxTradeLog.where(event: 'close').where.not(margin: nil).order(created_at: :desc).first
+    @latest_regime = FxMarketRegime.latest
   end
 
   def update
