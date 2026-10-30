@@ -1,4 +1,4 @@
-# 3戦略(FxStrategies::NyRolloverDip/GotoBiFixing/DipBounce)のバッチ本体。
+# 4戦略(FxStrategies::NyRolloverDip/NyRolloverRebound/GotoBiFixing/DipBounce)のバッチ本体。
 # cron(Render cronサービス)から1分ごとにHTTP経由で呼ばれる想定で、「1回呼ばれたら
 # 各戦略について今の状態を見て1つだけ判断する」ワンショットの作りになっている
 # (プロセスを常駐させずcronの1回1回が独立して安全に動くように設計してある)。
@@ -11,8 +11,8 @@
 # 注文になり実際の口座に予期しない建玉を作ってしまう恐れがあるため)。
 #
 # 実行順序: 1回のバッチ呼び出しの中で「全戦略の決済判断」→「全戦略のエントリー判断」の
-# 2段階に分けて処理する。これにより、優先度の低い戦略(③)が優先度の高い戦略(①②)の
-# 稼働時間帯への明け渡しで決済する場合、同じ分の中で①②のエントリーより先に決済が
+# 2段階に分けて処理する。これにより、優先度の低い戦略(③)が優先度の高い戦略(①②④)の
+# 稼働時間帯への明け渡しで決済する場合、同じ分の中で①②④のエントリーより先に決済が
 # 完了し、両建て不可による誤発注を避けられる。
 #
 # 二重発注防止: エントリー/決済のたびに FxTradeLog へ「予約」を1行作成してから
@@ -23,9 +23,13 @@
 # ③DipBounceのみ、エントリー前に1時間足のトレンドレジーム(FxTrendRegimeService)を
 # 確認する。「上昇トレンドに乗っているだけ」という懸念がfxリポジトリでの検証で確定した
 # ためで、down(またはレジーム未取得)の間は新規エントリーしない(docs/fx_trade_bot.md参照)。
+#
+# ①②はSELL、④NyRolloverReboundはBUYで、固定時刻決済(check_fixed_time_exit)を共有する
+# ため、損切り判定は`FxStrategies.stop_loss_hit?`でside(ENTRY_SIDE)ごとに方向を分けている。
 class FxTradeBatchService
   STRATEGIES = [
     FxStrategies::NyRolloverDip,
+    FxStrategies::NyRolloverRebound,
     FxStrategies::GotoBiFixing,
     FxStrategies::DipBounce
   ].freeze
@@ -83,7 +87,8 @@ class FxTradeBatchService
   def check_fixed_time_exit(strategy, setting, now, entry)
     entry = ensure_entry_price(entry)
     current_price = GmoCoinApi.get_price
-    stop_hit = entry.price && current_price && current_price >= entry.price.to_f + setting.stop_loss_yen
+    stop_hit = entry.price && current_price &&
+               FxStrategies.stop_loss_hit?(strategy::ENTRY_SIDE, entry.price.to_f, current_price, setting.stop_loss_yen)
     time_hit = strategy.time_exit?(now)
     return { noop: true, reason: 'holding' } unless stop_hit || time_hit
 
