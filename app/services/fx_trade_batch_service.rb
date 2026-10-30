@@ -20,9 +20,9 @@
 # 発注するので、cronが同じ分に重複して呼ばれても二重発注にならない。発注自体が失敗した
 # 場合は予約行を削除し、次回のcron呼び出しで再試行できるようにする。
 #
-# ③DipBounceのみ、エントリー前に1時間足のトレンドレジーム(FxTrendRegimeService)を
-# 確認する。「上昇トレンドに乗っているだけ」という懸念がfxリポジトリでの検証で確定した
-# ためで、down(またはレジーム未取得)の間は新規エントリーしない(docs/fx_trade_bot.md参照)。
+# ③DipBounceのみ、エントリー前にRSIベースのフィルター値(FxTrendRegimeService、
+# 'up'/'down'という名前は旧トレンド判定時代の名残で実体はRSI(14,1時間足)>=50)を確認する。
+# down(またはフィルター値未取得)の間は新規エントリーしない(docs/fx_trade_bot.md参照)。
 #
 # ①②はSELL、④NyRolloverReboundはBUYで、固定時刻決済(check_fixed_time_exit)を共有する
 # ため、損切り判定は`FxStrategies.stop_loss_hit?`でside(ENTRY_SIDE)ごとに方向を分けている。
@@ -151,13 +151,13 @@ class FxTradeBatchService
     day_open = dip_bounce_day_open
     return { noop: true, reason: 'no_day_open' } unless day_open
 
-    trend = FxTrendRegimeService.current
-    return { noop: true, reason: 'regime_unknown' } if trend.nil?
-    return { noop: true, reason: 'downtrend_regime' } if trend != FxStrategies::DipBounce::REQUIRED_TREND
+    signal = FxTrendRegimeService.current
+    return { noop: true, reason: 'regime_unknown' } if signal.nil?
+    return { noop: true, reason: 'rsi_unfavorable' } if signal != FxStrategies::DipBounce::REQUIRED_SIGNAL
 
     current_price = GmoCoinApi.get_price
     return { noop: true, reason: 'no_price' } unless current_price
-    unless FxStrategies::DipBounce.entry_signal?(now, day_open, current_price, trend)
+    unless FxStrategies::DipBounce.entry_signal?(now, day_open, current_price, signal)
       return { noop: true, reason: 'not_entry_time' }
     end
 

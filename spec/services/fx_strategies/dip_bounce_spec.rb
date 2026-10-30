@@ -6,19 +6,19 @@ RSpec.describe FxStrategies::DipBounce do
     let(:day_open) { 150.0 }
     let(:dipped_price) { day_open - described_class::ENTRY_DIP_YEN }
 
-    it 'upレジームかつ値幅条件を満たせばtrue' do
+    it 'フィルター値がup(RSI>=50)かつ値幅条件を満たせばtrue' do
       expect(described_class.entry_signal?(now, day_open, dipped_price, 'up')).to be true
     end
 
-    it 'downレジームならfalse(trend-following疑惑への対策)' do
+    it 'フィルター値がdown(RSI<50)ならfalse(trend-following疑惑への対策)' do
       expect(described_class.entry_signal?(now, day_open, dipped_price, 'down')).to be false
     end
 
-    it 'レジーム未取得(nil)ならfalse(安全側のフォールバック)' do
+    it 'フィルター値未取得(nil)ならfalse(安全側のフォールバック)' do
       expect(described_class.entry_signal?(now, day_open, dipped_price, nil)).to be false
     end
 
-    it '値幅条件を満たさなければupレジームでもfalse' do
+    it '値幅条件を満たさなければフィルター値upでもfalse' do
       expect(described_class.entry_signal?(now, day_open, day_open, 'up')).to be false
     end
 

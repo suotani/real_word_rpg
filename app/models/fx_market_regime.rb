@@ -1,8 +1,8 @@
-# 1時間足SMA50/SMA200のトレンドレジーム('up'/'down')の計算結果を記録するキャッシュ。
-# FxTrendRegimeServiceが計算のたびに1行追加する(履歴として残し、admin画面
-# (/admin/resources/fx_market_regime)で過去の遷移も確認できるようにする)。
-# fxリポジトリ(バックテスト環境)のbacktests/regime_filtered_portfolio_backtest.rbで
-# 検証済みのロジック(詳細はfx/README.md「検証メモ」のレジームフィルター節を参照)。
+# DipBounceのエントリーフィルター値('up'=favorable/'down'=unfavorable)の計算結果を
+# 記録するキャッシュ。FxTrendRegimeServiceが計算のたびに1行追加する(履歴として残し、
+# admin画面(/admin/resources/fx_market_regime)で過去の遷移も確認できるようにする)。
+# 現在の判定ロジックはRSI(14、1時間足)>=50(詳細はFxTrendRegimeServiceのコメント、
+# fx/README.md「検証メモ」の「レジーム・指標フィルター」節を参照)。
 class FxMarketRegime < ApplicationRecord
   TRENDS = %w[up down].freeze
 

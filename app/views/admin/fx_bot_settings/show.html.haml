@@ -25,16 +25,16 @@
     .text-muted.small.mb-0
       ※ エントリー/決済時刻は戦略ごとに固定で、コード(app/services/fx_strategies/)で決め打ちにしています。
       優先度は ny_rollover_dip > goto_bi_fixing > dip_bounce の順(dip_bounceは上位2戦略の稼働時間帯に明け渡すため強制決済します)。
-      dip_bounceは1時間足トレンドレジームが「up」の間だけエントリーします(トレンドフォロー疑惑への対策、下のカード参照)。
+      dip_bounceはRSI(14,1時間足)>=50の間だけエントリーします(トレンドフォロー疑惑への対策、下のカード参照)。
 
 .card.mb-4
   .card-body
-    %h5.card-title トレンドレジーム(dip_bounceのエントリー条件)
+    %h5.card-title エントリーフィルター RSI(14,1時間足)(dip_bounceのエントリー条件)
     - if @latest_regime
       %p.fs-4.mb-1
         %span{class: @latest_regime.trend == 'up' ? 'text-success' : 'text-danger'}
-          = @latest_regime.trend == 'up' ? 'UP(エントリー可)' : 'DOWN(エントリー停止中)'
-      %p.text-muted.small.mb-0= "1時間足SMA50/200判定、計算時刻: #{@latest_regime.computed_at.strftime('%Y-%m-%d %H:%M')}"
+          = @latest_regime.trend == 'up' ? '良好・RSI>=50(エントリー可)' : '不良・RSI<50(エントリー停止中)'
+      %p.text-muted.small.mb-0= "計算時刻: #{@latest_regime.computed_at.strftime('%Y-%m-%d %H:%M')}"
     - else
       %p.text-muted.mb-0 まだ計算されていません(dip_bounceのエントリー判定時に初回計算されます)
 
