@@ -5,7 +5,7 @@
 # エントリー/決済時刻は戦略ごとに固定のため、ここでは持たない
 # (app/services/fx_strategies/ 配下のコードを参照)。
 class FxBotSetting < ApplicationRecord
-  STRATEGIES = %w[ny_rollover_dip goto_bi_fixing dip_bounce].freeze
+  STRATEGIES = %w[ny_rollover_dip ny_rollover_rebound goto_bi_fixing dip_bounce].freeze
 
   validates :strategy, presence: true, inclusion: { in: STRATEGIES }, uniqueness: true
   validates :size, numericality: { greater_than: 0 }

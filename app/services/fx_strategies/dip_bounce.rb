@@ -10,8 +10,11 @@
 # トレンドレジームが'up'(SMA50>=SMA200)の時だけエントリーする(FxTrendRegimeService参照)。
 #
 # GMOコインは同一銘柄での両建て(反対方向の同時保有)ができない前提のため、
-# ①②(ショート)の稼働時間帯には新規エントリーしない。保有中に①②の時間帯へ
+# ①②④(他の3戦略)の稼働時間帯には新規エントリーしない。保有中にその時間帯へ
 # 入った場合は、優先度の高い戦略に明け渡すため強制決済する(forced_handoff?)。
+# ④NyRolloverReboundはDipBounceと同じBUY方向だが、GMOは同一銘柄の建玉を戦略単位では
+# 分けて管理できず、このアプリ側でも「建玉なし」を前提にエントリーする作りのため、
+# 同方向であっても同時保有は避ける。
 module FxStrategies
   module DipBounce
     KEY = 'dip_bounce'
@@ -22,6 +25,7 @@ module FxStrategies
 
     BLOCKED_WINDOWS = [
       [NyRolloverDip::ENTRY_HOUR, NyRolloverDip::ENTRY_MIN, NyRolloverDip::EXIT_HOUR, NyRolloverDip::EXIT_MIN],
+      [NyRolloverRebound::ENTRY_HOUR, NyRolloverRebound::ENTRY_MIN, NyRolloverRebound::EXIT_HOUR, NyRolloverRebound::EXIT_MIN],
       [GotoBiFixing::ENTRY_HOUR, GotoBiFixing::ENTRY_MIN, GotoBiFixing::EXIT_HOUR, GotoBiFixing::EXIT_MIN]
     ].freeze
 
