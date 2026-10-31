@@ -55,7 +55,17 @@
     - if @recent_logs.empty?
       %p.text-muted.mb-0 ログがありません
     - else
-      %table.table.table-sm.mb-0
+      %table.table.table-sm.mb-0{style: 'table-layout: fixed;'}
+        %colgroup
+          %col{style: 'width: 11%;'}
+          %col{style: 'width: 9%;'}
+          %col{style: 'width: 8%;'}
+          %col{style: 'width: 9%;'}
+          %col{style: 'width: 7%;'}
+          %col{style: 'width: 8%;'}
+          %col{style: 'width: 9%;'}
+          %col{style: 'width: 9%;'}
+          %col{style: 'width: 30%;'}
         %thead
           %tr
             %th 日時
@@ -71,9 +81,9 @@
           - @recent_logs.each do |log|
             %tr
               %td= log.created_at.strftime('%Y-%m-%d %H:%M')
-              %td= log.strategy
-              %td= log.event_label
-              %td= log.reason_label
+              %td.text-truncate= log.strategy
+              %td.text-truncate= log.event_label
+              %td.text-truncate= log.reason_label
               %td= log.size
               %td= log.price
               %td
@@ -82,4 +92,4 @@
                   %span{class: value >= 0 ? 'text-success' : 'text-danger'}
                     = "#{value >= 0 ? '+' : ''}#{number_with_delimiter(value)}円"
               %td= log.margin
-              %td.text-danger.small= log.note
+              %td.text-danger.small.text-truncate{title: log.note}= log.note

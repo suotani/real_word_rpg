@@ -65,10 +65,13 @@ module GmoCoinApi
   end
 
   # FX取引余力(発注に使える金額)を取得する。取得失敗時はnil
+  # 注意: /v1/account/margin はGMOコインの暗号資産API(api.coin.z.com)側のパスで、
+  # FX API(forex-api.coin.z.com)には存在しない。FX側は/v1/account/assetsが正しい
+  # (レスポンスのavailableAmountフィールド自体は同じ名前)
   def get_margin
     timestamp = DateTime.now.strftime('%Q')
     method = 'GET'
-    path = '/v1/account/margin'
+    path = '/v1/account/assets'
 
     uri = URI.parse(PRIVATE_ENDPOINT + path)
     req = Net::HTTP::Get.new(uri.request_uri)
