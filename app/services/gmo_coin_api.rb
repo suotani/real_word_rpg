@@ -86,6 +86,30 @@ module GmoCoinApi
     nil
   end
 
+  # 約定履歴を新しい順に取得する(過去データの価格補正に使う想定)。
+  # 1回のリクエストでcount件(最大100件程度)しか返らないため、pageで追い足す。
+  # 取得失敗時は空配列(呼び出し側で「それ以上古い履歴は無い」と区別できないため、
+  # 補正スクリプト側は取得件数0で打ち切る前提で使うこと)
+  def get_latest_executions(symbol: 'USD_JPY', count: 100, page: 1)
+    timestamp = DateTime.now.strftime('%Q')
+    method = 'GET'
+    path = '/v1/latestExecutions'
+    parameters = { symbol:, count:, page: }
+
+    uri = URI.parse(PRIVATE_ENDPOINT + path)
+    uri.query = URI.encode_www_form(parameters)
+    req = Net::HTTP::Get.new(uri.request_uri)
+    req['API-KEY'] = api_key
+    req['API-TIMESTAMP'] = timestamp
+    req['API-SIGN'] = build_sign(timestamp + method + path)
+
+    res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
+    JSON.parse(res.body).dig('data', 'list') || []
+  rescue StandardError => e
+    Rails.logger.error("GmoCoinApi.get_latest_executions failed: #{e.class}: #{e.message}")
+    []
+  end
+
   def send_sell(size)
     send_order('SELL', size)
   end
@@ -95,7 +119,10 @@ module GmoCoinApi
   end
 
   # 成行(スピード注文)を送信する。失敗時(レート制限・拒否等)は例外を投げる
-  # (呼び出し側が「注文できていないのに成功扱い」と取り違えないようにするため)
+  # (呼び出し側が「注文できていないのに成功扱い」と取り違えないようにするため)。
+  # 戻り値にはレスポンスの実際の約定価格(price)が含まれる。ティッカーのask/bidは
+  # 発注前のスナップショットかつask専用で実約定とズレるため、ログに残す価格は
+  # 必ずこの戻り値由来のものを使うこと
   def send_order(side, size)
     timestamp = DateTime.now.strftime('%Q')
     path = '/v1/speedOrder'

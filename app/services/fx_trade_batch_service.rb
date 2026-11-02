@@ -117,8 +117,8 @@ class FxTradeBatchService
       position, = GmoCoinApi.get_position
       raise "no open position at broker to close (expected #{strategy::ENTRY_SIDE})" unless position
 
-      price = GmoCoinApi.get_price
-      send_order(opposite_side(strategy::ENTRY_SIDE), setting.size)
+      order = send_order(opposite_side(strategy::ENTRY_SIDE), setting.size)
+      price = order['price']&.to_f
       claim.update!(price:) if price
     rescue StandardError
       claim.destroy
@@ -172,7 +172,8 @@ class FxTradeBatchService
       position, = GmoCoinApi.get_position
       raise "unexpected open position already at broker: #{position.inspect}" if position
 
-      send_order(strategy::ENTRY_SIDE, setting.size)
+      order = send_order(strategy::ENTRY_SIDE, setting.size)
+      price = order['price']&.to_f || price
       claim.update!(price:)
     rescue StandardError
       claim.destroy
