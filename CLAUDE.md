@@ -48,6 +48,9 @@ bin/rails assets:precompile
 - **`Item`** / **`Stock`** — 店舗アイテムと在庫/価格
 - **`ManagedHtml`** / **`ImportHtml`** / **`VR`** — ユーザー作成のHTML/JS/CSSページとVRコンテナ
 - **`YamlToHtml`** — YAMLコンテンツをHTMLに変換
+- **`StockScreeningRun`** — 割安株スクリーニング結果(別リポジトリ`finance/stocks`の
+  `find_undervalued_stocks.rb`が出力したJSONをアップロードして保存した履歴、詳細は
+  `docs/stock_screening.md`)
 
 ### コントローラー
 
@@ -58,6 +61,7 @@ bin/rails assets:precompile
 - `store/` 名前空間: `TownsController`、`StoresController`、`ItemsController`、`StocksController`、`DashboardController`
 - `htmladmin/` 名前空間: カスタムHTMLコンテンツ管理
 - `users/SessionsController` — Deviseセッションのカスタムオーバーライド
+- `admin/StockScreeningRunsController` — 割安株スクリーニング結果JSONのアップロード・履歴閲覧
 
 ### サービス（`app/services/`）
 

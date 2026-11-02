@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-11-01T10:00:00+09:00",
+  "universe_size": 225,
+  "analyzed_count": 180,
+  "skipped_codes": ["9999"],
+  "candidates": [
+    {
+      "code": "6526",
+      "name": "ソシオネクスト",
+      "price": 2000.0,
+      "current_pbr": 1.2,
+      "own_pbr_percentile": 0.3,
+      "corr": -0.531,
+      "n": 16,
+      "cheap_mean": 0.041,
+      "expensive_mean": -0.012,
+      "t": -2.24,
+      "strong_signal": true
+    },
+    {
+      "code": "2413",
+      "name": "M3",
+      "price": 3000.0,
+      "current_pbr": 3.4,
+      "own_pbr_percentile": 0.35,
+      "corr": -0.256,
+      "n": 18,
+      "cheap_mean": 0.018,
+      "expensive_mean": -0.003,
+      "t": -2.07,
+      "strong_signal": true
+    }
+  ],
+  "excluded_value_traps": [
+    {
+      "code": "7201",
+      "name": "日産自動車",
+      "price": 500.0,
+      "current_pbr": 0.19,
+      "own_pbr_percentile": 0.1,
+      "corr": 0.12
+    }
+  ]
+}

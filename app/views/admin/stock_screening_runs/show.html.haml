@@ -1,0 +1,90 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h2 割安株スクリーニング結果
+  .d-flex.gap-2
+    = button_to '現在価格を更新', refresh_prices_admin_stock_screening_run_path(@run), method: :post, class: 'btn btn-primary'
+    = link_to '一覧へ戻る', admin_stock_screening_runs_path, class: 'btn btn-outline-secondary'
+
+.card.mb-4
+  .card-body
+    %dl.row.mb-0
+      %dt.col-sm-3 分析日時
+      %dd.col-sm-9= l(@run.generated_at, format: :long)
+      %dt.col-sm-3 対象銘柄数
+      %dd.col-sm-9= @run.result_data['universe_size']
+      %dt.col-sm-3 分析成立銘柄数
+      %dd.col-sm-9= @run.result_data['analyzed_count']
+      %dt.col-sm-3 取得失敗でスキップした銘柄
+      %dd.col-sm-9= @run.skipped_codes.any? ? @run.skipped_codes.join('、') : 'なし'
+
+%h4 候補 (#{@run.candidates.size}件)
+- if @run.candidates.any?
+  .table-responsive.mb-4
+    %table.table.table-bordered.table-hover.table-sm
+      %thead.table-dark
+        %tr
+          %th コード
+          %th 銘柄名
+          %th 現在PBR
+          %th 自分史内位置
+          %th 過去の相関
+          %th 観測数
+          %th 割安時平均
+          %th 割高時平均
+          %th t値
+          %th 算出時価格
+          %th 現在価格
+          %th 算出時からの変動
+      %tbody
+        - @run.candidates.each do |c|
+          %tr
+            %td= c['code']
+            %td.fw-bold= c['name']
+            %td= c['current_pbr']
+            %td= "#{(c['own_pbr_percentile'].to_f * 100).round(0)}%"
+            %td= c['corr']
+            %td= c['n']
+            %td= c['cheap_mean'].nil? ? '-' : "#{(c['cheap_mean'].to_f * 100).round(1)}%"
+            %td= c['expensive_mean'].nil? ? '-' : "#{(c['expensive_mean'].to_f * 100).round(1)}%"
+            %td
+              = c['t']
+              - if c['strong_signal']
+                %span.badge.bg-warning.text-dark.ms-1 ★
+            %td= c['price'] ? "#{c['price']}円" : '-'
+            = render 'price_change', row: c
+- else
+  .alert.alert-info.mb-4 候補はありませんでした。
+
+%h4 参考: 除外したバリュートラップ疑い銘柄 (#{@run.excluded_value_traps.size}件)
+- if @run.excluded_value_traps.any?
+  .table-responsive.mb-4
+    %table.table.table-bordered.table-sm
+      %thead.table-secondary
+        %tr
+          %th コード
+          %th 銘柄名
+          %th 現在PBR
+          %th 自分史内位置
+          %th 過去の相関
+          %th 算出時価格
+          %th 現在価格
+          %th 算出時からの変動
+      %tbody
+        - @run.excluded_value_traps.each do |c|
+          %tr
+            %td= c['code']
+            %td= c['name']
+            %td= c['current_pbr']
+            %td= "#{(c['own_pbr_percentile'].to_f * 100).round(0)}%"
+            %td= c['corr']
+            %td= c['price'] ? "#{c['price']}円" : '-'
+            = render 'price_change', row: c
+- else
+  .alert.alert-info.mb-4 該当する銘柄はありませんでした。
+
+.card
+  .card-header
+    %button.btn.btn-sm.btn-outline-secondary{type: 'button', data: {bs_toggle: 'collapse', bs_target: '#rawJson'}}
+      生JSONを表示/隠す
+  #rawJson.collapse
+    .card-body
+      %pre.small= @run.pretty_result_data

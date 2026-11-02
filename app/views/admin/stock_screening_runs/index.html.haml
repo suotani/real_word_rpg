@@ -1,0 +1,36 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h2 割安株スクリーニング
+
+.card.mb-4
+  .card-header.fw-bold JSONをアップロード
+  .card-body
+    = form_with url: admin_stock_screening_runs_path, method: :post, local: true, multipart: true do |f|
+      .row.g-2.align-items-end
+        .col-sm-8
+          = f.file_field :json_file, class: 'form-control form-control-sm', accept: '.json'
+        .col-sm-auto
+          = f.submit 'アップロードする', class: 'btn btn-primary btn-sm'
+    %p.text-muted.small.mb-0.mt-2
+      ※ `finance/stocks`リポジトリで`ruby find_undervalued_stocks.rb`を実行して生成した
+      `data/current_buy_candidates.json`をアップロードする。アップロードごとに新しい履歴として保存される。
+
+- if @runs.any?
+  .table-responsive
+    %table.table.table-bordered.table-hover.table-sm
+      %thead.table-dark
+        %tr
+          %th 分析日時
+          %th 候補数
+          %th アップロードファイル
+          %th アップロード日時
+          %th 操作
+      %tbody
+        - @runs.each do |run|
+          %tr
+            %td= l(run.generated_at, format: :long)
+            %td= run.candidate_count
+            %td= run.source_filename
+            %td= l(run.created_at, format: :long)
+            %td= link_to '詳細', admin_stock_screening_run_path(run), class: 'btn btn-sm btn-outline-primary'
+- else
+  .alert.alert-info まだアップロードされた結果がありません。

@@ -1,0 +1,11 @@
+- if row['latest_price']
+  %td= "#{row['latest_price']}円"
+  %td
+    - pct = row['price_change_pct'].to_f
+    %span{class: pct > 0 ? 'text-danger fw-bold' : (pct < 0 ? 'text-success fw-bold' : nil)}
+      = "#{pct > 0 ? '+' : ''}#{pct}%"
+    %br
+    %span.text-muted.small= Time.zone.parse(row['price_checked_at']).strftime('%m/%d %H:%M時点')
+- else
+  %td.text-muted 未確認
+  %td.text-muted -
