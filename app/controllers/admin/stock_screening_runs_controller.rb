@@ -1,5 +1,5 @@
 class Admin::StockScreeningRunsController < Admin::ApplicationController
-  before_action :set_run, only: [:show, :refresh_prices]
+  before_action :set_run, only: [:show, :refresh_prices, :update_checks]
 
   def index
     @runs = StockScreeningRun.all
@@ -10,6 +10,11 @@ class Admin::StockScreeningRunsController < Admin::ApplicationController
   def refresh_prices
     @run.refresh_prices!
     redirect_to admin_stock_screening_run_path(@run), notice: '現在価格を更新しました'
+  end
+
+  def update_checks
+    @run.update_checks!(params[:checked_codes])
+    redirect_to admin_stock_screening_run_path(@run), notice: 'チェック状態を保存しました'
   end
 
   def create

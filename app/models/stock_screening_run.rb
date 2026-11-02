@@ -47,4 +47,20 @@ class StockScreeningRun < ApplicationRecord
 
     update!(result_data: data)
   end
+
+  # 「注目・調べ済み」チェックの状態を保存する。この回の分析結果(result_data)の中だけで
+  # 閉じた状態(他のアップロード回には影響しない)。checked_codesに含まれるコードがcheckedに、
+  # 含まれないコードがuncheckedになる(チェックを外した場合もここで反映される)。
+  def update_checks!(checked_codes)
+    checked_codes = Array(checked_codes)
+    data = result_data.deep_dup
+
+    %w[candidates excluded_value_traps].each do |key|
+      (data[key] || []).each do |row|
+        row['checked'] = checked_codes.include?(row['code'])
+      end
+    end
+
+    update!(result_data: data)
+  end
 end

@@ -128,4 +128,37 @@ RSpec.describe 'Admin::StockScreeningRuns', type: :request do
       expect(run.candidates.first['latest_price']).to be_nil
     end
   end
+
+  describe 'PATCH /admin/stock_screening_runs/:id/update_checks' do
+    let(:admin) { create(:user, admin: true) }
+    let!(:run) do
+      StockScreeningRun.create!(
+        generated_at: Time.current,
+        candidate_count: 2,
+        source_filename: 'sample_screening_result.json',
+        result_data: JSON.parse(valid_file.read)
+      )
+    end
+
+    before { sign_in admin }
+
+    it '選択したコードだけをcheckedにする' do
+      patch update_checks_admin_stock_screening_run_path(run), params: { checked_codes: ['6526'] }
+
+      run.reload
+      expect(run.candidates.find { |c| c['code'] == '6526' }['checked']).to eq(true)
+      expect(run.candidates.find { |c| c['code'] == '2413' }['checked']).to eq(false)
+      expect(run.excluded_value_traps.first['checked']).to eq(false)
+      expect(response).to redirect_to(admin_stock_screening_run_path(run))
+    end
+
+    it 'checked_codesが空(全解除)の場合は全てuncheckedになる' do
+      run.update_checks!(['6526'])
+
+      patch update_checks_admin_stock_screening_run_path(run), params: {}
+
+      run.reload
+      expect(run.candidates.find { |c| c['code'] == '6526' }['checked']).to eq(false)
+    end
+  end
 end

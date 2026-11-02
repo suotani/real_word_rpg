@@ -40,6 +40,7 @@ Rails.application.routes.draw do
     post 'batches/market_price_fluctuation', to: 'batches#market_price_fluctuation', as: :batch_market_price_fluctuation
     resources :stock_screening_runs, only: [:index, :show, :create] do
       post :refresh_prices, on: :member
+      patch :update_checks, on: :member
     end
     resources :wholesale_stocks, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
