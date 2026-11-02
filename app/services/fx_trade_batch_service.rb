@@ -118,7 +118,9 @@ class FxTradeBatchService
       raise "no open position at broker to close (expected #{strategy::ENTRY_SIDE})" unless position
 
       order = send_order(opposite_side(strategy::ENTRY_SIDE), setting.size)
-      price = order['price']&.to_f
+      # send_orderのレスポンスに実約定価格が含まれない場合があるため、open_positionと同様に
+      # ticker価格へフォールバックする(フォールバックしないと価格・決済損益とも未記録になる)
+      price = order['price']&.to_f || GmoCoinApi.get_price
       claim.update!(price:) if price
     rescue StandardError
       claim.destroy
