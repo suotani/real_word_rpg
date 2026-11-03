@@ -61,6 +61,11 @@ train/testの両方で確認できたため、**判定ロジックをSMA50/200�
   記録(`strategy`列で戦略を区別)。`dip_bounce`はその日の最初の呼び出しで`daily_open`イベント
   として当日始値を記録し、以降の判定に使い続ける。決済(`close`)時にはGMOコインの取引余力
   (`availableAmount`)も`margin`列に記録し、管理者専用画面(`/admin/fx_bot_setting`)に表示する
+- **決済損益(`loss_gain`)の求め方**: entry/closeの価格差×サイズで自前計算するとスプレッド等の
+  分だけ実際の値とズレるため、決済注文の送信直後に`GmoCoinApi.get_latest_executions`で
+  GMO自身が計算した約定ごとの`lossGain`を取得して使う
+  (`FxTradeBatchService#find_latest_execution`、即時反映されない場合に備え数回リトライする)。
+  約定が見つからない場合のみ、従来の自前計算(`FxTradeLog.calc_loss_gain`)にフォールバックする。
 - `GmoCoinApi`(`app/services/gmo_coin_api.rb`): GMOコインFX APIラッパー
 - `FxTradeBatchService`(`app/services/fx_trade_batch_service.rb`): 1回呼ばれるごとに、
   まず全戦略の「決済判断」→次に全戦略の「エントリー判断」の2段階で、各戦略につき

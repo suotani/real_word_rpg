@@ -112,15 +112,19 @@ class FxTradeBatchService
     claim = claim_once(strategy: strategy::KEY, event: 'close', reason:)
     return { skipped: true, reason: 'already_closed' } unless claim
 
-    price = nil
+    price = loss_gain = nil
     begin
       position, = GmoCoinApi.get_position
       raise "no open position at broker to close (expected #{strategy::ENTRY_SIDE})" unless position
 
-      order = send_order(opposite_side(strategy::ENTRY_SIDE), setting.size)
-      # send_orderのレスポンスに実約定価格が含まれない場合があるため、open_positionと同様に
-      # ticker価格へフォールバックする(フォールバックしないと価格・決済損益とも未記録になる)
-      price = order['price']&.to_f || GmoCoinApi.get_price
+      close_side = opposite_side(strategy::ENTRY_SIDE)
+      order = send_order(close_side, setting.size)
+      # 決済損益は自前計算(entry/closeの価格差×サイズ)だとスプレッド等の分だけ実際の値と
+      # 誤差が出るため、GMOが計算した本当のlossGainを約定履歴(latestExecutions)から
+      # 都度取得して使う。即時反映されず見つからない場合のみ、従来の自前計算にフォールバックする
+      execution = find_latest_execution(close_side, setting.size)
+      price = execution&.dig('price')&.to_f || order['price']&.to_f || GmoCoinApi.get_price
+      loss_gain = execution&.dig('lossGain')&.to_f
       claim.update!(price:) if price
     rescue StandardError
       claim.destroy
@@ -128,9 +132,21 @@ class FxTradeBatchService
     end
 
     margin = GmoCoinApi.get_margin
-    loss_gain = FxTradeLog.calc_loss_gain(entry, price)
+    loss_gain ||= FxTradeLog.calc_loss_gain(entry, price)
     claim.update!(margin:, loss_gain:)
     { closed: true, reason:, margin:, price:, loss_gain: }
+  end
+
+  # 決済直後のGMO約定履歴から、今回送った決済注文に対応する約定を探す
+  # (即時反映されない場合に備え数回リトライする。新しい順に返るAPIなので先頭一致で十分)
+  def find_latest_execution(side, size, retries: 3, wait: 0.5)
+    retries.times do |i|
+      sleep(wait) if i.positive?
+      match = GmoCoinApi.get_latest_executions(count: 10, page: 1)
+                        .find { |e| e['side'] == side && e['size'].to_i == size.to_i }
+      return match if match
+    end
+    nil
   end
 
   # --- エントリー判断 ---
