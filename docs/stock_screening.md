@@ -33,6 +33,15 @@
 無い旧形式のJSON(本機能追加前にアップロードしたもの)は、該当銘柄の更新がスキップされ
 「未確認」と表示される。
 
+## 売り時の目安(候補テーブルの赤背景)
+
+各銘柄の`sell_threshold_price`(`find_undervalued_stocks.rb`が算出、自分史内のPBR位置が
+選定基準(下位40%)を超える株価=「もう割安ではなくなる」目安)と、現在価格(現在価格更新済み
+なら`latest_price`、未更新なら`price`)を比較し、現在価格が`sell_threshold_price`以上になった
+候補行を赤背景(`table-danger`)+「売り時」バッジで表示する(`StockScreeningRun.sell_time?`)。
+除外(バリュートラップ疑い)リストにはこの判定は適用しない(そもそも買い候補ではないため)。
+`sell_threshold_price`が無い旧形式のJSONは判定自体が行われない(常にfalse)。
+
 ## なぜRender上でAPIを直接叩かない設計にしたか
 
 225銘柄×(Yahoo Finance価格取得+J-Quantsファンダメンタルズ取得、バックオフ付き)は

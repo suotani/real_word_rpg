@@ -63,4 +63,15 @@ class StockScreeningRun < ApplicationRecord
 
     update!(result_data: data)
   end
+
+  # 「売り時」判定: 現在価格(現在価格更新済みならlatest_price、未更新ならアップロード時点のprice)が
+  # sell_threshold_price(find_undervalued_stocks.rbが算出した、自分史内PBR位置が選定基準を超える
+  # 株価=もう割安ではなくなる目安)以上になった銘柄。どちらかが無い(旧形式のアップロード等)場合はfalse。
+  def self.sell_time?(row)
+    threshold = row['sell_threshold_price']
+    current_price = row['latest_price'] || row['price']
+    return false unless threshold && current_price
+
+    current_price.to_f >= threshold.to_f
+  end
 end

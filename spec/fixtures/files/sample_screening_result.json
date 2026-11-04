@@ -10,6 +10,7 @@
       "price": 2000.0,
       "current_pbr": 1.2,
       "own_pbr_percentile": 0.3,
+      "sell_threshold_price": 2100.0,
       "corr": -0.531,
       "n": 16,
       "cheap_mean": 0.041,
@@ -23,6 +24,7 @@
       "price": 3000.0,
       "current_pbr": 3.4,
       "own_pbr_percentile": 0.35,
+      "sell_threshold_price": 2900.0,
       "corr": -0.256,
       "n": 18,
       "cheap_mean": 0.018,
@@ -38,6 +40,7 @@
       "price": 500.0,
       "current_pbr": 0.19,
       "own_pbr_percentile": 0.1,
+      "sell_threshold_price": 600.0,
       "corr": 0.12
     }
   ]

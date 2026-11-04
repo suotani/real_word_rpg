@@ -36,9 +36,10 @@
             %th 算出時価格
             %th 現在価格
             %th 算出時からの変動
+            %th 売り時の目安
         %tbody
           - @run.candidates.each do |c|
-            %tr
+            %tr{class: StockScreeningRun.sell_time?(c) ? 'table-danger' : nil}
               %td= check_box_tag 'checked_codes[]', c['code'], c['checked'], id: "checked_#{c['code']}", class: 'form-check-input'
               %td= c['code']
               %td.fw-bold= c['name']
@@ -54,6 +55,13 @@
                   %span.badge.bg-warning.text-dark.ms-1 ★
               %td= c['price'] ? "#{c['price']}円" : '-'
               = render 'price_change', row: c
+              %td
+                - if c['sell_threshold_price']
+                  = "#{c['sell_threshold_price']}円"
+                  - if StockScreeningRun.sell_time?(c)
+                    %span.badge.bg-danger.ms-1 売り時
+                - else
+                  = '-'
   - else
     .alert.alert-info.mb-4 候補はありませんでした。
 

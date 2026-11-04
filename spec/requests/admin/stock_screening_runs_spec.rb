@@ -86,6 +86,15 @@ RSpec.describe 'Admin::StockScreeningRuns', type: :request do
       expect(response.body).to include('ソシオネクスト')
       expect(response.body).to include('日産自動車')
     end
+
+    it '現在価格が売り時の目安(sell_threshold_price)以上の銘柄だけ赤背景・「売り時」表示になる' do
+      get admin_stock_screening_run_path(run)
+
+      # 2413(price=3000) >= sell_threshold_price=2900 → 売り時
+      # 6526(price=2000) <  sell_threshold_price=2100 → 売り時ではない
+      expect(response.body).to include('売り時')
+      expect(response.body.scan('table-danger').size).to eq(1)
+    end
   end
 
   describe 'POST /admin/stock_screening_runs/:id/refresh_prices' do
