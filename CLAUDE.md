@@ -51,6 +51,8 @@ bin/rails assets:precompile
 - **`StockScreeningRun`** — 割安株スクリーニング結果(別リポジトリ`finance/stocks`の
   `find_undervalued_stocks.rb`が出力したJSONをアップロードして保存した履歴、詳細は
   `docs/stock_screening.md`)
+- **`StockHolding`** — 「購入登録」した銘柄(コードごとに1行、購入価格・購入日時)。
+  `StockScreeningRun`とは独立していて、Runをまたいで一貫した購入価格でP/Lを追える
 
 ### コントローラー
 
@@ -62,6 +64,7 @@ bin/rails assets:precompile
 - `htmladmin/` 名前空間: カスタムHTMLコンテンツ管理
 - `users/SessionsController` — Deviseセッションのカスタムオーバーライド
 - `admin/StockScreeningRunsController` — 割安株スクリーニング結果JSONのアップロード・履歴閲覧
+- `admin/StockHoldingsController` — 購入登録した銘柄の一覧・削除
 
 ### サービス（`app/services/`）
 

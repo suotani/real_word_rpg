@@ -42,6 +42,9 @@ Rails.application.routes.draw do
       post :refresh_prices, on: :member
       patch :update_checks, on: :member
     end
+    post 'stock_screening_runs/:id/candidates/:code/register_holding',
+         to: 'stock_screening_runs#register_holding', as: :register_holding
+    resources :stock_holdings, only: [:index, :destroy]
     resources :wholesale_stocks, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
         get  :export

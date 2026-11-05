@@ -170,4 +170,63 @@ RSpec.describe 'Admin::StockScreeningRuns', type: :request do
       expect(run.candidates.find { |c| c['code'] == '6526' }['checked']).to eq(false)
     end
   end
+
+  describe 'POST /admin/stock_screening_runs/:id/candidates/:code/register_holding' do
+    let(:admin) { create(:user, admin: true) }
+    let!(:run) do
+      StockScreeningRun.create!(
+        generated_at: Time.current,
+        candidate_count: 2,
+        source_filename: 'sample_screening_result.json',
+        result_data: JSON.parse(valid_file.read)
+      )
+    end
+
+    before { sign_in admin }
+
+    it '算出時の価格でStockHoldingを作成する' do
+      expect do
+        post admin_register_holding_path(id: run.id, code: '6526')
+      end.to change(StockHolding, :count).by(1)
+
+      holding = StockHolding.find_by(code: '6526')
+      expect(holding.name).to eq('ソシオネクスト')
+      expect(holding.bought_price).to eq(2000.0) # fixtureのprice
+      expect(response).to redirect_to(admin_stock_screening_run_path(run))
+    end
+
+    it '現在価格更新済みならlatest_priceを優先して使う' do
+      allow(YahooFinanceClient).to receive(:latest_close).and_return(2500.0)
+      run.refresh_prices!
+
+      post admin_register_holding_path(id: run.id, code: '6526')
+
+      expect(StockHolding.find_by(code: '6526').bought_price).to eq(2500.0)
+    end
+
+    it '存在しないコードの場合はエラーを表示する' do
+      expect do
+        post admin_register_holding_path(id: run.id, code: '9999')
+      end.not_to change(StockHolding, :count)
+
+      expect(flash[:alert]).to eq('対象の銘柄が見つかりません')
+    end
+
+    it '別のRunから購入登録すると価格が更新される(重複レコードは作らない)' do
+      post admin_register_holding_path(id: run.id, code: '6526')
+
+      other_data = run.result_data.deep_dup
+      other_data['candidates'].first['price'] = 2500.0
+      other_run = StockScreeningRun.create!(
+        generated_at: Time.current, candidate_count: 2,
+        source_filename: 'other.json', result_data: other_data
+      )
+
+      expect do
+        post admin_register_holding_path(id: other_run.id, code: '6526')
+      end.not_to change(StockHolding, :count)
+
+      expect(StockHolding.find_by(code: '6526').bought_price).to eq(2500.0)
+    end
+  end
 end

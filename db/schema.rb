@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_11_02_005022) do
+ActiveRecord::Schema[7.2].define(version: 2026_11_05_045510) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -363,6 +363,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_11_02_005022) do
     t.index ["expires_at"], name: "index_solid_queue_semaphores_on_expires_at"
     t.index ["key", "value"], name: "index_solid_queue_semaphores_on_key_and_value"
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
+  end
+
+  create_table "stock_holdings", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "name"
+    t.decimal "bought_price", precision: 12, scale: 2, null: false
+    t.datetime "bought_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_stock_holdings_on_code", unique: true
   end
 
   create_table "stock_screening_runs", force: :cascade do |t|

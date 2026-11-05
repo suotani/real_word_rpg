@@ -1,0 +1,42 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h2 保有株
+
+%p.text-muted
+  割安株スクリーニングの詳細画面(「購入登録」ボタン)から登録した銘柄の一覧。どのスクリーニング結果
+  (Run)を見ていても、ここでは実際に買った価格・日時を基準に変動率を表示する。
+
+- if @holdings.any?
+  .table-responsive
+    %table.table.table-bordered.table-hover.table-sm
+      %thead.table-dark
+        %tr
+          %th コード
+          %th 銘柄名
+          %th 購入価格
+          %th 購入日時
+          %th 現在価格
+          %th 購入時からの変動
+          %th 操作
+      %tbody
+        - @holdings.each do |h|
+          - current_price = @latest_prices[h]
+          %tr
+            %td= h.code
+            %td.fw-bold= h.name
+            %td= "#{h.bought_price}円"
+            %td= l(h.bought_at, format: :long)
+            - if current_price
+              %td= "#{current_price}円"
+              - pct = h.price_change_pct(current_price)
+              %td
+                %span{class: pct > 0 ? 'text-danger fw-bold' : (pct < 0 ? 'text-success fw-bold' : nil)}
+                  = "#{pct > 0 ? '+' : ''}#{pct}%"
+            - else
+              %td.text-muted 取得失敗
+              %td.text-muted -
+            %td
+              = link_to '保有をやめる', admin_stock_holding_path(h), method: :delete,
+                  data: { confirm: "「#{h.name}」の保有登録を削除しますか？" },
+                  class: 'btn btn-sm btn-outline-danger'
+- else
+  .alert.alert-info 購入登録された銘柄はありません。

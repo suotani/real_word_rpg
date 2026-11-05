@@ -37,6 +37,7 @@
             %th 現在価格
             %th 算出時からの変動
             %th 売り時の目安
+            %th 保有登録
         %tbody
           - @run.candidates.each do |c|
             %tr{class: StockScreeningRun.sell_time?(c) ? 'table-danger' : nil}
@@ -62,6 +63,15 @@
                     %span.badge.bg-danger.ms-1 売り時
                 - else
                   = '-'
+              %td.text-nowrap
+                - holding = @holdings_by_code[c['code']]
+                - if holding
+                  %span.badge.bg-secondary 保有中
+                  %br
+                  %span.small.text-muted= "#{holding.bought_price}円 / #{l(holding.bought_at, format: :long)}"
+                - else
+                  = link_to '購入登録', admin_register_holding_path(id: @run.id, code: c['code']),
+                      method: :post, class: 'btn btn-sm btn-outline-primary'
   - else
     .alert.alert-info.mb-4 候補はありませんでした。
 
