@@ -36,6 +36,27 @@ RSpec.describe 'Admin::StockHoldings', type: :request do
     end
   end
 
+  describe 'PATCH /admin/stock_holdings/:id' do
+    let(:admin) { create(:user, admin: true) }
+    let!(:holding) { StockHolding.register!(code: '6526', name: 'ソシオネクスト', price: 2000.0) }
+
+    before { sign_in admin }
+
+    it '購入価格を更新する' do
+      patch admin_stock_holding_path(holding), params: { stock_holding: { bought_price: 1800.0 } }
+
+      expect(holding.reload.bought_price).to eq(1800.0)
+      expect(response).to redirect_to(admin_stock_holdings_path)
+    end
+
+    it '不正な値(0以下)の場合は更新せずエラーを表示する' do
+      patch admin_stock_holding_path(holding), params: { stock_holding: { bought_price: 0 } }
+
+      expect(holding.reload.bought_price).to eq(2000.0)
+      expect(flash[:alert]).to be_present
+    end
+  end
+
   describe 'DELETE /admin/stock_holdings/:id' do
     let(:admin) { create(:user, admin: true) }
     let!(:holding) { StockHolding.register!(code: '6526', name: 'ソシオネクスト', price: 2000.0) }

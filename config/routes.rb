@@ -44,7 +44,7 @@ Rails.application.routes.draw do
     end
     post 'stock_screening_runs/:id/candidates/:code/register_holding',
          to: 'stock_screening_runs#register_holding', as: :register_holding
-    resources :stock_holdings, only: [:index, :destroy]
+    resources :stock_holdings, only: [:index, :update, :destroy]
     resources :wholesale_stocks, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
         get  :export

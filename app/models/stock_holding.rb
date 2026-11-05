@@ -6,7 +6,8 @@
 # 一貫して分かるように、Runとは別にこのテーブルで保持する。
 class StockHolding < ApplicationRecord
   validates :code, presence: true, uniqueness: true
-  validates :bought_price, :bought_at, presence: true
+  validates :bought_price, presence: true, numericality: { greater_than: 0 }
+  validates :bought_at, presence: true
 
   default_scope { order(bought_at: :desc) }
 

@@ -23,7 +23,11 @@
           %tr
             %td= h.code
             %td.fw-bold= h.name
-            %td= "#{h.bought_price}円"
+            %td
+              = form_with model: h, url: admin_stock_holding_path(h), method: :patch, local: true,
+                  html: { class: 'd-flex gap-1 align-items-center' } do |f|
+                = f.number_field :bought_price, step: 'any', min: 0, class: 'form-control form-control-sm', style: 'width: 7em;'
+                = f.submit '更新', class: 'btn btn-sm btn-outline-secondary'
             %td= l(h.bought_at, format: :long)
             - if current_price
               %td= "#{current_price}円"
