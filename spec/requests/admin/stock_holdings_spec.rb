@@ -17,6 +17,19 @@ RSpec.describe 'Admin::StockHoldings', type: :request do
         expect(response.body).to include('ソシオネクスト')
         expect(response.body).to include('+10.0%')
       end
+
+      it '最新Runのsell_threshold_priceを超えていれば赤背景・「売り時」を表示する' do
+        StockScreeningRun.create!(
+          generated_at: Time.current,
+          result_data: { 'candidates' => [{ 'code' => '6526', 'sell_threshold_price' => 2100.0 }] }
+        )
+        allow(YahooFinanceClient).to receive(:latest_close).with('6526').and_return(2200.0)
+
+        get admin_stock_holdings_path
+
+        expect(response.body).to include('売り時')
+        expect(response.body).to include('table-danger')
+      end
     end
 
     context '非管理者ユーザーの場合' do

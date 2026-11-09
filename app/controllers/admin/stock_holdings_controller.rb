@@ -2,6 +2,7 @@ class Admin::StockHoldingsController < Admin::ApplicationController
   def index
     @holdings = StockHolding.all
     @latest_prices = @holdings.index_with { |h| YahooFinanceClient.latest_close(h.code) }
+    @sell_thresholds = @holdings.index_with { |h| StockScreeningRun.latest_sell_threshold_price(h.code) }
   end
 
   def update

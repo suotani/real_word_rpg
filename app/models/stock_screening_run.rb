@@ -74,4 +74,15 @@ class StockScreeningRun < ApplicationRecord
 
     current_price.to_f >= threshold.to_f
   end
+
+  # 指定コードのsell_threshold_priceを、最新のRunから遡って探す(保有株一覧で使用)。
+  # Runごとにこの値は多少変わりうる(ファンダメンタルズ更新・価格履歴の窓が動くため)ので、
+  # 最新のRunの値を「現時点で最も確からしい売り時の目安」として採用する。
+  def self.latest_sell_threshold_price(code)
+    all.each do |run|
+      row = (run.candidates + run.excluded_value_traps).find { |c| c['code'] == code }
+      return row['sell_threshold_price'] if row && row['sell_threshold_price']
+    end
+    nil
+  end
 end

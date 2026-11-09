@@ -16,11 +16,14 @@
           %th 購入日時
           %th 現在価格
           %th 購入時からの変動
+          %th 売り時の目安
           %th 操作
       %tbody
         - @holdings.each do |h|
           - current_price = @latest_prices[h]
-          %tr
+          - threshold = @sell_thresholds[h]
+          - sell_time = StockScreeningRun.sell_time?('price' => h.bought_price, 'latest_price' => current_price, 'sell_threshold_price' => threshold)
+          %tr{class: sell_time ? 'table-danger' : nil}
             %td= h.code
             %td.fw-bold= h.name
             %td
@@ -38,6 +41,13 @@
             - else
               %td.text-muted 取得失敗
               %td.text-muted -
+            %td
+              - if threshold
+                = "#{threshold}円"
+                - if sell_time
+                  %span.badge.bg-danger.ms-1 売り時
+              - else
+                = '-'
             %td
               = link_to '保有をやめる', admin_stock_holding_path(h), method: :delete,
                   data: { confirm: "「#{h.name}」の保有登録を削除しますか？" },
