@@ -26,4 +26,25 @@ RSpec.describe 'Admin::FxBotSettings', type: :request do
       expect(response.body).to include('エントリー停止中')
     end
   end
+
+  describe 'GET /admin/fx_trade_logs/export' do
+    it '取引ログをCSVでダウンロードできる' do
+      FxTradeLog.create!(trade_date: Date.current, strategy: 'ny_rollover_dip', event: 'entry',
+                          side: 'SELL', size: 1000, price: 158.5)
+
+      get admin_export_fx_trade_logs_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.content_type).to include('text/csv')
+      expect(response.body).to include('ny_rollover_dip')
+      expect(response.body).to include('158.5')
+    end
+
+    it 'ログが無くてもヘッダー行だけのCSVを返す' do
+      get admin_export_fx_trade_logs_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('決済損益')
+    end
+  end
 end

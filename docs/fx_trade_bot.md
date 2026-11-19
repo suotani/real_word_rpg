@@ -66,6 +66,13 @@ train/testの両方で確認できたため、**判定ロジックをSMA50/200�
   GMO自身が計算した約定ごとの`lossGain`を取得して使う
   (`FxTradeBatchService#find_latest_execution`、即時反映されない場合に備え数回リトライする)。
   約定が見つからない場合のみ、従来の自前計算(`FxTradeLog.calc_loss_gain`)にフォールバックする。
+- **長期間の実績確認はFxTradeLogのCSVダウンロードを使うこと**: GMOコインの約定履歴API
+  (`GmoCoinApi.get_latest_executions`、`/v1/latestExecutions`)は**直近1日分**しか返さない
+  (ページを増やしても同じ結果になるだけで、それ以前の約定は公式には遡れない)。それより長い
+  期間の実績を確認・分析したい場合は、`/admin/fx_bot_setting`の「CSVダウンロード」ボタン
+  (`GET /admin/fx_trade_logs/export`、`Admin::FxBotSettingsController#export_trade_logs`)で
+  `FxTradeLog`全件(アプリ自身が記録してきたログ、GMO側の保持期間に依存しない)をエクスポート
+  できる。
 - `GmoCoinApi`(`app/services/gmo_coin_api.rb`): GMOコインFX APIラッパー
 - `FxTradeBatchService`(`app/services/fx_trade_batch_service.rb`): 1回呼ばれるごとに、
   まず全戦略の「決済判断」→次に全戦略の「エントリー判断」の2段階で、各戦略につき

@@ -51,7 +51,9 @@
   .card-body
     .d-flex.justify-content-between.align-items-center.mb-3
       %h5.card-title.mb-0 直近の取引ログ
-      = link_to '全件を見る', admin_resource_record_list_path(model_name: 'fx_trade_log'), class: 'btn btn-outline-secondary btn-sm'
+      .d-flex.gap-2
+        = link_to 'CSVダウンロード', admin_export_fx_trade_logs_path, class: 'btn btn-outline-success btn-sm'
+        = link_to '全件を見る', admin_resource_record_list_path(model_name: 'fx_trade_log'), class: 'btn btn-outline-secondary btn-sm'
     - if @recent_logs.empty?
       %p.text-muted.mb-0 ログがありません
     - else

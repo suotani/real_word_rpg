@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     root to: 'resources#models'
     resource :fx_bot_setting, only: [:show]
     patch 'fx_bot_setting/:id', to: 'fx_bot_settings#update', as: :update_fx_bot_setting
+    get 'fx_trade_logs/export', to: 'fx_bot_settings#export_trade_logs', as: :export_fx_trade_logs
     post 'batches/market_price_fluctuation', to: 'batches#market_price_fluctuation', as: :batch_market_price_fluctuation
     resources :stock_screening_runs, only: [:index, :show, :create] do
       post :refresh_prices, on: :member
